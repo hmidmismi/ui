@@ -1,41 +1,39 @@
 {
-  "name": "@hmidmismi/ui",
+  "name": "@baikikai/ui",
   "version": "0.1.0",
-  "description": "Shared component library — Park UI/Ark UI primitives + Panda CSS",
-  "type": "module",
-  "author": "jasloe",
-  "license": "UNLICENSED",
   "private": true,
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "description": "Design system: Panda preset, Park UI/Ark UI components and variants",
+  "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./preset": "./src/preset/index.ts",
     "./styles.css": "./styled-system/styles.css"
   },
   "scripts": {
-    "postinstall": "pnpm run panda:build && pnpm run build",
-    "build": "tsc -b",
-    "panda:prepare": "panda codegen",
-    "panda:watch": "panda codegen --watch",
-    "panda:css": "panda cssgen --watch",
-    "panda:build": "NODE_ENV=production panda codegen && NODE_ENV=production panda cssgen",
-    "dev": "concurrently \"pnpm panda:watch\" \"pnpm panda:css\"",
+    "codegen": "panda codegen && panda cssgen",
+    "dev": "concurrently -k \"panda codegen --watch\" \"panda cssgen --watch\"",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf node_modules .turbo styled-system dist"
+    "clean": "rm -rf styled-system .turbo node_modules"
   },
   "dependencies": {
     "@ark-ui/react": "^5.38.2",
-    "lucide-react": "^0.469.0"
+    "@capsizecss/core": "^4.1.3",
+    "@capsizecss/metrics": "^4.3.0",
+    "lucide-react": "^1.14.0"
   },
   "peerDependencies": {
-    "react": "^19.0.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@chorusworks/tsconfig": "workspace:*",
+    "@hmidmismi/tsconfig": "workspace:*",
     "@pandacss/dev": "^1.12.0",
-    "@types/react": "^19.2.14",
-    "concurrently": "^9.0.0",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3"
-  }
+    "@pandacss/preset-base": "^1.12.0",
+    "@pandacss/preset-panda": "^1.12.1",
+    "@types/react": "^19.2.17",
+    "vitest": "^2.1.9"
+  },
+  "author": "jasloe",
+  "license": "UNLICENSED"
 }

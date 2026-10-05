@@ -1,10 +1,7 @@
 .DS_Store
-
 .turbo
-
 dist
 node_modules
 
-## Panda
+# Panda
 styled-system
-styled-system-studio

@@ -1,34 +1,4 @@
 {
-  "extends": "@chorusworks/tsconfig/tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "jsx": "react-jsx",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "declaration": true,
-    "declarationMap": false,
-    "noEmit": false,
-    "outDir": "./dist",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "styled-system/*": [
-        "./styled-system/*"
-      ]
-    }
-  },
-  "include": [
-    "src",
-    "panda.config.ts",
-    "styled-system"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "postcss.config.cjs"
-  ]
+  "extends": "@hmidmismi/tsconfig/tsconfig.base.json",
+  "include": ["src", "panda.config.ts", "styled-system"]
 }
