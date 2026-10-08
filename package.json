@@ -31,6 +31,7 @@
     "@pandacss/dev": "^1.12.0",
     "@pandacss/preset-base": "^1.12.0",
     "@pandacss/preset-panda": "^1.12.1",
+    "@types/node": "^22.0.0",
     "@types/react": "^19.2.17",
     "vitest": "^2.1.9"
   },

@@ -63,7 +63,7 @@ export const MIN_LEADING = 1.3;
 
 Every line height is a multiple of 5px: the leading ratio is 1.5 at body size and below, falls 0.05 per step to a floor of 1.1, is rounded to a baseline, and is raised if rounding left it under `MIN_LEADING`. `fontSizes`, `lineHeights` and `textStyles` (`xs` to `7xl`, plus `label`) are generated from this one model. Tracking tightens from `4xl` up.
 
-Faces: `display` Shippori Mincho (titles), `body` Zen Kaku Gothic New (interface and prose), `mono` IBM Plex Mono (code and data only, never labels, eyebrows or breadcrumbs). They load through `next/font` in the app's root layout into `--font-display`, `--font-body`, `--font-mono`; the `fonts` tokens read those variables.
+Faces (set D, the default): `display` Shippori Mincho (titles), `body` Zen Kaku Gothic New (interface and prose), `mono` IBM Plex Mono (code and data only, never labels, eyebrows or breadcrumbs). They load through `next/font` in the app's root layout into `--font-display`, `--font-body`, `--font-mono`; the `fonts` tokens read those variables.
 
 ## Trim (Capsize)
 
@@ -112,3 +112,12 @@ pnpm --filter @baikikai/ui codegen   # panda codegen + cssgen -> styled-system/,
 pnpm --filter @baikikai/ui test      # grid, type scale, trim and literal-length checks
 pnpm --filter @baikikai/ui dev       # watch mode
 ```
+
+
+## Font sets
+
+Faces are pluggable. `src/preset/faces.ts` holds the sets, each a `display`, `body` and `mono` face with its Capsize metrics: `d` Shippori Mincho + Zen Kaku Gothic New (default), `e` Archivo, `f` Fraunces + Karla; mono is IBM Plex Mono in all. Pick one when Panda runs with `BAIKIKAI_FACES=d|e|f pnpm codegen`. Token names, CSS variable names (`--font-display`, `--font-body`, `--font-mono`), steps and line heights are the same in every set, so no component or recipe changes; only the trim and x-height adjustment are recomputed from the set's metrics. Apps load the matching files: `web` aliases `@/fonts/active` to `src/fonts/{d,e,f}.ts` from the same variable, so set it for both `codegen` and `next build`. To add a set, add its metrics to `faces.ts` and a static `next/font` module to each app.
+
+## Site chrome
+
+`siteStrip`, `siteHeader`, `siteSheet` and `siteFooter` (`src/preset/recipes/chrome.ts`) with `SiteStrip`, `SiteHeader`, `SiteFooter` components. Header: brand left, nav, language select and theme toggle flush right via `tools`, on every page; the sheet carries the nav only, with kana numerals (い ろ は に ほ), a clip-path wipe and staggered items, scroll lock and Esc to close. Footer: links, then copyright left and the 501(c)(3) line right. Apps pass labels and links; they never style the shell.

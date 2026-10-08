@@ -3,6 +3,7 @@ import { accordion } from './accordion';
 import { badge } from './badge';
 import { button } from './button';
 import { checkbox } from './checkbox';
+import { siteFooter, siteHeader, siteSheet, siteStrip } from './chrome';
 import { crumbs } from './crumbs';
 import { dialog } from './dialog';
 import { field } from './field';
@@ -57,6 +58,10 @@ export const slotRecipes = {
   popover,
   radioGroup,
   select,
+  siteFooter,
+  siteHeader,
+  siteSheet,
+  siteStrip,
   split,
   tabs,
   toggleGroup,

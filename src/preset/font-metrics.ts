@@ -1,14 +1,13 @@
-import ibmPlexMono from '@capsizecss/metrics/iBMPlexMono';
-import shipporiMincho from '@capsizecss/metrics/shipporiMincho';
-import zenKakuGothicNew from '@capsizecss/metrics/zenKakuGothicNew';
+import { activeFaces } from './faces';
 
 /**
- * Vertical metrics of the three faces, from Capsize's published metrics for the Google Fonts files. `display` is
- * Shippori Mincho (titles), `body` is Zen Kaku Gothic New (interface and running text), `mono` is IBM Plex Mono (index
- * numerals and data). The type scale feeds them to Capsize to trim text boxes and to match x-heights across faces.
+ * Vertical metrics of the active set's three faces, from Capsize's published metrics for the Google Fonts files.
+ * `display` is for titles, `body` for interface and running text, `mono` for index numerals and data. The type scale
+ * feeds them to Capsize to trim text boxes and to match x-heights across faces. Which faces these are is decided in
+ * `faces.ts`.
  */
 export const fontMetrics = {
-  display: shipporiMincho,
-  body: zenKakuGothicNew,
-  mono: ibmPlexMono,
+  display: activeFaces.display.metrics,
+  body: activeFaces.body.metrics,
+  mono: activeFaces.mono.metrics,
 } as const;
