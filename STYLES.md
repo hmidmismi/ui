@@ -14,7 +14,7 @@ Styling names say how something looks or lays out, never what content it holds. 
 4. **Panda patterns first.** `stack`, `hstack`, `vstack`, `wrap`, `grid`, `gridItem`, `container`, `center`, `divider`, `spacer`, `visuallyHidden`. Write a layout recipe only for what they do not cover (ruled list, measure, media row).
 5. **A semantic name, if wanted, is a mapping at the call site.** It is never a recipe or a component.
 6. **Semantics live in tokens.** `canvas`, `fg.muted`, `border` and spacing names are the right place for meaning. Recipes use them and never decide what a section means.
-7. **Site chrome is the only exception.** The header, footer, strip and sheet are slot recipes by nature. They consume primitives and tokens and do not define new looks.
+7. **The announcement, header, menu and footer are the only exception.** The header, footer, announcement and menu are slot recipes by nature. They consume primitives and tokens and do not define new looks.
 
 ## Rules
 
@@ -204,9 +204,9 @@ Installed in `src/components` with their recipes in `src/preset/recipes`: Accord
 5. `pnpm codegen`. `staticCss: { recipes: '*' }` emits every variant, so props may be dynamic.
 6. Add the component wrapper and export it. The component name must match the recipe name or be listed in the recipe's `jsx` option, or extraction emits no CSS.
 
-## Site chrome
+## Announcement, header, menu and footer
 
-`siteStrip`, `siteHeader`, `siteSheet` and `siteFooter` (`src/preset/recipes/chrome.ts`) with `SiteStrip`, `SiteHeader`, `SiteFooter` components. Header: brand left, nav, language select and theme toggle flush right via `tools`, on every page; the sheet carries the nav only, with kana numerals (い ろ は に ほ), a clip-path wipe and staggered items, scroll lock and Esc to close. Footer: links, then copyright left and the 501(c)(3) line right. Apps pass labels and links; they never style the shell. Chrome is the one place a content-shaped recipe is allowed. It uses primitives and tokens and adds no new looks.
+`announcement`, `header`, `menu` and `footer` (one file each in `src/preset/recipes`) with `Announcement`, `Header`, `Menu`, `Footer` components. Header: brand left, nav, language select and theme toggle flush right via `headerUtility`, on every page; `Menu` is its own component, controlled by the app (`open`, `onClose`), and carries the nav and the footer utility nav, with kana numerals (い ろ は に ほ), a clip-path wipe and staggered items, scroll lock and Esc to close. Footer: the utility nav (`footerUtility`: Contact, Accessibility, Instagram), then copyright left and the 501(c)(3) line right. Apps pass labels and links; they never style the shell. These are the one place a content-shaped recipe is allowed. It uses primitives and tokens and adds no new looks.
 
 ## Font sets
 

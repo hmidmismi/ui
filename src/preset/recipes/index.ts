@@ -1,20 +1,23 @@
 import { absoluteCenter } from './absolute-center';
 import { accordion } from './accordion';
+import { announcement } from './announcement';
 import { badge } from './badge';
 import { button } from './button';
 import { checkbox } from './checkbox';
-import { siteFooter, siteHeader, siteSheet, siteStrip } from './chrome';
 import { crumbs } from './crumbs';
 import { dialog } from './dialog';
 import { field } from './field';
 import { filterGroup } from './filter-group';
+import { footer } from './footer';
 import { group } from './group';
+import { header } from './header';
 import { icon } from './icon';
 import { indexRow } from './index-row';
 import { input } from './input';
 import { layoutStack, layoutWrap } from './layout';
 import { link } from './link';
 import { list } from './list';
+import { menu } from './menu';
 import { placeholder } from './placeholder';
 import { popover } from './popover';
 import { radioGroup } from './radio-group';
@@ -58,10 +61,10 @@ export const slotRecipes = {
   popover,
   radioGroup,
   select,
-  siteFooter,
-  siteHeader,
-  siteSheet,
-  siteStrip,
+  footer,
+  header,
+  menu,
+  announcement,
   split,
   tabs,
   toggleGroup,

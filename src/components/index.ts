@@ -24,17 +24,11 @@ export { Placeholder, type PlaceholderProps } from './placeholder';
 export * as Popover from './popover';
 export * as RadioGroup from './radio-group';
 export * as Select from './select';
-export {
-  KANA_NUMERALS,
-  type NavItem,
-  SiteFooter,
-  type SiteFooterProps,
-  SiteHeader,
-  type SiteHeaderProps,
-  SiteStrip,
-  SiteStripLink,
-  type SiteStripProps,
-} from './site-chrome';
+export { Announcement, AnnouncementLink, type AnnouncementProps } from './announcement';
+export { Footer, type FooterProps } from './footer';
+export { Header, type HeaderProps } from './header';
+export { KANA_NUMERALS, Menu, type MenuProps } from './menu';
+export type { NavItem } from './nav';
 export { Span, type SpanProps } from './span';
 export { Spinner, type SpinnerProps } from './spinner';
 export * as Split from './split';
