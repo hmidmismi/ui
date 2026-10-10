@@ -4,13 +4,26 @@
 
 Paths are from `packages/ui`. After any theme change run `pnpm codegen` (Panda codegen + cssgen). Tests: `pnpm test`.
 
+## Principle
+
+Styling names say how something looks or lays out, never what content it holds. Content decides which primitive and variant to use, at the call site.
+
+1. **Name by function.** `Stack`, `List`, `Grid`, `Split`, `Surface`, `Title`, `Text`, `Label`. Never `CreditsList`, `TechniqueHeader`, `Eyebrow` or `PersonName`.
+2. **Variants are props.** A new look is a new variant on an existing primitive first. A new recipe is the last resort, used only when no primitive fits.
+3. **Two uses with different looks means a variant is missing.** Add the variant. Do not create a second primitive.
+4. **Panda patterns first.** `stack`, `hstack`, `vstack`, `wrap`, `grid`, `gridItem`, `container`, `center`, `divider`, `spacer`, `visuallyHidden`. Write a layout recipe only for what they do not cover (ruled list, measure, media row).
+5. **A semantic name, if wanted, is a mapping at the call site.** It is never a recipe or a component.
+6. **Semantics live in tokens.** `canvas`, `fg.muted`, `border` and spacing names are the right place for meaning. Recipes use them and never decide what a section means.
+7. **Site chrome is the only exception.** The header, footer, strip and sheet are slot recipes by nature. They consume primitives and tokens and do not define new looks.
+
 ## Rules
 
 - No ad hoc styles in app code: no `css()`, `style`, raw `className` strings or style props. Use `@baikikai/ui` components and their variants.
-- No literal lengths in recipes. Spacing, sizes, radii, rule widths and tracking are tokens. A look used twice is a fragment or a recipe. `src/preset/rhythm.test.ts` fails on a stray `px` or `rem`.
+- No literal lengths in recipes. Spacing, sizes, radii, rule widths and tracking are tokens. A look used twice is a variant first, then a fragment or a recipe. `src/preset/rhythm.test.ts` fails on a stray `px` or `rem`.
 - Font sizes and line heights come only from `textSize` / `textTrim` in `type-scale.ts`, never typed by hand.
 - Never reset browser defaults in a recipe; preflight already does.
 - Components that call `createStyleContext` must start with `'use client'` or server pages cannot import them (a typecheck will not catch it; `next build` will). Components import the generated system by relative path (`../../styled-system/...`), so any bundler resolves it. Apps import only `@baikikai/ui` and `@baikikai/ui/styles.css`.
+- Repeated logic goes in a helper file; repeated styling goes in a variant, recipe or primitive.
 
 ## The grid
 
@@ -72,15 +85,99 @@ Text roles remove the space above the capitals and below the baseline with negat
 - Do not put margin on a trimmed element; use padding, which is measured from the cap and baseline edges.
 - Inline elements (`span`, `strong`, `a`, `small`) cannot be trimmed; the typography components turn trim off for them.
 
-Roles (`src/preset/recipes/roles.ts`, components in `src/components/typography.tsx`): `Title` (levels 1 to 6, display face), `Text` (`body`, `small`, `caption`), `Label` (uppercase, tracked), `Numeral` (display face, for index numerals).
+## Primitives
+
+### Text
+
+Text is a small fixed set of primitives on the `xs` to `7xl` scale (`src/preset/recipes/roles.ts`, components in `src/components/typography.tsx`): `Title` (levels 1 to 6, display face), `Text` (`body`, `small`, `caption`), `Label` (uppercase, tracked), `Numeral` (display face, for index numerals).
 
 ```tsx
 <Title level={1}>Technique</Title>
 <Text variant="small">Ikkyo</Text>
-<Numeral>IV</Numeral>
+<Label>Chapter</Label>
 ```
 
-To change a role, edit its recipe; to add one, add a recipe, register it in `recipes/index.ts`, and add a thin component.
+A new text look is a variant on one of these, not a new role. Do not add a recipe named for content (`eyebrow`, `personName`, `term`, `entry`, `value`).
+
+```ts
+// src/preset/recipes/roles.ts (shape of a new variant)
+variants: {
+  tone: {
+    default: { color: 'fg.default' },
+    muted: { color: 'fg.muted' },
+  },
+  face: {
+    body: { fontFamily: 'body' },
+    display: { fontFamily: 'display' },
+  },
+}
+```
+
+### Layout
+
+Inside `packages/ui`, build layout from Panda patterns and re-export them as components, so apps get layout without writing styles.
+
+```tsx
+// src/components/layout.tsx
+export { Stack } from './stack';
+export { Wrap } from '../../styled-system/jsx';
+export { Grid } from '../../styled-system/jsx';
+export { Container } from '../../styled-system/jsx';
+```
+
+Pattern props take breakpoint objects directly. Put breakpoints on the prop (`columns={{ base: 1, md: 3 }}`), never inside a breakpoint key, or the pattern is skipped. If a pattern is wrapped in your own component, add the wrapper's name to the pattern's `jsx` option so extraction still sees its props:
+
+```ts
+// panda.config.ts
+patterns: {
+  extend: {
+    stack: { jsx: ['Stack', 'Section'] },
+  },
+},
+```
+
+Write a layout recipe only for what patterns do not cover, and use tokens only:
+
+```ts
+// src/preset/recipes/layout.ts
+import { defineRecipe } from '@pandacss/dev';
+
+/** Limits running text to a readable line length. */
+export const measure = defineRecipe({
+  className: 'measure',
+  staticCss: ['*'],
+  base: { maxWidth: 'prose' },
+});
+
+/** A picture with text beside it, stacked on narrow screens. */
+export const mediaRow = defineRecipe({
+  className: 'media-row',
+  base: {
+    display: 'flex',
+    flexDirection: { base: 'column', sm: 'row' },
+    alignItems: 'flex-start',
+    gap: '6',
+  },
+});
+```
+
+### Call-site mapping
+
+When content roles are useful, map them to variants in one file in the app. The styling layer never learns the words.
+
+```ts
+// apps/web/src/lib/roles.ts
+export const ROLE = {
+  eyebrow: { as: 'p', tone: 'muted' },
+  lede: { variant: 'body' },
+} as const;
+```
+
+```tsx
+<Label {...ROLE.eyebrow}>Chimes</Label>
+```
+
+Changing what an eyebrow looks like is one edit in this file.
 
 ## Colors
 
@@ -100,10 +197,20 @@ Installed in `src/components` with their recipes in `src/preset/recipes`: Accord
 
 ## Add a recipe
 
-1. `defineRecipe` (one element) or `defineSlotRecipe` (several parts) in `src/preset/recipes/`, using tokens only.
-2. Register it in `recipes/index.ts`.
-3. `pnpm codegen`. `staticCss: { recipes: '*' }` emits every variant, so props may be dynamic.
-4. Add the component wrapper and export it.
+1. Check order: a Panda pattern, then a variant on an existing recipe, then a new recipe.
+2. If the name describes content (credits, release, person, eyebrow), rename it by function or move it to the call-site mapping.
+3. `defineRecipe` (one element) or `defineSlotRecipe` (several parts) in `src/preset/recipes/`, using tokens only.
+4. Register it in `recipes/index.ts`.
+5. `pnpm codegen`. `staticCss: { recipes: '*' }` emits every variant, so props may be dynamic.
+6. Add the component wrapper and export it. The component name must match the recipe name or be listed in the recipe's `jsx` option, or extraction emits no CSS.
+
+## Site chrome
+
+`siteStrip`, `siteHeader`, `siteSheet` and `siteFooter` (`src/preset/recipes/chrome.ts`) with `SiteStrip`, `SiteHeader`, `SiteFooter` components. Header: brand left, nav, language select and theme toggle flush right via `tools`, on every page; the sheet carries the nav only, with kana numerals (い ろ は に ほ), a clip-path wipe and staggered items, scroll lock and Esc to close. Footer: links, then copyright left and the 501(c)(3) line right. Apps pass labels and links; they never style the shell. Chrome is the one place a content-shaped recipe is allowed. It uses primitives and tokens and adds no new looks.
+
+## Font sets
+
+Faces are pluggable. `src/preset/faces.ts` holds the sets, each a `display`, `body` and `mono` face with its Capsize metrics: `d` Shippori Mincho + Zen Kaku Gothic New (default), `e` Archivo, `f` Fraunces + Karla; mono is IBM Plex Mono in all. Pick one when Panda runs with `BAIKIKAI_FACES=d|e|f pnpm codegen`. Token names, CSS variable names (`--font-display`, `--font-body`, `--font-mono`), steps and line heights are the same in every set, so no component or recipe changes; only the trim and x-height adjustment are recomputed from the set's metrics. Apps load the matching files: `web` aliases `@/fonts/active` to `src/fonts/{d,e,f}.ts` from the same variable, so set it for both `codegen` and `next build`. To add a set, add its metrics to `faces.ts` and a static `next/font` module to each app.
 
 ## Commands
 
@@ -113,11 +220,8 @@ pnpm --filter @baikikai/ui test      # grid, type scale, trim and literal-length
 pnpm --filter @baikikai/ui dev       # watch mode
 ```
 
+## Open items
 
-## Font sets
-
-Faces are pluggable. `src/preset/faces.ts` holds the sets, each a `display`, `body` and `mono` face with its Capsize metrics: `d` Shippori Mincho + Zen Kaku Gothic New (default), `e` Archivo, `f` Fraunces + Karla; mono is IBM Plex Mono in all. Pick one when Panda runs with `BAIKIKAI_FACES=d|e|f pnpm codegen`. Token names, CSS variable names (`--font-display`, `--font-body`, `--font-mono`), steps and line heights are the same in every set, so no component or recipe changes; only the trim and x-height adjustment are recomputed from the set's metrics. Apps load the matching files: `web` aliases `@/fonts/active` to `src/fonts/{d,e,f}.ts` from the same variable, so set it for both `codegen` and `next build`. To add a set, add its metrics to `faces.ts` and a static `next/font` module to each app.
-
-## Site chrome
-
-`siteStrip`, `siteHeader`, `siteSheet` and `siteFooter` (`src/preset/recipes/chrome.ts`) with `SiteStrip`, `SiteHeader`, `SiteFooter` components. Header: brand left, nav, language select and theme toggle flush right via `tools`, on every page; the sheet carries the nav only, with kana numerals (い ろ は に ほ), a clip-path wipe and staggered items, scroll lock and Esc to close. Footer: links, then copyright left and the 501(c)(3) line right. Apps pass labels and links; they never style the shell.
+- `Numeral` becomes a `Text` or `Title` variant (display face, tabular figures).
+- `IndexRow` becomes a composition of a ruled list item, display text and muted small caps, kept as one component only if it is used in more than one place.
+- Audit `recipes/` for any recipe named for content and fold it into a variant.
