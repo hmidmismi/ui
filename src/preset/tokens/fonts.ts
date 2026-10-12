@@ -1,14 +1,14 @@
 import { defineTokens } from '@pandacss/dev';
-import { activeFaces, fontStack } from '../faces';
+import { themeVars } from '../../theme/toCss';
 
 /**
- * Font families, from the active set in `faces.ts`. Each reads the CSS variable that `next/font` sets in the app's root
- * layout, with the family name and a generic family as fallbacks. `sans` and `serif` alias `body` and `display` so
- * Panda utilities such as `fontFamily: 'serif'` use the brand faces.
+ * Font families. Each reads the theme's variable (`--ui-font-*`), which holds the app's loaded file if it set one, then
+ * the family name and a generic. `sans` and `serif` alias `body` and `display` so Panda utilities such as
+ * `fontFamily: 'serif'` use the theme's faces.
  */
-const DISPLAY = fontStack('display', activeFaces.display);
-const BODY = fontStack('body', activeFaces.body);
-const MONO = fontStack('mono', activeFaces.mono);
+const DISPLAY = `var(${themeVars.display})`;
+const BODY = `var(${themeVars.body})`;
+const MONO = `var(${themeVars.mono})`;
 
 export const fonts = defineTokens.fonts({
   display: { value: DISPLAY },

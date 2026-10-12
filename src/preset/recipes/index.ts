@@ -1,5 +1,6 @@
 import { absoluteCenter } from './absolute-center';
 import { accordion } from './accordion';
+import type { TypeSystem } from '../type-scale';
 import { announcement } from './announcement';
 import { badge } from './badge';
 import { button } from './button';
@@ -21,7 +22,7 @@ import { menu } from './menu';
 import { placeholder } from './placeholder';
 import { popover } from './popover';
 import { radioGroup } from './radio-group';
-import { label, numeral, text, title } from './roles';
+import { createRoles } from './roles';
 import { select } from './select';
 import { spinner } from './spinner';
 import { split } from './split';
@@ -30,43 +31,53 @@ import { tabs } from './tabs';
 import { toggleGroup } from './toggle-group';
 import { tooltip } from './tooltip';
 
-export const recipes = {
-  absoluteCenter,
-  badge,
-  button,
-  group,
-  icon,
-  input,
-  label,
-  layoutStack,
-  layoutWrap,
-  link,
-  numeral,
-  placeholder,
-  spinner,
-  surface,
-  text,
-  title,
-};
-
-export const slotRecipes = {
-  accordion,
-  checkbox,
-  crumbs,
-  dialog,
-  field,
-  filterGroup,
-  indexRow,
-  list,
-  popover,
-  radioGroup,
-  select,
-  footer,
-  header,
-  menu,
-  announcement,
-  split,
-  tabs,
-  toggleGroup,
-  tooltip,
-};
+/**
+ * Every recipe, built for a type system. The recipes that set text take the type system; the rest are static.
+ *
+ * @param t - the type system of a design.
+ * @returns the recipes and slot recipes.
+ */
+export function createRecipes(t: TypeSystem) {
+  const { label, numeral, text, title } = createRoles(t);
+  return {
+    recipes: {
+      absoluteCenter,
+      badge,
+      button,
+      group,
+      icon,
+      input,
+      label,
+      layoutStack,
+      layoutWrap,
+      link,
+      numeral,
+      placeholder: placeholder(t),
+      spinner,
+      surface,
+      text,
+      title,
+    },
+    slotRecipes: {
+      accordion,
+      checkbox,
+      crumbs: crumbs(t),
+      dialog,
+      field,
+      filterGroup: filterGroup(t),
+      indexRow: indexRow(t),
+      list,
+      popover,
+      radioGroup,
+      select,
+      footer: footer(t),
+      header: header(t),
+      menu: menu(t),
+      announcement: announcement(t),
+      split,
+      tabs,
+      toggleGroup,
+      tooltip,
+    },
+  };
+}

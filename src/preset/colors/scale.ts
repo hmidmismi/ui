@@ -1,8 +1,8 @@
 import { defineSemanticTokens } from '@pandacss/dev';
 
 /**
- * Color scales built from the brand primitives with `color-mix`, so every shade traces back to ink, paper, stone or
- * the accent. Each palette has 12 solid steps (1 lightest in light mode, 1 darkest in dark mode), 12 alpha steps
+ * Color scales built from the brand primitives with `color-mix`, so every shade traces back to the theme's ink, paper,
+ * line or accent. Each palette has 12 solid steps (1 lightest in light mode, 1 darkest in dark mode), 12 alpha steps
  * (`a1` to `a12`) and the Park UI component variants (`solid`, `subtle`, `surface`, `outline`, `plain`) that recipes
  * read through `colorPalette`.
  */
@@ -44,9 +44,9 @@ export function mix(color: string, percent: number, into = 'transparent') {
 /** A token reference. */
 export const ref = (path: string) => `{colors.${path}}`;
 
-const INK = ref('ink');
-const PAPER = ref('paper');
-const STONE = ref('stone');
+const INK = ref('pigment.ink');
+const PAPER = ref('pigment.paper');
+const STONE = ref('pigment.line');
 
 function steps(light: string[], dark: string[]) {
   return Object.fromEntries(
@@ -69,8 +69,8 @@ function alphas(light: string, dark: string) {
 }
 
 /**
- * The neutral scale: paper to stone to ink in light mode, ink to paper in dark mode. Step 1 is the canvas, step 7 is
- * stone (borders), step 12 is ink (text).
+ * The neutral scale: paper to line to ink in light mode, ink to paper in dark mode. Step 1 is the canvas, step 7 is
+ * the line color (borders), step 12 is ink (text).
  */
 export function neutralScale() {
   const light = [

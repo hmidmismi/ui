@@ -1,7 +1,7 @@
 import { defineSemanticTokens } from '@pandacss/dev';
 import { neutralScale, ref, tonalScale, variants } from './scale';
 
-const onSolid = { base: ref('paper'), _dark: ref('ink') };
+const onSolid = { base: ref('pigment.paper'), _dark: ref('pigment.ink') };
 
 /** The neutral palette: canvas, borders and text. `colorPalette: gray` is the page default. */
 const gray = defineSemanticTokens.colors({
@@ -10,21 +10,21 @@ const gray = defineSemanticTokens.colors({
     name: 'gray',
     solid: 12,
     solidHover: 11,
-    solidFg: { base: ref('paper'), _dark: ref('ink') },
+    solidFg: { base: ref('pigment.paper'), _dark: ref('pigment.ink') },
     text: 12,
   }),
 });
 
-/** The accent palette: indigo, with light indigo as the dark-mode solid. */
+/** The accent palette: the theme's accent, with its soft tint as the dark-mode solid. */
 const accent = defineSemanticTokens.colors({
-  ...tonalScale('indigo', 'indigo.light'),
+  ...tonalScale('pigment.accent', 'pigment.accentSoft'),
   DEFAULT: { value: { base: '{colors.accent.9}', _dark: '{colors.accent.9}' } },
   ...variants({ name: 'accent', solid: 9, solidHover: 10, solidFg: onSolid, text: 11 }),
 });
 
 /** The error palette. */
 const red = defineSemanticTokens.colors({
-  ...tonalScale('red', 'red.light'),
+  ...tonalScale('pigment.danger', 'pigment.dangerSoft'),
   ...variants({ name: 'red', solid: 9, solidHover: 10, solidFg: onSolid, text: 11 }),
 });
 

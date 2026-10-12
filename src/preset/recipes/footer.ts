@@ -1,9 +1,10 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { labelCaps, textRole } from '../type-scale';
+import type { TypeSystem } from '../type-scale';
 import { hoverLift } from './hover-lift';
 
 /** The footer: Contact, Accessibility and Instagram links, then copyright left and the 501(c)(3) line right. */
-export const footer = defineSlotRecipe({
+export const footer = ({ labelCaps, textRole }: TypeSystem) =>
+  defineSlotRecipe({
   className: 'footer',
   slots: ['root', 'inner', 'utility', 'utilityLink', 'meta', 'legal'],
   base: {

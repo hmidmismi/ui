@@ -1,11 +1,12 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { labelCaps } from '../type-scale';
+import type { TypeSystem } from '../type-scale';
 
 /**
  * One row of an index list: a Roman numeral, a name in the display face with an optional kanji, and a small caps
  * aside. Rows are big, ruled and stretch to share the height of their list. Hovering slides the row's content in.
  */
-export const indexRow = defineSlotRecipe({
+export const indexRow = ({ labelCaps }: TypeSystem) =>
+  defineSlotRecipe({
   className: 'index-row',
   slots: ['root', 'numeral', 'label', 'kanji', 'aside'],
   base: {

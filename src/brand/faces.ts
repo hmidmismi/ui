@@ -4,13 +4,10 @@ import ibmPlexMono from '@capsizecss/metrics/iBMPlexMono';
 import karla from '@capsizecss/metrics/karla';
 import shipporiMincho from '@capsizecss/metrics/shipporiMincho';
 import zenKakuGothicNew from '@capsizecss/metrics/zenKakuGothicNew';
+import type { Face } from '../theme/types';
 
-/** A face: its Google Fonts family name, the generic fallback and Capsize's vertical metrics for the file. */
-export type FaceSpec = {
-  family: string;
-  generic: 'serif' | 'sans-serif' | 'monospace';
-  metrics: typeof shipporiMincho;
-};
+/** A face in a set: its Google Fonts family name, the generic fallback and Capsize's vertical metrics for the file. */
+export type FaceSpec = Pick<Face, 'family' | 'generic' | 'metrics'>;
 
 /** The three roles a set fills. Components ask for a role, never for a family. */
 export type FaceSet = { display: FaceSpec; body: FaceSpec; mono: FaceSpec };
@@ -20,8 +17,8 @@ const mono: FaceSpec = { family: 'IBM Plex Mono', generic: 'monospace', metrics:
 /**
  * The font sets. A set is one choice of display, body and mono face. Token names (`display`, `body`, `mono`) and CSS
  * variable names (`--font-display`, `--font-body`, `--font-mono`) are the same in every set, so swapping a set changes
- * no component, recipe or app markup: the app loads the set's files into those variables and Panda is generated with
- * the set's metrics.
+ * no component, recipe or app markup: the app loads the set's files into those variables, and the set's metrics reach
+ * the type system through the theme's variables.
  *
  * - `d` Shippori Mincho + Zen Kaku Gothic New. The default.
  * - `e` Archivo for both roles.
@@ -61,17 +58,9 @@ export function resolveFaceSet(name: string | undefined): FaceSetName {
   return key in faceSets ? (key as FaceSetName) : DEFAULT_FACE_SET;
 }
 
-/** The active set. Chosen when Panda runs, by `BAIKIKAI_FACES=d|e|f`; `d` if unset. */
-export const activeFaceSetName = resolveFaceSet(process.env.BAIKIKAI_FACES);
-export const activeFaces: FaceSet = faceSets[activeFaceSetName];
-
 /**
- * A CSS font stack for a face: the `next/font` variable, the family name, then the generic.
- *
- * @param role - the role, which names the CSS variable.
- * @param face - the face.
- * @returns the `font-family` value.
+ * The set the Baikikai theme uses. Chosen when Panda runs, by `UI_FACES=d|e|f` (`BAIKIKAI_FACES` still works); `d` if
+ * unset.
  */
-export function fontStack(role: keyof FaceSet, face: FaceSpec) {
-  return `var(--font-${role}), "${face.family}", ${face.generic}`;
-}
+export const activeFaceSetName = resolveFaceSet(process.env.UI_FACES ?? process.env.BAIKIKAI_FACES);
+export const activeFaces: FaceSet = faceSets[activeFaceSetName];

@@ -1,8 +1,9 @@
 import { defineRecipe } from '@pandacss/dev';
-import { labelCaps } from '../type-scale';
+import type { TypeSystem } from '../type-scale';
 
 /** A flat field standing in for a video or photo until media is attached. */
-export const placeholder = defineRecipe({
+export const placeholder = ({ labelCaps }: TypeSystem) =>
+  defineRecipe({
   className: 'placeholder',
   base: {
     alignItems: 'center',

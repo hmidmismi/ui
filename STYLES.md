@@ -80,7 +80,7 @@ Faces (set D, the default): `display` Shippori Mincho (titles), `body` Zen Kaku 
 
 ## Trim (Capsize)
 
-Text roles remove the space above the capitals and below the baseline with negative margins on `::before` / `::after`, computed per face and step from `@capsizecss/metrics` (`src/preset/font-metrics.ts`). The box is then exactly as tall as its letters and the gap between blocks is the gap you see. Sizes are also adjusted per face so the lowercase x-height matches the body face at the same step (display x 0.998, mono x 0.928).
+Text roles remove the space above the capitals and below the baseline with negative margins on `::before` / `::after`. The margins are `calc()` expressions over the theme's per-face variables (derived from Capsize metrics in `theme/toCss.ts`; the formula is `trimValues` in `preset/type-scale.ts`, tested against Capsize itself), so they follow whatever face the theme sets. The box is then exactly as tall as its letters and the gap between blocks is the gap you see. Sizes are also adjusted per face (`--ui-<role>-adj`) so the lowercase x-height matches the body face at the same step.
 
 - Do not put margin on a trimmed element; use padding, which is measured from the cap and baseline edges.
 - Inline elements (`span`, `strong`, `a`, `small`) cannot be trimmed; the typography components turn trim off for them.
@@ -181,10 +181,10 @@ Changing what an eyebrow looks like is one edit in this file.
 
 ## Colors
 
-Primitives (`tokens/colors.ts`): `ink #14171C`, `paper #ECEDE8`, `stone #C4C8C0`, `indigo #2C3E72` with `indigo.light #9AA7D4`, `red #B4432F`. Every other shade is a `color-mix` of these (`colors/scale.ts`), so the palette cannot drift from the brand.
+The raw inputs are the theme's palette (`src/theme/`): `ink`, `paper`, `line`, `accent`, `accentSoft`, `danger`, `dangerSoft`. They are written as CSS variables on `:root` (`--ui-ink`, `--ui-paper`, ...) and the Panda tokens `colors.pigment.*` only reference those variables. Every other shade is a `color-mix` of them (`colors/scale.ts`), so the palette cannot drift and a theme change needs no rebuild: load a project's `theme.css` (from `toCss(theme)`) after `styles.css`. The Baikikai theme (`src/brand/palette.ts`) is ink `#14171C`, paper `#ECEDE8`, line `#C4C8C0`, accent `#2C3E72` with soft `#9AA7D4`, danger `#B4432F` with soft `#E3A596`; the neutral default is in `src/theme/neutral.ts`.
 
-- `gray`: paper (1, the canvas) to stone (7, borders) to ink (12, text) in light mode; ink to paper in dark mode.
-- `accent` (alias `brand`): indigo; step 9 is `indigo` in light mode and `indigo.light` in dark mode.
+- `gray`: paper (1, the canvas) to line (7, borders) to ink (12, text) in light mode; ink to paper in dark mode.
+- `accent` (alias `brand`): the theme accent; step 9 is `accent` in light mode and `accentSoft` in dark mode.
 - `red`: errors.
 - Each palette has steps `1` to `12`, alpha steps `a1` to `a12`, and the Park UI variants `solid`, `subtle`, `surface`, `outline`, `plain` that recipes read through `colorPalette`.
 - Semantic: `canvas`, `fg.default|muted|subtle|disabled`, `border` (`muted`, `emphasized`), `error`, `shadow`.
@@ -210,14 +210,49 @@ Installed in `src/components` with their recipes in `src/preset/recipes`: Accord
 
 ## Font sets
 
-Faces are pluggable. `src/preset/faces.ts` holds the sets, each a `display`, `body` and `mono` face with its Capsize metrics: `d` Shippori Mincho + Zen Kaku Gothic New (default), `e` Archivo, `f` Fraunces + Karla; mono is IBM Plex Mono in all. Pick one when Panda runs with `BAIKIKAI_FACES=d|e|f pnpm codegen`. Token names, CSS variable names (`--font-display`, `--font-body`, `--font-mono`), steps and line heights are the same in every set, so no component or recipe changes; only the trim and x-height adjustment are recomputed from the set's metrics. Apps load the matching files: `web` aliases `@/fonts/active` to `src/fonts/{d,e,f}.ts` from the same variable, so set it for both `codegen` and `next build`. To add a set, add its metrics to `faces.ts` and a static `next/font` module to each app.
+Faces belong to the theme. `src/brand/faces.ts` holds this brand's sets, each a `display`, `body` and `mono` face with its Capsize metrics: `d` Shippori Mincho + Zen Kaku Gothic New (default), `e` Archivo, `f` Fraunces + Karla; mono is IBM Plex Mono in all. `UI_FACES=d|e|f pnpm codegen` picks which set the Baikikai theme uses (`BAIKIKAI_FACES` still works). The `fonts` tokens read `--ui-font-*`, which hold `var(<app variable>, "<Family>", <generic>)`: the app's `--font-display|body|mono` first, then the family name and a generic inside the `var()` fallback, so the stack stays valid when an app sets no variable. Because the metrics are variables too, a theme that swaps faces at runtime gets the correct x-height matching and trim. Apps load the matching files: `web` aliases `@/fonts/active` to `src/fonts/{d,e,f}.ts` from the same variable, so set it for both `codegen` and `next build`. To add a set, add its metrics to `brand/faces.ts` and a static `next/font` module to each app.
+
+## Design and theme
+
+One package, no brand inside the machinery. Structure and look are separate typed objects:
+
+- **`src/design/`: `Design`** is the structure (grid baseline, unit and root size; type base, ratio and minimum leading; motion durations). It is computed into the tokens and into the text roles inside recipes when Panda runs, so it is fixed per build. `design/default.ts` is the 5px / 10px / 16px / 1.2 default. Every recipe that sets text is a function of the design's type system (`createTypeSystem(design)`, `createRecipes(type)`), so a different grid or type scale reaches all of them.
+- **`src/theme/`: `Theme`** is the look: the palette and the three faces **with their font metrics**. It becomes CSS variables (`--ui-*`), including the per-face numbers the type system reads (`--ui-<role>-adj|cap|base|normal`), so palette, faces, x-height matching and trim all change at runtime and per part of a site. `toCss(theme, selector?)` writes a theme as CSS text. `theme/neutral.ts` is the neutral default (Inter and IBM Plex Mono).
+- **`src/brand/`** is the only place this repo's brand lives: `palette.ts` (the five colors, importable alone), `faces.ts` (font sets `d|e|f`) and `baikikai.ts` (the theme `panda.config.ts` builds with). A project in another repo would have its own `theme.ts` and none of `brand/`.
+- **`createPreset(design?, theme?)`** (`src/preset/index.ts`) builds the Panda preset; `preset` is the neutral default. `panda.config.ts` calls `createPreset(design, baikikai)`.
+- A project supplies a `theme.ts` and loads its `theme.css` after `styles.css`. Nothing else is needed, and Panda does not run in the project. `@baikikai/ui/theme`, `/design`, `/brand` and `/palette` export the data without React or Panda.
+- Header, menu, footer and announcement are slot shells; apps pass the content.
+
+**Playground:** `pnpm --filter @baikikai/ui playground` (Vite, `playground/`) shows the type scale, spacing, color scales and components, with buttons for dark mode, the baseline grid overlay and three themes (neutral, baikikai, warm). `?dark&grid&theme=warm` in the URL sets them. `playground:build` builds it.
+
+**Tests:** `pnpm test` runs the unit tests (grid, scale, design, theme, Capsize formula) and, when Chrome and a generated `styles.css` exist, the browser tests. `pnpm test:browser` runs `codegen` first. The browser tests use `playwright-core` with the installed Chrome (`CHROME_PATH` overrides the macOS default) and check, in a real browser, that every text role's size, line height and trim equal Capsize's numbers for the built-in theme and for a theme loaded at runtime, that every line height is on the baseline, that text contrast is at least 7:1 (muted 4.5:1) in light and dark for two themes, and that a runtime theme re-colors the page and falls back to its family when the app sets no font variable.
+
+Not done yet: nothing in the plan above; open follow-ups are a color-contrast check for every palette step and visual regression screenshots.
+
+## Other frameworks
+
+Expected to work, not yet tested; check Panda's current framework guides before relying on this.
+
+- The preset, tokens and generated CSS are framework-agnostic.
+- **TanStack Start (Vite):** replace `next/font` with a loader that sets `--font-display`, `--font-body` and `--font-mono`; pass the router's link to `as={...}` (`IndexRow`, `Link`).
+- **Astro:** render the React components through `@astrojs/react`; interactive ones (Menu, Dialog, Select, Popover, Tabs) need a client directive.
+- `'use client'` is harmless outside Next. Components import the generated system by relative path, so any bundler resolves it.
+
+## Rules proven in the comps
+
+- Every page needs `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`.
+- Class names in the system must not be generic (`.pi`, `.go`, `.x`); a clash hides content.
+- One variable drives anything that must move together (see Header stack in `handoff.md`); never animate the pieces separately.
+- Touch: iOS needs a touch handler for `:active`; hover states are not available on touch, so every hover state needs a pressed or focus equivalent.
 
 ## Commands
 
 ```sh
 pnpm --filter @baikikai/ui codegen   # panda codegen + cssgen -> styled-system/, styles.css
-pnpm --filter @baikikai/ui test      # grid, type scale, trim and literal-length checks
+pnpm --filter @baikikai/ui test      # grid, type scale, trim formula, design, theme, literal-length checks (+ browser tests if Chrome and styles.css exist)
+pnpm --filter @baikikai/ui test:browser  # codegen, then the Chrome tests
 pnpm --filter @baikikai/ui dev       # watch mode
+pnpm --filter @baikikai/ui playground  # component sheet on http://localhost:5190
 ```
 
 ## Open items

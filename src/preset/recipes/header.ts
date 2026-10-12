@@ -1,9 +1,10 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { labelCaps, textRole } from '../type-scale';
+import type { TypeSystem } from '../type-scale';
 import { hoverLift } from './hover-lift';
 
 /** The header: brand left, navigation, then language select and theme toggle flush right. */
-export const header = defineSlotRecipe({
+export const header = ({ labelCaps, textRole }: TypeSystem) =>
+  defineSlotRecipe({
   className: 'header',
   slots: ['root', 'inner', 'brand', 'nav', 'navLink', 'utility', 'control', 'burger', 'bar'],
   base: {

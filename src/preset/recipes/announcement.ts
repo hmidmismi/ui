@@ -1,9 +1,10 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { textRole } from '../type-scale';
+import type { TypeSystem } from '../type-scale';
 import { hoverLift } from './hover-lift';
 
 /** The announcement bar above the header (the anti-racism statement). */
-export const announcement = defineSlotRecipe({
+export const announcement = ({ textRole }: TypeSystem) =>
+  defineSlotRecipe({
   className: 'announcement',
   slots: ['root', 'text', 'link'],
   base: {

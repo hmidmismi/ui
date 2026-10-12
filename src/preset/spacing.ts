@@ -1,5 +1,6 @@
 import { defineTokens } from '@pandacss/dev';
-import { baselines } from './scale';
+import { type Design, design } from '../design';
+import { createScale } from './scale';
 
 /**
  * The spacing scale. A token's name is its number of 5px baselines, so `spacing.4` is 20px. Even names are the 10px
@@ -18,9 +19,28 @@ import { baselines } from './scale';
  */
 const STEPS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 24, 32, 40, 48, 64] as const;
 
-/** The scale as tokens, shared by `spacing` and `sizes`. */
-export const scaleValues = Object.fromEntries(
-  STEPS.map((count) => [String(count), { value: count === 0 ? '0px' : baselines(count) }])
-);
+/**
+ * The scale as token values for a design, shared by `spacing` and `sizes`.
+ *
+ * @param d - the design (only its grid is read).
+ * @returns the values, keyed by baseline count.
+ */
+export function scaleValuesFor(d: Pick<Design, 'grid'>) {
+  const { baselines } = createScale(d);
+  return Object.fromEntries(
+    STEPS.map((count) => [String(count), { value: count === 0 ? '0px' : baselines(count) }])
+  );
+}
 
-export const spacing = defineTokens.spacing(scaleValues);
+/** The scale as tokens for the default design. */
+export const scaleValues = scaleValuesFor(design);
+
+/**
+ * The spacing tokens for a design.
+ *
+ * @param d - the design.
+ * @returns the tokens.
+ */
+export const spacingFor = (d: Pick<Design, 'grid'>) => defineTokens.spacing(scaleValuesFor(d));
+
+export const spacing = spacingFor(design);

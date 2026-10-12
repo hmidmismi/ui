@@ -1,21 +1,22 @@
 import { defineTokens } from '@pandacss/dev';
+import { themeVars } from '../../theme/toCss';
 import { black, white } from './black-white';
 
 /**
- * The brand primitives. Everything else is a mix of these (see `../colors/`): `ink` and `paper` are the text and canvas
- * colors, `stone` the line color, `indigo` the accent with `indigo.light` as its dark-mode solid, `red` the error hue.
+ * The raw inputs of the palette, as references to the theme's CSS variables. Every other shade is a mix of these (see
+ * `../colors/`), so changing a theme variable re-themes the whole system with no rebuild. `ink` and `paper` are the
+ * text and canvas, `line` the rule color, `accent` the accent with `accentSoft` as its dark-mode solid, `danger` the
+ * error hue.
  */
 export const colors = defineTokens.colors({
-  ink: { value: '#14171C' },
-  paper: { value: '#ECEDE8' },
-  stone: { value: '#C4C8C0' },
-  indigo: {
-    DEFAULT: { value: '#2C3E72' },
-    light: { value: '#9AA7D4' },
-  },
-  red: {
-    DEFAULT: { value: '#B4432F' },
-    light: { value: '#E3A596' },
+  pigment: {
+    ink: { value: `var(${themeVars.ink})` },
+    paper: { value: `var(${themeVars.paper})` },
+    line: { value: `var(${themeVars.line})` },
+    accent: { value: `var(${themeVars.accent})` },
+    accentSoft: { value: `var(${themeVars.accentSoft})` },
+    danger: { value: `var(${themeVars.danger})` },
+    dangerSoft: { value: `var(${themeVars.dangerSoft})` },
   },
   black,
   white,

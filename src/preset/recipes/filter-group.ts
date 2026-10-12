@@ -1,7 +1,8 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { labelCaps } from '../type-scale';
+import type { TypeSystem } from '../type-scale';
 
-export const filterGroup = defineSlotRecipe({
+export const filterGroup = ({ labelCaps }: TypeSystem) =>
+  defineSlotRecipe({
   className: 'filter-group',
   slots: ['root', 'label'],
   base: {

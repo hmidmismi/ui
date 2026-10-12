@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { recipes, slotRecipes } from './recipes';
+import { design } from '../design';
+import { baikikai } from '../brand';
+import { xHeightAdjust } from '../theme';
+import { createRecipes } from './recipes';
 import { BASELINE, ROOT_SIZE } from './scale';
 import { scaleValues } from './spacing';
 import {
@@ -12,8 +15,11 @@ import {
   stepSize,
   textSize,
   textTrim,
-  xHeightAdjust,
+  trimValues,
+  createTypeSystem,
 } from './type-scale';
+
+const { recipes, slotRecipes } = createRecipes(createTypeSystem(design));
 
 const names = Object.keys(STEPS) as StepName[];
 const px = (rem: string) => Number.parseFloat(rem) * ROOT_SIZE;
@@ -55,26 +61,27 @@ describe('type scale', () => {
   });
 
   it('matches x-heights to the body face', () => {
-    expect(xHeightAdjust('body')).toBe(1);
-    expect(xHeightAdjust('display')).toBeGreaterThan(0.5);
-    expect(xHeightAdjust('mono')).toBeGreaterThan(0.5);
+    const { body, display, mono } = baikikai.faces;
+    expect(xHeightAdjust(body.metrics, body.metrics)).toBe(1);
+    expect(xHeightAdjust(body.metrics, display.metrics)).toBeGreaterThan(0.5);
+    expect(xHeightAdjust(body.metrics, mono.metrics)).toBeGreaterThan(0.5);
   });
 
-  it('trims every face and step', () => {
+  it('trims every face and step above and below', () => {
     for (const face of ['display', 'body', 'mono'] as const) {
+      const metrics = baikikai.faces[face].metrics;
+      const adjust = xHeightAdjust(baikikai.faces.body.metrics, metrics);
       for (const name of names) {
-        const trim = textTrim(face, name) as Record<
-          string,
-          { marginBottom?: string; marginTop?: string }
-        >;
-        expect(
-          Number.parseFloat(trim['&::before']?.marginBottom ?? 'NaN'),
-          `${face} ${name}`
-        ).toBeLessThan(0);
-        expect(
-          Number.parseFloat(trim['&::after']?.marginTop ?? 'NaN'),
-          `${face} ${name}`
-        ).toBeLessThan(0);
+        const { capHeightTrim, baselineTrim } = trimValues(
+          metrics,
+          stepSize(name) * adjust,
+          stepLineHeight(name)
+        );
+        expect(capHeightTrim, `${face} ${name}`).toBeLessThan(0);
+        expect(baselineTrim, `${face} ${name}`).toBeLessThan(0);
+        const css = textTrim(face, name) as Record<string, Record<string, string>>;
+        expect(css['&::before']?.marginBottom, `${face} ${name}`).toMatch(/^calc\(/);
+        expect(css['&::after']?.marginTop, `${face} ${name}`).toMatch(/^calc\(/);
       }
     }
   });
@@ -98,7 +105,8 @@ describe('spacing scale', () => {
 });
 
 describe('recipes', () => {
-  const ALLOWED = new Set(['1px', '-1px', '2px', '0px', '0.5px']);
+  // `1rem` is the unit that turns a unitless size into rem inside the generated calc().
+  const ALLOWED = new Set(['1px', '-1px', '2px', '0px', '0.5px', '1rem']);
   // Font sizes and line heights come from the type scale through `textSize`, never typed by hand.
   for (const face of ['display', 'body', 'mono'] as const) {
     for (const name of names) {

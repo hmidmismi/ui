@@ -1,4 +1,9 @@
 {
   "extends": "@hmidmismi/tsconfig/tsconfig.base.json",
-  "include": ["src", "panda.config.ts", "styled-system"]
+  "include": [
+    "src",
+    "panda.config.ts",
+    "styled-system",
+    "playground"
+  ]
 }

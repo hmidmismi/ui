@@ -1,8 +1,9 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { labelCaps } from '../type-scale';
+import type { TypeSystem } from '../type-scale';
 
 /** A breadcrumb trail: small caps links separated by slashes, the current page last and unlinked. */
-export const crumbs = defineSlotRecipe({
+export const crumbs = ({ labelCaps }: TypeSystem) =>
+  defineSlotRecipe({
   className: 'crumbs',
   slots: ['root', 'list', 'item', 'link', 'separator'],
   base: {

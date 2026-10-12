@@ -1,5 +1,5 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { labelCaps, textRole } from '../type-scale';
+import type { TypeSystem } from '../type-scale';
 import { hoverLift } from './hover-lift';
 
 /** Stagger: item n waits 120ms plus 40ms per item before it rises, while the menu is open. */
@@ -8,7 +8,8 @@ const stagger = Object.fromEntries(
 );
 
 /** The full-screen menu on small screens: wipes down, items stagger in, kana numerals lead each item. */
-export const menu = defineSlotRecipe({
+export const menu = ({ labelCaps, textRole }: TypeSystem) =>
+  defineSlotRecipe({
   className: 'menu',
   slots: ['root', 'list', 'item', 'numeral', 'label', 'utility', 'utilityLink'],
   base: {

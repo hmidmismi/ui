@@ -1,13 +1,16 @@
 import { defineTokens } from '@pandacss/dev';
-import { rem } from '../scale';
-import { scaleValues } from '../spacing';
+import { type Design, design } from '../../design';
+import { createScale } from '../scale';
+import { scaleValuesFor } from '../spacing';
 
 /**
  * Sizes: the spacing scale (for control heights, icons and boxes) plus named widths for layout and dialogs. The
  * named widths are horizontal measures, so they are on the 10px scale but not tied to the vertical rhythm.
  */
-export const sizes = defineTokens.sizes({
-  ...scaleValues,
+export const sizesFor = (d: Pick<Design, 'grid'>) => {
+  const { rem } = createScale(d);
+  return defineTokens.sizes({
+  ...scaleValuesFor(d),
   xs: { value: rem(320) },
   sm: { value: rem(380) },
   md: { value: rem(440) },
@@ -23,4 +26,7 @@ export const sizes = defineTokens.sizes({
   prose: { value: '65ch' },
   /** The page's centered inset. */
   inset: { value: rem(1120) },
-});
+  });
+};
+
+export const sizes = sizesFor(design);
