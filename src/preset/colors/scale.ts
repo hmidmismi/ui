@@ -133,6 +133,16 @@ export function tonalScale(solid: string, soft: string) {
   return { ...steps(light, dark), ...alphas(S, L) };
 }
 
+/** What {@link explicitScale} needs: the steps, and which of them play which part in the Park UI variants. */
+export type ExplicitScale = Omit<VariantOptions, 'name'> & {
+  /** The 12 steps in light mode: 1 is the lightest, 12 the darkest. */
+  light: readonly string[];
+  /** The 12 steps in dark mode: 1 is the darkest, 12 the lightest. */
+  dark: readonly string[];
+  /** The 12 alpha steps (`a1` to `a12`) in light mode and dark mode. Left out, they are mixed from step 12. */
+  alpha?: { light: readonly string[]; dark: readonly string[] };
+};
+
 type VariantOptions = {
   /** The palette's token name, such as `gray` or `accent`. */
   name: string;
@@ -180,4 +190,35 @@ export function variants({ name, solid, solidHover, solidFg, text }: VariantOpti
       fg: { DEFAULT: fg },
     },
   });
+}
+
+/**
+ * A palette from steps a project chose by hand: the 12 steps, the 12 alpha steps and the Park UI variants, in the same
+ * shape as the generated palettes, so a project's own scale plugs into a theme's `colors` like any other.
+ *
+ * @param name - the palette's token name, such as `gray` or `accent`.
+ * @param spec - the steps and which of them the variants use.
+ * @returns the palette's semantic tokens.
+ * @throws when `light`, `dark` or `alpha` do not have 12 entries.
+ */
+export function explicitScale(name: string, spec: ExplicitScale) {
+  const { light, dark, alpha, ...roles } = spec;
+  for (const [label, list] of Object.entries({ light, dark, ...alpha })) {
+    if (list.length !== STEP_NAMES.length) {
+      throw new Error(`Scale "${name}" ${label} has ${list.length} entries, not ${STEP_NAMES.length}.`);
+    }
+  }
+  const last = STEP_NAMES.length - 1;
+  return {
+    ...steps([...light], [...dark]),
+    ...(alpha
+      ? Object.fromEntries(
+          ALPHA_NAMES.map((alphaName, index) => [
+            alphaName,
+            { value: { base: alpha.light[index] as string, _dark: alpha.dark[index] as string } } as Step,
+          ])
+        )
+      : alphas(light[last] as string, dark[last] as string)),
+    ...variants({ name, ...roles }),
+  };
 }

@@ -1,6 +1,6 @@
 # Styles
 
-`@baikikai/ui` owns all look and feel: the Panda preset, tokens, palettes, type scale, recipes and components. Apps import components and variants. They never write styles.
+`@hmidmismi/ui` owns all look and feel: the Panda preset, tokens, palettes, type scale, recipes and components. Apps import components and variants. They never write styles.
 
 Paths are from `packages/ui`. After any theme change run `pnpm codegen` (Panda codegen + cssgen). Tests: `pnpm test`.
 
@@ -18,11 +18,11 @@ Styling names say how something looks or lays out, never what content it holds. 
 
 ## Rules
 
-- No ad hoc styles in app code: no `css()`, `style`, raw `className` strings or style props. Use `@baikikai/ui` components and their variants.
+- No ad hoc styles in app code: no `css()`, `style`, raw `className` strings or style props. Use `@hmidmismi/ui` components and their variants.
 - No literal lengths in recipes. Spacing, sizes, radii, rule widths and tracking are tokens. A look used twice is a variant first, then a fragment or a recipe. `src/preset/rhythm.test.ts` fails on a stray `px` or `rem`.
 - Font sizes and line heights come only from `textSize` / `textTrim` in `type-scale.ts`, never typed by hand.
 - Never reset browser defaults in a recipe; preflight already does.
-- Components that call `createStyleContext` must start with `'use client'` or server pages cannot import them (a typecheck will not catch it; `next build` will). Components import the generated system by relative path (`../../styled-system/...`), so any bundler resolves it. Apps import only `@baikikai/ui` and `@baikikai/ui/styles.css`.
+- Components that call `createStyleContext` must start with `'use client'` or server pages cannot import them (a typecheck will not catch it; `next build` will). Components import the generated system by relative path (`../../styled-system/...`), so any bundler resolves it. Apps import only `@hmidmismi/ui` and `@hmidmismi/ui/styles.css`.
 - Repeated logic goes in a helper file; repeated styling goes in a variant, recipe or primitive.
 
 ## The grid
@@ -74,7 +74,7 @@ export const MIN_LEADING = 1.3;
 | 6xl | 57.3px | 75px | 1.31 |
 | 7xl | 68.8px | 90px | 1.31 |
 
-Every line height is a multiple of 5px: the leading ratio is 1.5 at body size and below, falls 0.05 per step to a floor of 1.1, is rounded to a baseline, and is raised if rounding left it under `MIN_LEADING`. `fontSizes`, `lineHeights` and `textStyles` (`xs` to `7xl`, plus `label`) are generated from this one model. Tracking tightens from `4xl` up.
+Every line height is a multiple of 5px: the leading ratio is `design.type.leading.body` (1.5) at body size and below, falls by `falloff` (0.05) per step, is clamped to `floor` (1.3), is rounded to a baseline, and is raised if rounding left it under the floor. The three numbers are the rhythm a `Design` plugs in. `fontSizes`, `lineHeights` and `textStyles` (`xs` to `7xl`, plus `label`) are generated from this one model. Tracking tightens from `4xl` up.
 
 Faces (set D, the default): `display` Shippori Mincho (titles), `body` Zen Kaku Gothic New (interface and prose), `mono` IBM Plex Mono (code and data only, never labels, eyebrows or breadcrumbs). They load through `next/font` in the app's root layout into `--font-display`, `--font-body`, `--font-mono`; the `fonts` tokens read those variables.
 
@@ -216,18 +216,20 @@ Faces belong to the theme. `src/brand/faces.ts` holds this brand's sets, each a 
 
 One package, no brand inside the machinery. Structure and look are separate typed objects:
 
-- **`src/design/`: `Design`** is the structure (grid baseline, unit and root size; type base, ratio and minimum leading; motion durations). It is computed into the tokens and into the text roles inside recipes when Panda runs, so it is fixed per build. `design/default.ts` is the 5px / 10px / 16px / 1.2 default. Every recipe that sets text is a function of the design's type system (`createTypeSystem(design)`, `createRecipes(type)`), so a different grid or type scale reaches all of them.
-- **`src/theme/`: `Theme`** is the look: the palette and the three faces **with their font metrics**. It becomes CSS variables (`--ui-*`), including the per-face numbers the type system reads (`--ui-<role>-adj|cap|base|normal`), so palette, faces, x-height matching and trim all change at runtime and per part of a site. `toCss(theme, selector?)` writes a theme as CSS text. `theme/neutral.ts` is the neutral default (Inter and IBM Plex Mono).
+- **`src/design/`: `Design`** is the structure (grid baseline, unit and root size; type base, ratio and leading (body, falloff, floor); motion durations). It is computed into the tokens and into the text roles inside recipes when Panda runs, so it is fixed per build. `design/default.ts` is the 5px / 10px / 16px / 1.2 default. Every recipe that sets text is a function of the design's type system (`createTypeSystem(design)`, `createRecipes(type)`), so a different grid or type scale reaches all of them.
+- **`src/theme/`: `Theme`** is the look (colors come as a seven-color `palette` the system generates every scale from, or as the project's own `colors`: a tree of Panda semantic tokens with the roles the components read, `gray`, `accent`, `red`, `canvas`, `fg`, `border`, `error` and `shadow`, plus any scales of its own; `explicitScale(name, { light, dark, ... })` builds a hand-picked 12-step scale with its alpha steps and Park UI variants; a face may list its `fallbacks`, such as the system fonts that carry symbols its file lacks): the palette and the three faces **with their font metrics**. It becomes CSS variables (`--ui-*`), including the per-face numbers the type system reads (`--ui-<role>-adj|cap|base|normal`), so palette, faces, x-height matching and trim all change at runtime and per part of a site. `toCss(theme, selector?)` writes a theme as CSS text. `theme/neutral.ts` is the neutral default (Inter and IBM Plex Mono).
 - **`src/brand/`** is the only place this repo's brand lives: `palette.ts` (the five colors, importable alone), `faces.ts` (font sets `d|e|f`) and `baikikai.ts` (the theme `panda.config.ts` builds with). A project in another repo would have its own `theme.ts` and none of `brand/`.
 - **`createPreset(design?, theme?)`** (`src/preset/index.ts`) builds the Panda preset; `preset` is the neutral default. `panda.config.ts` calls `createPreset(design, baikikai)`.
-- A project supplies a `theme.ts` and loads its `theme.css` after `styles.css`. Nothing else is needed, and Panda does not run in the project. `@baikikai/ui/theme`, `/design`, `/brand` and `/palette` export the data without React or Panda.
+- A project supplies a `theme.ts` and loads its `theme.css` after `styles.css`. Nothing else is needed, and Panda does not run in the project (unless its `Design` differs; see Project layer). `@hmidmismi/ui/theme`, `/design`, `/brand` and `/palette` export the data without React or Panda.
 - Header, menu, footer and announcement are slot shells; apps pass the content.
 
-**Playground:** `pnpm --filter @baikikai/ui playground` (Vite, `playground/`) shows the type scale, spacing, color scales and components, with buttons for dark mode, the baseline grid overlay and three themes (neutral, baikikai, warm). `?dark&grid&theme=warm` in the URL sets them. `playground:build` builds it.
+**Playground:** `pnpm --filter @hmidmismi/ui playground` (Vite, `playground/`) shows the type scale, spacing, color scales and components, with buttons for dark mode, the baseline grid overlay and three themes (neutral, baikikai, warm). `?dark&grid&theme=warm` in the URL sets them. `playground:build` builds it.
 
 **Tests:** `pnpm test` runs the unit tests (grid, scale, design, theme, Capsize formula) and, when Chrome and a generated `styles.css` exist, the browser tests. `pnpm test:browser` runs `codegen` first. The browser tests use `playwright-core` with the installed Chrome (`CHROME_PATH` overrides the macOS default) and check, in a real browser, that every text role's size, line height and trim equal Capsize's numbers for the built-in theme and for a theme loaded at runtime, that every line height is on the baseline, that text contrast is at least 7:1 (muted 4.5:1) in light and dark for two themes, and that a runtime theme re-colors the page and falls back to its family when the app sets no font variable.
 
 Not done yet: nothing in the plan above; open follow-ups are a color-contrast check for every palette step and visual regression screenshots.
+
+**Project layer.** A project with its own look puts every value in its config package (`@baikikai/config`, `@chorusworks/config`): a `Design`, a `Theme` and, for tokens that are the project's alone (named widths, rule widths, rounded corners, elevation, breakpoints), a Panda preset that goes after `createPreset(design, theme)`. A Design that differs from this repo's (grid, body size, rhythm) means the project runs Panda itself with `createPreset`, because the design is baked into the stylesheet; the components keep working because their class names do not depend on it. A project's own recipes and global styles go in as `createPreset(design, theme, { recipes, globalCss })`, because Panda would merge a second preset's same-named recipes into the system's. Apps that serve their own fonts declare them on the theme's faces (`files`) and generate `@font-face` with `fontFaces(theme, url)`. The rhythm of the line heights is `design.type.leading` (`body`, `falloff`, `floor`), so a different rhythm is three numbers, not a table.
 
 ## Other frameworks
 
@@ -248,11 +250,11 @@ Expected to work, not yet tested; check Panda's current framework guides before 
 ## Commands
 
 ```sh
-pnpm --filter @baikikai/ui codegen   # panda codegen + cssgen -> styled-system/, styles.css
-pnpm --filter @baikikai/ui test      # grid, type scale, trim formula, design, theme, literal-length checks (+ browser tests if Chrome and styles.css exist)
-pnpm --filter @baikikai/ui test:browser  # codegen, then the Chrome tests
-pnpm --filter @baikikai/ui dev       # watch mode
-pnpm --filter @baikikai/ui playground  # component sheet on http://localhost:5190
+pnpm --filter @hmidmismi/ui codegen   # panda codegen + cssgen -> styled-system/, styles.css
+pnpm --filter @hmidmismi/ui test      # grid, type scale, trim formula, design, theme, literal-length checks (+ browser tests if Chrome and styles.css exist)
+pnpm --filter @hmidmismi/ui test:browser  # codegen, then the Chrome tests
+pnpm --filter @hmidmismi/ui dev       # watch mode
+pnpm --filter @hmidmismi/ui playground  # component sheet on http://localhost:5190
 ```
 
 ## Open items

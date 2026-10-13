@@ -1,4 +1,4 @@
-import type { Face, FaceMetrics, Role, Theme } from './types';
+import type { Face, FaceMetrics, Palette, Role, Theme } from './types';
 
 /** The CSS variable names a theme sets. Components never read these directly; tokens and the type system do. */
 export const themeVars = {
@@ -31,16 +31,22 @@ export type FaceVar = 'adj' | 'cap' | 'base' | 'normal';
  */
 export const faceVar = (role: Role, key: FaceVar) => `--ui-${role}-${key}`;
 
+/** Family names CSS reads as keywords, which must stay unquoted (`ui-monospace`, `system-ui`, `sans-serif`). */
+const KEYWORD_FAMILY = /^(ui-[a-z-]+|system-ui|serif|sans-serif|monospace|cursive|fantasy|math|emoji|fangsong)$/;
+
+/** A family name as CSS: quoted, unless it is a keyword. */
+const cssFamily = (family: string) => (KEYWORD_FAMILY.test(family) ? family : `"${family}"`);
+
 /**
- * A CSS font stack for a face: the app's variable if it set one, then the family name, then the generic. The family and
+ * A CSS font stack for a face: the app's variable if it set one, then the family name, then its fallbacks (the generic by default). The family and
  * generic sit inside the `var()` as its fallback, so the stack stays valid when the app never defines the variable (a
  * bare `var(--x), "Family"` would be invalid and the text would fall back to the browser default).
  *
  * @param face - the face.
  * @returns the `font-family` value.
  */
-export function fontStack(face: Pick<Face, 'family' | 'generic' | 'cssVar'>) {
-  const stack = `"${face.family}", ${face.generic}`;
+export function fontStack(face: Pick<Face, 'family' | 'generic' | 'fallbacks' | 'cssVar'>) {
+  const stack = [cssFamily(face.family), ...(face.fallbacks ?? [face.generic])].join(', ');
   return face.cssVar ? `var(${face.cssVar}, ${stack})` : stack;
 }
 
@@ -77,6 +83,24 @@ function faceVariables(role: Role, metrics: FaceMetrics, reference: FaceMetrics)
 }
 
 /**
+ * The palette as CSS variables.
+ *
+ * @param palette - the seven colors.
+ * @returns the variables.
+ */
+function paletteVariables(palette: Palette) {
+  return {
+    [themeVars.ink]: palette.ink,
+    [themeVars.paper]: palette.paper,
+    [themeVars.line]: palette.line,
+    [themeVars.accent]: palette.accent,
+    [themeVars.accentSoft]: palette.accentSoft,
+    [themeVars.danger]: palette.danger,
+    [themeVars.dangerSoft]: palette.dangerSoft,
+  };
+}
+
+/**
  * A theme as a map of CSS variable to value.
  *
  * @param theme - the theme.
@@ -86,13 +110,7 @@ export function themeVariables(theme: Theme): Record<string, string> {
   const { palette, faces } = theme;
   const reference = faces.body.metrics;
   return {
-    [themeVars.ink]: palette.ink,
-    [themeVars.paper]: palette.paper,
-    [themeVars.line]: palette.line,
-    [themeVars.accent]: palette.accent,
-    [themeVars.accentSoft]: palette.accentSoft,
-    [themeVars.danger]: palette.danger,
-    [themeVars.dangerSoft]: palette.dangerSoft,
+    ...(palette ? paletteVariables(palette) : {}),
     [themeVars.display]: fontStack(faces.display),
     [themeVars.body]: fontStack(faces.body),
     [themeVars.mono]: fontStack(faces.mono),
@@ -111,6 +129,8 @@ export function themeVariables(theme: Theme): Record<string, string> {
  * @returns the CSS.
  */
 export function toCss(theme: Theme, selector = ':root') {
-  const lines = Object.entries(themeVariables(theme)).map(([name, value]) => `  ${name}: ${value};`);
+  const lines = Object.entries(themeVariables(theme)).map(
+    ([name, value]) => `  ${name}: ${value};`
+  );
   return `${selector} {\n${lines.join('\n')}\n}\n`;
 }

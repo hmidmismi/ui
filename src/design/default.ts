@@ -3,7 +3,7 @@ import type { Design } from './types';
 /** The default design: a 5px baseline, a 10px spacing unit and a minor-third type scale from a 16px body. */
 export const design = {
   grid: { baseline: 5, unit: 10, root: 16 },
-  type: { base: 16, ratio: 1.2, minLeading: 1.3 },
+  type: { base: 16, ratio: 1.2, leading: { body: 1.5, falloff: 0.05, floor: 1.3 } },
   motion: {
     durations: {
       fastest: '50ms',

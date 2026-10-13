@@ -17,11 +17,22 @@ export type Design = {
     base: number;
     /** The modular scale ratio. 1.2 is the minor third. */
     ratio: number;
-    /** The tightest line height as a multiple of the font size, after rounding to the baseline. */
-    minLeading: number;
+    /**
+     * The rhythm of the line heights: the leading (line height over font size) is `body` at the body size and below,
+     * falls by `falloff` per step above it, and never goes under `floor`. Each result is rounded to a whole number of
+     * baselines, then raised until it is at least `floor`.
+     */
+    leading: {
+      body: number;
+      falloff: number;
+      floor: number;
+    };
   };
   motion: {
     /** Named durations, as CSS times. */
-    durations: Record<'fastest' | 'faster' | 'fast' | 'normal' | 'slow' | 'slower' | 'slowest', string>;
+    durations: Record<
+      'fastest' | 'faster' | 'fast' | 'normal' | 'slow' | 'slower' | 'slowest',
+      string
+    >;
   };
 };

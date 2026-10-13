@@ -1,4 +1,4 @@
-import type { Theme } from '../theme';
+import type { Palette } from '../theme';
 
 /**
  * The Baikikai palette, on its own so code that only needs the colors (the Sanity studio's text-color options) can
@@ -12,4 +12,4 @@ export const palette = {
   accentSoft: '#9AA7D4',
   danger: '#B4432F',
   dangerSoft: '#E3A596',
-} as const satisfies Theme['palette'];
+} as const satisfies Palette;

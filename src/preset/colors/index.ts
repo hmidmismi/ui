@@ -1,4 +1,5 @@
 import { defineSemanticTokens } from '@pandacss/dev';
+import type { Theme } from '../../theme';
 import { neutralScale, ref, tonalScale, variants } from './scale';
 
 const onSolid = { base: ref('pigment.paper'), _dark: ref('pigment.ink') };
@@ -49,3 +50,40 @@ export const semanticColors = defineSemanticTokens.colors({
   brand: accent,
   red,
 });
+
+/** The color roles components read, and for the grouped ones the keys inside. A theme's own `colors` must have them all. */
+const REQUIRED = {
+  canvas: [],
+  fg: ['default', 'muted', 'subtle', 'disabled'],
+  border: ['DEFAULT', 'muted', 'emphasized'],
+  error: [],
+  shadow: [],
+  gray: [],
+  accent: [],
+  red: [],
+} as const;
+
+/**
+ * The semantic colors for a theme: its own `colors` when it has them, otherwise the scales generated from its palette.
+ *
+ * @param theme - the theme.
+ * @returns the semantic color tokens.
+ * @throws when the theme has neither, or its `colors` lack a role the components read.
+ */
+export function colorTokensFor(theme: Theme): typeof semanticColors {
+  if (!theme.colors) {
+    if (!theme.palette) throw new Error(`Theme "${theme.name}" needs a palette or colors.`);
+    return semanticColors;
+  }
+  const colors = theme.colors as Record<string, unknown>;
+  const missing: string[] = [];
+  for (const [role, keys] of Object.entries(REQUIRED)) {
+    const value = colors[role] as Record<string, unknown> | undefined;
+    if (value === undefined) missing.push(role);
+    else for (const key of keys) if (value[key] === undefined) missing.push(`${role}.${key}`);
+  }
+  if (missing.length > 0) {
+    throw new Error(`Theme "${theme.name}" colors are missing: ${missing.join(', ')}.`);
+  }
+  return colors as unknown as typeof semanticColors;
+}

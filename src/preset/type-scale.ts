@@ -9,8 +9,9 @@ import { createScale, round } from './scale';
  * Scale: sizes follow a modular scale, `base * ratio ** step`, with `md` at step 0 (the body size).
  *
  * Line height: every line height is a whole number of baselines, the same unit the spacing tokens use, so stacked
- * lines and blocks stay on one vertical rhythm. The leading ratio is 1.5 at body size and below and falls 0.05 per
- * step to a floor of 1.1; the result is rounded to a baseline, then raised if rounding left it under `minLeading`.
+ * lines and blocks stay on one vertical rhythm. The leading ratio is the design's `leading.body` at body size and
+ * below and falls by `leading.falloff` per step; it is clamped to `leading.floor`, the result is rounded to a baseline,
+ * then raised if rounding left it under the floor. Those three numbers are the rhythm a design plugs in.
  *
  * Trim (Capsize): text roles remove the space above the capitals and below the baseline with negative margins on
  * `::before` and `::after`. The margins are `calc()` over the theme's per-face variables (see `theme/toCss.ts`), so
@@ -81,9 +82,10 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
   const stepLineHeight = (step: StepName) => {
     const index = STEPS[step];
     const size = stepSize(step);
-    const leading = index <= 0 ? 1.5 : Math.max(1.1, 1.5 - 0.05 * index);
+    const { body, falloff, floor } = d.type.leading;
+    const leading = index <= 0 ? body : Math.max(floor, body - falloff * index);
     let lines = Math.round((size * leading) / scale.BASELINE);
-    while ((lines * scale.BASELINE) / size < d.type.minLeading) lines += 1;
+    while ((lines * scale.BASELINE) / size < floor) lines += 1;
     return lines * scale.BASELINE;
   };
 
@@ -179,7 +181,7 @@ export const BASE_SIZE: number = design.type.base;
 export const RATIO: number = design.type.ratio;
 
 /** The tightest line height as a multiple of the font size, in the default design. */
-export const MIN_LEADING: number = design.type.minLeading;
+export const MIN_LEADING: number = design.type.leading.floor;
 
 const defaults = createTypeSystem(design);
 

@@ -1,8 +1,13 @@
-import { definePreset, type SystemStyleObject } from '@pandacss/dev';
+import {
+  definePreset,
+  type RecipeConfig,
+  type SlotRecipeConfig,
+  type SystemStyleObject,
+} from '@pandacss/dev';
 import { type Design, design as defaultDesign } from '../design';
 import { neutral, type Theme, themeVariables } from '../theme';
 import { animationStyles } from './animation-styles';
-import { semanticColors } from './colors';
+import { colorTokensFor } from './colors';
 import { conditions } from './conditions';
 import { globalCss } from './global-css';
 import { keyframes } from './keyframes';
@@ -21,7 +26,18 @@ import {
   sizesFor,
   zIndex,
 } from './tokens';
-import { createTypeSystem } from './type-scale';
+import { createTypeSystem, type TypeSystem } from './type-scale';
+
+/** What a project may bring of its own, in place of the system's. */
+export type PresetOptions = {
+  /** The recipes to use instead of the system's own, built from the design's type system. */
+  recipes?: (type: TypeSystem) => {
+    recipes: Record<string, RecipeConfig>;
+    slotRecipes: Record<string, SlotRecipeConfig>;
+  };
+  /** The global styles to use instead of the system's own. The theme's variables on `:root` are always added. */
+  globalCss?: Record<string, SystemStyleObject>;
+};
 
 /**
  * Builds the design system's Panda preset: tokens, palettes, type scale, recipes and global styles. It sits on top of
@@ -36,16 +52,25 @@ import { createTypeSystem } from './type-scale';
  *
  * @param design - the structure. Defaults to the default design.
  * @param theme - the look. Defaults to the neutral theme.
+ * @param options - recipes or global styles of the project's own, which replace the system's (Panda would merge a
+ * second preset's recipes of the same name into these, so a project that restyles a recipe passes it here).
  * @returns the preset.
  */
-export function createPreset(design: Design = defaultDesign, theme: Theme = neutral) {
+export function createPreset(
+  design: Design = defaultDesign,
+  theme: Theme = neutral,
+  options: PresetOptions = {}
+) {
   const type = createTypeSystem(design);
-  const { recipes, slotRecipes } = createRecipes(type);
+  const { recipes, slotRecipes } = (options.recipes ?? createRecipes)(type);
   return definePreset({
-    name: '@baikikai/ui',
+    name: '@hmidmismi/ui',
     conditions,
     globalCss: {
-      extend: { ...globalCss.extend, ':root': themeVariables(theme) as SystemStyleObject },
+      extend: {
+        ...(options.globalCss ?? globalCss.extend),
+        ':root': themeVariables(theme) as SystemStyleObject,
+      },
     },
     theme: {
       // Outside `extend`: these replace the default preset's scales instead of adding to them.
@@ -60,7 +85,7 @@ export function createPreset(design: Design = defaultDesign, theme: Theme = neut
         sizes: sizesFor(design),
         spacing: spacingFor(design),
       },
-      semanticTokens: { colors: semanticColors },
+      semanticTokens: { colors: colorTokensFor(theme) },
       extend: {
         tokens: { durations: durationsFor(design), shadows, zIndex },
         keyframes,
@@ -73,6 +98,10 @@ export function createPreset(design: Design = defaultDesign, theme: Theme = neut
     },
   });
 }
+
+export { type ExplicitScale, explicitScale, mix, ref } from './colors/scale';
+export { createRecipes } from './recipes';
+export { createTypeSystem, responsive, STEPS, type StepName, type TypeSystem } from './type-scale';
 
 /** The preset for the default design and the neutral theme. */
 export const preset = createPreset();
