@@ -16,7 +16,9 @@ export const spinner = defineRecipe({
     height: 'var(--spinner-size)',
     width: 'var(--spinner-size)',
   },
-  defaultVariants: { size: 'md' },
+  defaultVariants: {
+    size: 'md',
+  },
   variants: {
     size: {
       inherit: { '--spinner-size': '1em' },
@@ -24,8 +26,8 @@ export const spinner = defineRecipe({
       sm: { '--spinner-size': 'sizes.4' },
       md: { '--spinner-size': 'sizes.5' },
       lg: { '--spinner-size': 'sizes.6' },
-      xl: { '--spinner-size': 'sizes.8' },
-      '2xl': { '--spinner-size': 'sizes.10' },
+      xl: { '--spinner-size': 'sizes.7' },
+      '2xl': { '--spinner-size': 'sizes.8' },
     },
   },
 });

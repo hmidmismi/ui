@@ -19,6 +19,7 @@ import {
   borderWidths,
   colors,
   durationsFor,
+  easings,
   fonts,
   letterSpacings,
   radii,
@@ -27,6 +28,7 @@ import {
   zIndex,
 } from './tokens';
 import { createTypeSystem, type TypeSystem } from './type-scale';
+import { utilities } from './utilities';
 
 /** What a project may bring of its own, in place of the system's. */
 export type PresetOptions = {
@@ -66,6 +68,7 @@ export function createPreset(
   return definePreset({
     name: '@hmidmismi/ui',
     conditions,
+    utilities,
     globalCss: {
       extend: {
         ...(options.globalCss ?? globalCss.extend),
@@ -87,7 +90,7 @@ export function createPreset(
       },
       semanticTokens: { colors: colorTokensFor(theme) },
       extend: {
-        tokens: { durations: durationsFor(design), shadows, zIndex },
+        tokens: { durations: durationsFor(design), easings, shadows, zIndex },
         keyframes,
         textStyles: textStylesFor(type.scaleTextStyles),
         layerStyles,
@@ -100,7 +103,11 @@ export function createPreset(
 }
 
 export { type ExplicitScale, explicitScale, mix, ref } from './colors/scale';
+export * from './fragments';
+export * from './interaction';
 export { createRecipes } from './recipes';
+export { input } from './recipes/input';
+export { TONE_STEPS, type ToneStep } from './utilities';
 export { createTypeSystem, responsive, STEPS, type StepName, type TypeSystem } from './type-scale';
 
 /** The preset for the default design and the neutral theme. */

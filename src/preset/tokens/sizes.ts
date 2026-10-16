@@ -22,6 +22,10 @@ export const sizesFor = (d: Pick<Design, 'grid'>) => {
   '5xl': { value: rem(1060) },
   '6xl': { value: rem(1200) },
   '7xl': { value: rem(1360) },
+  /** The widest the content column gets, side inset included. */
+  site: { value: rem(1280) },
+  /** The shortest the header bar gets. */
+  bar: { value: rem(64) },
   /** The readable line length of running text. */
   prose: { value: '65ch' },
   /** The page's centered inset. */

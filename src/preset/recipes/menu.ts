@@ -26,7 +26,7 @@ export const menu = ({ labelCaps, textRole }: TypeSystem) =>
       position: 'fixed',
       transitionDuration: 'slow',
       transitionProperty: 'clip-path',
-      transitionTimingFunction: 'ease-out',
+      transitionTimingFunction: 'out',
       visibility: 'hidden',
       zIndex: 'overlay',
       '&[data-open]': { clipPath: 'inset(0 0 0 0)', visibility: 'visible' },

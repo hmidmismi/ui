@@ -47,8 +47,8 @@ export const dialog = defineSlotRecipe({
     },
     closeTrigger: {
       pos: 'absolute',
-      top: '2',
-      insetEnd: '2',
+      top: '3',
+      insetEnd: '3',
     },
     content: {
       '--dialog-z-index': 'zIndex.modal',
@@ -63,8 +63,8 @@ export const dialog = defineSlotRecipe({
       textStyle: 'sm',
       width: '100%',
       zIndex: 'calc(var(--dialog-z-index) + var(--layer-index, 0))',
-      py: { base: '4', md: '8' },
-      gap: { base: '4', md: '8' },
+      py: { base: '4', md: '6' },
+      gap: { base: '4', md: '6' },
       _open: {
         animationDuration: 'slowest',
       },
@@ -75,8 +75,8 @@ export const dialog = defineSlotRecipe({
     header: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '1',
-      px: { base: '4', md: '8' },
+      gap: '0.5',
+      px: { base: '4', md: '6' },
       flex: '0',
     },
     body: {
@@ -84,7 +84,7 @@ export const dialog = defineSlotRecipe({
       flex: '1',
       flexDirection: 'column',
       alignItems: 'flex-start',
-      px: { base: '4', md: '8' },
+      px: { base: '4', md: '6' },
     },
     footer: {
       display: 'flex',
@@ -92,7 +92,7 @@ export const dialog = defineSlotRecipe({
       justifyContent: 'flex-end',
       flex: '0',
       gap: '3',
-      px: { base: '4', md: '8' },
+      px: { base: '4', md: '6' },
     },
   },
   defaultVariants: {
@@ -193,7 +193,7 @@ export const dialog = defineSlotRecipe({
           overflow: 'hidden',
         },
         content: {
-          maxH: 'calc(100% - {sizes.24})',
+          maxH: 'calc(100% - {sizes.32})',
         },
         body: {
           overflow: 'auto',

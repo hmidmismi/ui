@@ -8,9 +8,8 @@ export const popover = defineSlotRecipe({
     content: {
       '--popover-bg': 'colors.gray.surface.bg',
       '--popover-padding': 'spacing.4',
+
       background: 'var(--popover-bg)',
-      borderWidth: 'hairline',
-      borderColor: 'border',
       borderRadius: 'l3',
       boxShadow: 'lg',
       display: 'flex',
@@ -22,12 +21,29 @@ export const popover = defineSlotRecipe({
       transformOrigin: 'var(--transform-origin)',
       width: 'xs',
       zIndex: 'calc(var(--z-index-popover) + var(--layer-index, 0))',
-      _open: { animationStyle: 'scale-fade-in', animationDuration: 'fast' },
-      _closed: { animationStyle: 'scale-fade-out', animationDuration: 'faster' },
+      _open: {
+        animationStyle: 'scale-fade-in',
+        animationDuration: 'fast',
+      },
+      _closed: {
+        animationStyle: 'scale-fade-out',
+        animationDuration: 'faster',
+      },
     },
-    title: { color: 'fg.default', fontWeight: 'medium', textStyle: 'md' },
-    description: { color: 'fg.muted', textStyle: 'sm' },
-    closeTrigger: { position: 'absolute', top: '2', right: '2' },
+    title: {
+      color: 'fg.default',
+      fontWeight: 'medium',
+      textStyle: 'md',
+    },
+    description: {
+      color: 'fg.muted',
+      textStyle: 'sm',
+    },
+    closeTrigger: {
+      position: 'absolute',
+      top: '1',
+      right: '1',
+    },
     header: {
       display: 'flex',
       flexDirection: 'column',
@@ -48,9 +64,8 @@ export const popover = defineSlotRecipe({
       '--arrow-background': 'var(--popover-bg)',
     },
     arrowTip: {
-      borderTopWidth: 'hairline',
-      borderInlineStartWidth: 'hairline',
-      borderColor: 'border',
+      borderTopWidth: '0.5px',
+      borderInlineStartWidth: '0.5px',
     },
   },
 });

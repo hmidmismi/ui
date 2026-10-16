@@ -7,4 +7,9 @@ export const letterSpacings = defineTokens.letterSpacings({
   wide: { value: '0.04em' },
   caps: { value: '0.14em' },
   numeral: { value: '0.08em' },
+  name: { value: '0.02em' },
+  title: { value: '0.08em' },
+  card: { value: '-0.01em' },
+  tagline: { value: '-0.005em' },
+  wordmark: { value: '0.14em' },
 });

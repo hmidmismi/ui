@@ -3,21 +3,15 @@ import { type Design, design } from '../design';
 import { createScale } from './scale';
 
 /**
- * The spacing scale. A token's name is its number of 5px baselines, so `spacing.4` is 20px. Even names are the 10px
- * scale (2, 4, 6, 8, 10, 12, ...); odd names (1, 3, 5, 7, 9) are the 5px utility steps. Every value is a whole number
- * of baselines, so spacing never breaks the vertical rhythm set by line heights in `type-scale.ts`.
- *
- * | token | px  | token | px  | token | px  |
- * | ----- | --- | ----- | --- | ----- | --- |
- * | 1     | 5   | 8     | 40  | 20    | 100 |
- * | 2     | 10  | 9     | 45  | 24    | 120 |
- * | 3     | 15  | 10    | 50  | 32    | 160 |
- * | 4     | 20  | 12    | 60  | 40    | 200 |
- * | 5     | 25  | 14    | 70  | 48    | 240 |
- * | 6     | 30  | 16    | 80  | 64    | 320 |
- * | 7     | 35  | 18    | 90  |       |     |
+ * The spacing scale: Panda's and Park UI's own ladder, so their components fit without translation. A token's name is
+ * its number of baselines, so with a 5px baseline `spacing.4` is 20px and `spacing.3.5` is 17.5px. Whole names are the
+ * steps for layout; the half steps (0.5 to 9.5) are the fine gaps and padding of small controls. Every value is its
+ * name times the baseline, so changing the baseline rescales every step in proportion.
  */
-const STEPS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 24, 32, 40, 48, 64] as const;
+const STEPS = [
+  0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 11, 12, 14, 16, 20, 24, 28, 32,
+  36, 40, 44, 48, 52, 56, 60, 64, 72, 80, 96,
+] as const;
 
 /**
  * The scale as token values for a design, shared by `spacing` and `sizes`.

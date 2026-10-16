@@ -5,7 +5,11 @@ export const radioGroup = defineSlotRecipe({
   className: 'radio-group',
   slots: radioGroupAnatomy.keys(),
   base: {
-    root: { display: 'flex', flexDirection: 'column', gap: '3' },
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '3',
+    },
     itemControl: {
       alignItems: 'center',
       borderRadius: 'full',
@@ -19,17 +23,27 @@ export const radioGroup = defineSlotRecipe({
         borderRadius: 'full',
         boxSize: '40%',
       },
-      _focusVisible: { focusVisibleRing: 'outside' },
+      _focusVisible: {
+        focusVisibleRing: 'outside',
+      },
     },
     item: {
       alignItems: 'center',
       cursor: 'pointer',
       display: 'flex',
-      _disabled: { layerStyle: 'disabled' },
+      _disabled: {
+        layerStyle: 'disabled',
+      },
     },
-    itemText: { fontWeight: 'medium', userSelect: 'none' },
+    itemText: {
+      fontWeight: 'medium',
+      userSelect: 'none',
+    },
   },
-  defaultVariants: { variant: 'solid', size: 'md' },
+  defaultVariants: {
+    variant: 'solid',
+    size: 'md',
+  },
   variants: {
     variant: {
       solid: {
@@ -40,15 +54,29 @@ export const radioGroup = defineSlotRecipe({
             bg: 'colorPalette.solid.bg',
             color: 'colorPalette.solid.fg',
             boxShadowColor: 'colorPalette.solid.bg',
-            _after: { background: 'colorPalette.solid.fg' },
+            _after: {
+              background: 'colorPalette.solid.fg',
+            },
           },
         },
       },
     },
     size: {
-      sm: { item: { gap: '2' }, itemControl: { boxSize: '4' }, itemText: { textStyle: 'sm' } },
-      md: { item: { gap: '3' }, itemControl: { boxSize: '4' }, itemText: { textStyle: 'md' } },
-      lg: { item: { gap: '3' }, itemControl: { boxSize: '5' }, itemText: { textStyle: 'lg' } },
+      sm: {
+        item: { gap: '2' },
+        itemControl: { boxSize: '4.5' },
+        itemText: { textStyle: 'sm' },
+      },
+      md: {
+        item: { gap: '3' },
+        itemControl: { boxSize: '5' },
+        itemText: { textStyle: 'md' },
+      },
+      lg: {
+        item: { gap: '3' },
+        itemControl: { boxSize: '5.5' },
+        itemText: { textStyle: 'lg' },
+      },
     },
   },
 });

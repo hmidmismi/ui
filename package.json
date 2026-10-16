@@ -15,6 +15,7 @@
   },
   "scripts": {
     "codegen": "panda codegen && panda cssgen",
+    "postinstall": "pnpm codegen",
     "dev": "concurrently -k \"panda codegen --watch\" \"panda cssgen --watch\"",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",

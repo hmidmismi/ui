@@ -8,6 +8,8 @@ import { checkbox } from './checkbox';
 import { crumbs } from './crumbs';
 import { dialog } from './dialog';
 import { field } from './field';
+import { fieldRow } from './field-row';
+import { fieldset } from './fieldset';
 import { filterGroup } from './filter-group';
 import { footer } from './footer';
 import { group } from './group';
@@ -19,6 +21,7 @@ import { layoutStack, layoutWrap } from './layout';
 import { link } from './link';
 import { list } from './list';
 import { menu } from './menu';
+import { pagination } from './pagination';
 import { placeholder } from './placeholder';
 import { popover } from './popover';
 import { radioGroup } from './radio-group';
@@ -27,7 +30,9 @@ import { select } from './select';
 import { spinner } from './spinner';
 import { split } from './split';
 import { surface } from './surface';
+import { table } from './table';
 import { tabs } from './tabs';
+import { toast } from './toast';
 import { toggleGroup } from './toggle-group';
 import { tooltip } from './tooltip';
 
@@ -44,6 +49,7 @@ export function createRecipes(t: TypeSystem) {
       absoluteCenter,
       badge,
       button,
+      fieldRow,
       group,
       icon,
       input,
@@ -64,6 +70,7 @@ export function createRecipes(t: TypeSystem) {
       crumbs: crumbs(t),
       dialog,
       field,
+      fieldset,
       filterGroup: filterGroup(t),
       indexRow: indexRow(t),
       list,
@@ -73,9 +80,12 @@ export function createRecipes(t: TypeSystem) {
       footer: footer(t),
       header: header(t),
       menu: menu(t),
+      pagination,
       announcement: announcement(t),
       split,
+      table,
       tabs,
+      toast,
       toggleGroup,
       tooltip,
     },

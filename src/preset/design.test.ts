@@ -21,12 +21,12 @@ describe('design', () => {
     expect(other.grid.unit).toBe(other.grid.baseline * 2);
   });
 
-  it('keeps every spacing step a whole number of baselines, for any grid', () => {
+  it('makes every spacing step its name times the baseline, for any grid', () => {
     for (const d of [design, other]) {
       const { ROOT_SIZE, BASELINE } = createScale(d);
       for (const [name, token] of Object.entries(scaleValuesFor(d))) {
         const px = Number.parseFloat(token.value) * ROOT_SIZE;
-        expect(px % BASELINE, `${d.grid.baseline}px grid, spacing ${name}`).toBeCloseTo(0, 2);
+        expect(px, `${d.grid.baseline}px grid, spacing ${name}`).toBeCloseTo(Number(name) * BASELINE, 2);
       }
     }
   });

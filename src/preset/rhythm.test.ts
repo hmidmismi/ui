@@ -88,16 +88,14 @@ describe('type scale', () => {
 });
 
 describe('spacing scale', () => {
-  it('has only whole 5px baselines, from 0 to 320px', () => {
+  it('is Park UI\'s ladder, each step its name times the 5px baseline', () => {
     for (const [name, { value }] of Object.entries(scaleValues)) {
-      const size = px(value);
-      expect(size % BASELINE, name).toBe(0);
-      expect(size, name).toBe(Number(name) * BASELINE);
+      expect(px(value), name).toBeCloseTo(Number(name) * BASELINE, 1);
     }
   });
 
-  it('puts even tokens on the 10px scale and odd tokens on the 5px half step', () => {
-    for (const name of Object.keys(scaleValues)) {
+  it('puts even whole tokens on the 10px scale and odd whole tokens on the 5px half step', () => {
+    for (const name of Object.keys(scaleValues).filter((key) => Number.isInteger(Number(key)))) {
       const size = Number(name) * BASELINE;
       expect(size % (name === '0' || Number(name) % 2 === 0 ? 10 : 5), name).toBe(0);
     }

@@ -9,15 +9,17 @@ export const icon = defineRecipe({
     verticalAlign: 'middle',
     lineHeight: '1em',
   },
-  defaultVariants: { size: 'md' },
+  defaultVariants: {
+    size: 'md',
+  },
   variants: {
     size: {
-      '2xs': { boxSize: '2' },
-      xs: { boxSize: '3' },
-      sm: { boxSize: '3' },
-      md: { boxSize: '4' },
-      lg: { boxSize: '4' },
-      xl: { boxSize: '5' },
+      '2xs': { boxSize: '3' },
+      xs: { boxSize: '4' },
+      sm: { boxSize: '4.5' },
+      md: { boxSize: '5' },
+      lg: { boxSize: '5.5' },
+      xl: { boxSize: '6' },
     },
   },
 });

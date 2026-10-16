@@ -149,13 +149,39 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
   const textRole = (role: Role, step: StepName): Styles =>
     ({ ...(textSize(role, step) as Loose), ...(textTrim(role, step) as Loose) }) as Styles;
 
-  /** The uppercase, tracked, small label. One definition, so every label looks the same. */
-  const labelCaps: Styles = {
+  /**
+   * The uppercase, tracked label: section labels, the main nav, the jump bar and footer headings. A step and a weight
+   * make the variants, so every place that sets a label is one definition.
+   */
+  const caps = (step: StepName = 'xs', weight: 'normal' | 'medium' | 'semibold' = 'medium'): Styles => ({
     fontFamily: 'body',
-    fontWeight: 'medium',
+    fontWeight: weight,
     letterSpacing: 'caps',
     textTransform: 'uppercase',
-    ...textSize('body', 'xs'),
+    ...textSize('body', step),
+  });
+
+  /** The default caps label. */
+  const labelCaps: Styles = caps();
+
+  /** The small muted label that opens a field, a filter group or a section. */
+  const microLabel: Styles = {
+    color: 'fg.muted',
+    fontFamily: 'body',
+    fontWeight: 'medium',
+    letterSpacing: 'title',
+    textTransform: 'uppercase',
+    ...textSize('body', 'sm'),
+  };
+
+  /**
+   * Long-form body text: the body face at the `lg` step with a roomier line than the step has elsewhere. Phones set it
+   * at the body size. For running text on article pages; not trimmed.
+   */
+  const longForm: Styles = {
+    fontFamily: 'body',
+    fontSize: { base: 'md', sm: 'lg' },
+    lineHeight: { base: scale.rem(stepLineHeight('md')), sm: 'token(spacing.7)' },
   };
 
   return {
@@ -167,7 +193,10 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
     textSize,
     textTrim,
     textRole,
+    caps,
     labelCaps,
+    microLabel,
+    longForm,
   };
 }
 
