@@ -65,6 +65,7 @@ export const disclosure = (t: TypeSystem) => {
         color: 'accent',
         ...textSize('body', 'sm'),
         marginBlockEnd: '4',
+        _hover: { textDecoration: 'underline' },
       },
     },
   });
