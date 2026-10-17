@@ -1,2 +1,2 @@
-export { design } from './default';
-export type { Design } from './types';
+export { defaultHeadings, design } from './default';
+export type { Design, HeadingLevel, HeadingStyle, TypeStep } from './types';

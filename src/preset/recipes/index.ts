@@ -17,7 +17,6 @@ import { header } from './header';
 import { icon } from './icon';
 import { indexRow } from './index-row';
 import { input } from './input';
-import { layoutStack, layoutWrap } from './layout';
 import { link } from './link';
 import { list } from './list';
 import { menu } from './menu';
@@ -36,6 +35,29 @@ import { toast } from './toast';
 import { toggleGroup } from './toggle-group';
 import { tooltip } from './tooltip';
 
+
+import { pageColumn, pageHeader, cardItem, centeredLines, skipLink } from './pages';
+import { pageBar, adminBar, fieldStatus, signInForm, viewSwitch } from './admin';
+import { statusBadge } from './status';
+import { hero } from './hero';
+import { browseNav, rangeColumns, letterBar, neighborNav, listHeader } from './browse';
+
+import { eyebrow, personName, term, entry, prose, value, caption, count, tagline, fieldLabel, notice } from './page-roles';
+
+import { chip, searchField, filterRow, typeahead } from './search';
+import { jumpNav, breadcrumbs, siteNav, siteFooter } from './chrome';
+import { player } from './player';
+
+import { listFilter, countedList, expandableRow, rowDrawer, datedList } from './lists';
+import { quote, codeBlock, timeline, disclosure } from './blocks';
+import { picture, figure, videoFrame } from './media';
+import { sectionGroup, section } from './section';
+import { hue, scrollList, plate } from './tile';
+import { featureCard, tile } from './cards';
+import { pageText, pageLayout } from './page-text';
+
+import { itemList, layoutStack, layoutWrap, measure, ruled, mediaRow, inset, layout, fullRow, termList, termRow, columnList, splitGrid, tileGrid } from './layout';
+
 /**
  * Every recipe, built for a type system. The recipes that set text take the type system; the rest are static.
  *
@@ -46,6 +68,53 @@ export function createRecipes(t: TypeSystem) {
   const { label, numeral, text, title } = createRoles(t);
   return {
     recipes: {
+      itemList,
+      layoutStack,
+      layoutWrap,
+      measure,
+      ruled,
+      mediaRow,
+      inset,
+      layout,
+      fullRow,
+      termList: termList(t),
+      termRow,
+      columnList: columnList(t),
+      splitGrid,
+      tileGrid,
+      listFilter: listFilter(t),
+      quote,
+      codeBlock: codeBlock(t),
+      timeline,
+      disclosure: disclosure(t),
+      picture,
+      figure,
+      videoFrame,
+      sectionGroup,
+      hue,
+      scrollList,
+      chip: chip(t),
+      eyebrow: eyebrow(t),
+      personName: personName(t),
+      term: term(t),
+      entry: entry(t),
+      prose: prose(t),
+      value: value(t),
+      caption: caption(t),
+      count: count(t),
+      tagline: tagline(t),
+      fieldLabel: fieldLabel(t),
+      notice: notice(t),
+      pageColumn,
+      pageHeader,
+      cardItem,
+      centeredLines,
+      skipLink,
+      pageBar,
+      adminBar,
+      fieldStatus,
+      signInForm,
+      statusBadge,
       absoluteCenter,
       badge,
       button,
@@ -54,8 +123,6 @@ export function createRecipes(t: TypeSystem) {
       icon,
       input,
       label,
-      layoutStack,
-      layoutWrap,
       link,
       numeral,
       placeholder: placeholder(t),
@@ -65,6 +132,31 @@ export function createRecipes(t: TypeSystem) {
       title,
     },
     slotRecipes: {
+      countedList: countedList(t),
+      expandableRow: expandableRow(t),
+      rowDrawer,
+      datedList: datedList(t),
+      section: section(t),
+      plate: plate(t),
+      featureCard: featureCard(t),
+      tile: tile(t),
+      pageText: pageText(t),
+      pageLayout: pageLayout(t),
+      jumpNav: jumpNav(t),
+      breadcrumbs: breadcrumbs(t),
+      siteNav: siteNav(t),
+      siteFooter: siteFooter(t),
+      player: player(t),
+      searchField: searchField(t),
+      filterRow: filterRow(t),
+      typeahead: typeahead(t),
+      hero: hero(t),
+      viewSwitch,
+      browseNav: browseNav(t),
+      rangeColumns: rangeColumns(t),
+      letterBar: letterBar(t),
+      neighborNav,
+      listHeader: listHeader(t),
       accordion,
       checkbox,
       crumbs: crumbs(t),

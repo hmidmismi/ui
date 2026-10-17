@@ -36,10 +36,10 @@ export const hoverAccentSurface: SystemStyleObject = {
   _hover: { background: 'accent.3' },
 };
 
-/** The mark on the current item of a navigation bar: accent text over a 2px underline in the same color. */
+/** The mark on the current item of a navigation bar: accent text over a rail-wide underline in the same color. */
 export const currentMark: SystemStyleObject = {
   color: 'accent',
-  boxShadow: 'inset 0 -2px 0 currentColor',
+  boxShadow: 'inset 0 calc(-1 * token(borderWidths.rail)) 0 currentColor',
 };
 
 /** The bar at the start edge of the current item, for a cell that takes only the bar. */

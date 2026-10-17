@@ -15,7 +15,7 @@ type Case = { name: string; cls: string; role: Role; step: Parameters<typeof ste
 const cases: Case[] = [
   ...([1, 2, 3, 4, 5, 6] as const).map((level, i) => ({
     name: `title ${level}`,
-    cls: title({ level: String(level) as '1' }),
+    cls: title({ level: `h${level}` as 'h1' }),
     role: 'display' as const,
     step: (['5xl', '4xl', '3xl', '2xl', 'xl', 'lg'] as const)[i] as Case['step'],
   })),

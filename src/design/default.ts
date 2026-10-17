@@ -1,4 +1,14 @@
-import type { Design } from './types';
+import type { Design, HeadingLevel, HeadingStyle } from './types';
+
+/** The headings of the default design: six levels, each a step smaller, in medium weight. */
+export const defaultHeadings = {
+  h1: { step: '5xl', weight: 'medium' },
+  h2: { step: '4xl', weight: 'medium' },
+  h3: { step: '3xl', weight: 'medium' },
+  h4: { step: '2xl', weight: 'medium' },
+  h5: { step: 'xl', weight: 'medium' },
+  h6: { step: 'lg', weight: 'medium' },
+} as const satisfies Record<HeadingLevel, HeadingStyle>;
 
 /** The default design: a 5px baseline, a 10px spacing unit and a minor-third type scale from a 16px body. */
 export const design = {

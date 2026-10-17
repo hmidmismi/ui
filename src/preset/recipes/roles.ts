@@ -1,5 +1,5 @@
 import { defineRecipe } from '@pandacss/dev';
-import type { StepName, TypeSystem } from '../type-scale';
+import { responsive, type TypeSystem } from '../type-scale';
 
 /**
  * Text roles: one recipe per kind of text a page sets. Each holds the whole look of its role (face, step, weight,
@@ -10,47 +10,44 @@ import type { StepName, TypeSystem } from '../type-scale';
  * when a role renders an inline element, because the trim needs a block box.
  */
 
-const TITLE_STEPS = {
-  1: '5xl',
-  2: '4xl',
-  3: '3xl',
-  4: '2xl',
-  5: 'xl',
-  6: 'lg',
-} as const satisfies Record<number, StepName>;
-
-type TitleLevel = keyof typeof TITLE_STEPS;
-
-const titleLevels = (textSize: TypeSystem['textSize']) =>
-  Object.fromEntries(
-    (Object.keys(TITLE_STEPS) as unknown as TitleLevel[]).map((level) => [
-      level,
-      textSize('display', TITLE_STEPS[level]),
-    ])
-  );
+/** The heading levels, in order. */
+const LEVELS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
 
 /**
  * The text-role recipes for a type system.
  *
- * @param t - the type system (a design's sizes and trim).
+ * @param t - the type system (a design's sizes, trim and headings).
  * @returns `title`, `text`, `label` and `numeral`.
  */
-export function createRoles({ textSize, textTrim, labelCaps }: TypeSystem) {
-  /** A heading in the display face. `level` picks the step: 1 is the largest. */
+export function createRoles({ textRole, textSize, textTrim, labelCaps, headings }: TypeSystem) {
+  /**
+   * A heading in the display face. `level` picks one of the design's heading styles: its size (and the larger size
+   * from `md` up), weight, tracking, case and color. Titles are block elements, so the trim is always on.
+   */
   const title = defineRecipe({
     className: 'title',
+    jsx: ['Title'],
     staticCss: ['*'],
-    base: { fontFamily: 'display', fontWeight: 'medium', color: 'fg.default' },
-    defaultVariants: { level: '2', trim: true },
+    base: { fontFamily: 'display', textWrap: 'balance', color: 'fg.default' },
+    defaultVariants: { level: 'h1' },
     variants: {
-      level: titleLevels(textSize),
-      trim: { true: {} },
+      level: Object.fromEntries(
+        LEVELS.map((level) => {
+          const { step, wide, weight, tracking, uppercase, color } = headings[level];
+          const to = wide ?? step;
+          return [
+            level,
+            {
+              ...responsive(textRole('display', step), textRole('display', to)),
+              fontWeight: weight ?? 'normal',
+              ...(tracking ? { letterSpacing: tracking } : {}),
+              ...(uppercase ? { textTransform: 'uppercase' } : {}),
+              ...(color ? { color } : {}),
+            },
+          ];
+        })
+      ),
     },
-    compoundVariants: (Object.keys(TITLE_STEPS) as unknown as TitleLevel[]).map((level) => ({
-      level: String(level),
-      trim: true,
-      css: textTrim('display', TITLE_STEPS[level]),
-    })),
   });
 
   /** Running text and interface copy in the body face. */

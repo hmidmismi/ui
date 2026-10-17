@@ -19,14 +19,14 @@ export const utilities: NonNullable<Config['utilities']> = {
       className: 'tone-fill',
       values: steps,
       transform: (value: string) => ({
-        background: `color-mix(in srgb, var(--tone) ${value}%, token(colors.canvas))`,
+        background: `color-mix(in srgb, var(--tone) ${value}%, var(--colors-canvas))`,
       }),
     },
     toneEdge: {
       className: 'tone-edge',
       values: steps,
       transform: (value: string) => ({
-        borderColor: `color-mix(in srgb, var(--tone) ${value}%, token(colors.border))`,
+        borderColor: `color-mix(in srgb, var(--tone) ${value}%, var(--colors-border))`,
       }),
     },
   },

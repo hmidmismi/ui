@@ -1,5 +1,17 @@
 import type { Face, FaceMetrics, Palette, Role, Theme } from './types';
 
+/** The colors a palette may leave out. */
+export const PALETTE_DEFAULTS = {
+  success: '#2F7D4A',
+  successSoft: '#9AD3B0',
+  warning: '#9A6A12',
+  warningSoft: '#EBC57A',
+  info: '#2F6FA8',
+  infoSoft: '#9CC4E4',
+  secondary: '#8F6200',
+  secondarySoft: '#E8B44A',
+} as const;
+
 /** The CSS variable names a theme sets. Components never read these directly; tokens and the type system do. */
 export const themeVars = {
   ink: '--ui-ink',
@@ -9,6 +21,14 @@ export const themeVars = {
   accentSoft: '--ui-accent-soft',
   danger: '--ui-danger',
   dangerSoft: '--ui-danger-soft',
+  success: '--ui-success',
+  successSoft: '--ui-success-soft',
+  warning: '--ui-warning',
+  warningSoft: '--ui-warning-soft',
+  info: '--ui-info',
+  infoSoft: '--ui-info-soft',
+  secondary: '--ui-secondary',
+  secondarySoft: '--ui-secondary-soft',
   display: '--ui-font-display',
   body: '--ui-font-body',
   mono: '--ui-font-mono',
@@ -97,6 +117,14 @@ function paletteVariables(palette: Palette) {
     [themeVars.accentSoft]: palette.accentSoft,
     [themeVars.danger]: palette.danger,
     [themeVars.dangerSoft]: palette.dangerSoft,
+    [themeVars.success]: palette.success ?? PALETTE_DEFAULTS.success,
+    [themeVars.successSoft]: palette.successSoft ?? PALETTE_DEFAULTS.successSoft,
+    [themeVars.warning]: palette.warning ?? PALETTE_DEFAULTS.warning,
+    [themeVars.warningSoft]: palette.warningSoft ?? PALETTE_DEFAULTS.warningSoft,
+    [themeVars.info]: palette.info ?? PALETTE_DEFAULTS.info,
+    [themeVars.infoSoft]: palette.infoSoft ?? PALETTE_DEFAULTS.infoSoft,
+    [themeVars.secondary]: palette.secondary ?? PALETTE_DEFAULTS.secondary,
+    [themeVars.secondarySoft]: palette.secondarySoft ?? PALETTE_DEFAULTS.secondarySoft,
   };
 }
 

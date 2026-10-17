@@ -47,7 +47,7 @@ function Swatches({ palette }: { palette: string }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section style={{ padding: '30px 0', borderTop: '1px solid var(--colors-gray-7)' }}>
-      <Stack gap="lg">
+      <Stack gap="8">
         <Label>{title}</Label>
         {children}
       </Stack>
@@ -80,8 +80,8 @@ function App() {
 
   return (
     <main style={{ maxWidth: 1120, margin: '0 auto', padding: '30px 20px 100px' }}>
-      <Stack gap="lg">
-        <Title level={1}>UI Playground</Title>
+      <Stack gap="8">
+        <Title level="h1">UI Playground</Title>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <Button variant="outline" onClick={() => setDark(!dark)}>
             {dark ? 'Light mode' : 'Dark mode'}
@@ -106,7 +106,7 @@ function App() {
             </span>
           </div>
         ))}
-        <Title level={2}>Title level 2</Title>
+        <Title level="h2">Title level 2</Title>
         <Text>Body text sits on the 5px baseline, with the space above the capitals and below the baseline trimmed.</Text>
         <Text variant="small">Small text.</Text>
         <Text variant="caption">Caption text.</Text>
@@ -123,7 +123,7 @@ function App() {
 
       <Section title="Color scales">
         {['gray', 'accent', 'red'].map((p) => (
-          <Stack key={p} gap="sm">
+          <Stack key={p} gap="2">
             <Text variant="small">{p}</Text>
             <Swatches palette={p} />
           </Stack>

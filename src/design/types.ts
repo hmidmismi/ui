@@ -1,3 +1,25 @@
+/** The type steps, `xs` to `7xl`. */
+export type TypeStep = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl';
+
+/** The heading levels a title can be set at. */
+export type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+
+/** How one heading level looks. Opinionated, so it is the project's to say. */
+export type HeadingStyle = {
+  /** The size step on phones, and from the `md` breakpoint when `wide` is not given. */
+  step: TypeStep;
+  /** The size step from the `md` breakpoint, when larger screens set the heading bigger. */
+  wide?: TypeStep;
+  /** The weight. Defaults to normal. */
+  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
+  /** A tracking token (`letterSpacings`), such as `title`. */
+  tracking?: string;
+  /** Sets the heading in capitals. */
+  uppercase?: boolean;
+  /** A color token. Defaults to `fg.default`. */
+  color?: string;
+};
+
 /**
  * The structure of the system: values that decide how big and how far apart everything is. They are computed into
  * tokens when Panda runs, so they are fixed per build. Anything that should change at runtime (colors, faces) is a
@@ -27,6 +49,8 @@ export type Design = {
       falloff: number;
       floor: number;
     };
+    /** How each heading level looks. Left out, the system's own (`defaultHeadings`). */
+    headings?: Partial<Record<HeadingLevel, HeadingStyle>>;
   };
   motion: {
     /** Named durations, as CSS times. */

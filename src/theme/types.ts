@@ -58,6 +58,22 @@ export type Palette = {
   danger: string;
   /** The error hue's soft tint. */
   dangerSoft: string;
+  /** The success hue, as the solid in light mode. Left out, the system's own green. */
+  success?: string;
+  /** The success hue's soft tint. */
+  successSoft?: string;
+  /** The warning hue, as the solid in light mode. Left out, the system's own amber. */
+  warning?: string;
+  /** The warning hue's soft tint. */
+  warningSoft?: string;
+  /** The info hue, as the solid in light mode. Left out, the system's own blue. */
+  info?: string;
+  /** The info hue's soft tint. */
+  infoSoft?: string;
+  /** The second color, for counts and small labels: the light-mode value. Left out, the system's own. */
+  secondary?: string;
+  /** The second color's dark-mode value. */
+  secondarySoft?: string;
 };
 
 /**
@@ -66,9 +82,14 @@ export type Palette = {
  * components read, so every one must be present; any other key (more scales, tints, label hues) is the project's own
  * and is passed through untouched.
  *
- * - `gray`, `accent` and `red`: scales with steps `1` to `12`, alpha steps `a1` to `a12` and the Park UI variants.
- * - `canvas`, `fg` (`default`, `muted`, `subtle`, `disabled`), `border` (`DEFAULT`, `muted`, `emphasized`), `error` and
- *   `shadow`: the semantic roles, usually references to the scales.
+ * - `gray`, `accent`, `red`, `success`, `warning` and `info`: scales with steps `1` to `12`, alpha steps `a1` to `a12`
+ *   and the Park UI variants. `success` also has a `DEFAULT`, the solid for a status dot.
+ * - `canvas`, `fg` (`default`, `muted`, `subtle`, `disabled`), `border` (`DEFAULT`, `muted`, `emphasized`), `error`,
+ *   `secondary` (the second color, for counts and small labels) and `shadow`: the semantic roles, usually references
+ *   to the scales.
+ * - `categorical`: eight colors, `1` to `8`, for things told apart by color (record labels, chart series).
+ * - `wash`: four soft block colors, `sand`, `green`, `blue` and `salmon`, each with `bg`, `fg` and `label`, for filled
+ *   sections of a page.
  */
 export type ColorTokens = {
   canvas: unknown;
@@ -79,6 +100,12 @@ export type ColorTokens = {
   gray: unknown;
   accent: unknown;
   red: unknown;
+  success: unknown;
+  warning: unknown;
+  info: unknown;
+  secondary: unknown;
+  categorical: unknown;
+  wash: unknown;
   [name: string]: unknown;
 };
 

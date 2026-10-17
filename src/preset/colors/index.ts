@@ -1,5 +1,6 @@
 import { defineSemanticTokens } from '@pandacss/dev';
 import type { Theme } from '../../theme';
+import { categorical, wash } from './defaults';
 import { neutralScale, ref, tonalScale, variants } from './scale';
 
 const onSolid = { base: ref('pigment.paper'), _dark: ref('pigment.ink') };
@@ -29,6 +30,25 @@ const red = defineSemanticTokens.colors({
   ...variants({ name: 'red', solid: 9, solidHover: 10, solidFg: onSolid, text: 11 }),
 });
 
+/** The success palette. */
+const success = defineSemanticTokens.colors({
+  ...tonalScale('pigment.success', 'pigment.successSoft'),
+  DEFAULT: { value: { base: '{colors.success.9}', _dark: '{colors.success.9}' } },
+  ...variants({ name: 'success', solid: 9, solidHover: 10, solidFg: onSolid, text: 11 }),
+});
+
+/** The warning palette. */
+const warning = defineSemanticTokens.colors({
+  ...tonalScale('pigment.warning', 'pigment.warningSoft'),
+  ...variants({ name: 'warning', solid: 9, solidHover: 10, solidFg: onSolid, text: 11 }),
+});
+
+/** The info palette. */
+const info = defineSemanticTokens.colors({
+  ...tonalScale('pigment.info', 'pigment.infoSoft'),
+  ...variants({ name: 'info', solid: 9, solidHover: 10, solidFg: onSolid, text: 11 }),
+});
+
 /** Semantic colors, plus the palettes. `brand` is the accent. */
 export const semanticColors = defineSemanticTokens.colors({
   canvas: { value: '{colors.gray.1}' },
@@ -49,6 +69,12 @@ export const semanticColors = defineSemanticTokens.colors({
   accent,
   brand: accent,
   red,
+  success,
+  warning,
+  info,
+  secondary: { value: { base: ref('pigment.secondary'), _dark: ref('pigment.secondarySoft') } },
+  categorical,
+  wash,
 });
 
 /** The color roles components read, and for the grouped ones the keys inside. A theme's own `colors` must have them all. */
@@ -61,6 +87,12 @@ const REQUIRED = {
   gray: [],
   accent: [],
   red: [],
+  success: [],
+  warning: [],
+  info: [],
+  secondary: [],
+  categorical: ['1', '2', '3', '4', '5', '6', '7', '8'],
+  wash: ['sand', 'green', 'blue', 'salmon'],
 } as const;
 
 /**

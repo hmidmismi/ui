@@ -13,15 +13,17 @@ const trims = (tag: string) => !INLINE.has(tag);
 
 type Props<T extends ElementType> = { as?: T; children?: ReactNode; className?: string };
 
-export type TitleLevel = 1 | 2 | 3 | 4 | 5 | 6;
+export type TitleLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
 export type TitleProps = Props<ElementType> & { level?: TitleLevel };
 
-export function Title({ level = 2, as, children }: TitleProps) {
-  const Tag = as ?? (`h${level}` as ElementType);
-  return (
-    <Tag className={title({ level: String(level) as `${TitleLevel}`, trim: true })}>{children}</Tag>
-  );
+/**
+ * A page or section title. `level` picks the design's heading style and is also the rendered tag unless `as`
+ * overrides it (when the outline and the visual size differ).
+ */
+export function Title({ level = 'h1', as, children }: TitleProps) {
+  const Tag = as ?? level;
+  return <Tag className={title({ level })}>{children}</Tag>;
 }
 
 export type TextProps = Props<ElementType> & { variant?: 'body' | 'small' | 'caption' };

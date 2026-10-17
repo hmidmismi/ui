@@ -1,5 +1,5 @@
 import type { SystemStyleObject } from '@pandacss/dev';
-import { type Design, design } from '../design';
+import { type Design, defaultHeadings, design, type HeadingLevel, type HeadingStyle } from '../design';
 import { type FaceMetrics, faceVar, type Role } from '../theme';
 import { createScale, round } from './scale';
 
@@ -197,6 +197,7 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
     labelCaps,
     microLabel,
     longForm,
+    headings: { ...defaultHeadings, ...d.type.headings } as Record<HeadingLevel, HeadingStyle>,
   };
 }
 

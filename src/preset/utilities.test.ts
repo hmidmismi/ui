@@ -12,10 +12,10 @@ describe('tone utilities', () => {
       { transform: (value: string, args: unknown) => Record<string, string> }
     >;
     expect(toneFill?.transform('20', {})).toEqual({
-      background: 'color-mix(in srgb, var(--tone) 20%, token(colors.canvas))',
+      background: 'color-mix(in srgb, var(--tone) 20%, var(--colors-canvas))',
     });
     expect(toneEdge?.transform('40', {})).toEqual({
-      borderColor: 'color-mix(in srgb, var(--tone) 40%, token(colors.border))',
+      borderColor: 'color-mix(in srgb, var(--tone) 40%, var(--colors-border))',
     });
   });
 });

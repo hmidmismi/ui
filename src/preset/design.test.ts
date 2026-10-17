@@ -3,6 +3,7 @@ import { type Design, design } from '../design';
 import { type ColorTokens, fontFaces, fontStack, neutral, type Theme, themeVariables, toCss } from '../theme';
 import { createPreset, createRecipes, explicitScale } from './index';
 import { createScale } from './scale';
+import { categorical, wash } from './colors/defaults';
 import { scaleValuesFor } from './spacing';
 import { createTypeSystem, STEPS, type StepName } from './type-scale';
 
@@ -57,7 +58,7 @@ describe('theme', () => {
   it('turns every palette entry and face into a CSS variable', () => {
     const vars = themeVariables(neutral);
     // 7 palette colors, 3 font stacks, and 4 type numbers for each of the 3 roles
-    expect(Object.keys(vars)).toHaveLength(7 + 3 + 12);
+    expect(Object.keys(vars)).toHaveLength(7 + 8 + 3 + 12);
     for (const value of Object.values(vars)) expect(value.length).toBeGreaterThan(0);
   });
 
@@ -105,6 +106,12 @@ const own = {
   gray: { '1': { value: { base: '#fdfdfb', _dark: '#1c1c1b' } } },
   accent: { '9': { value: { base: '#2f4bff', _dark: '#7c90ff' } } },
   red: { '9': { value: { base: '#c23a3a', _dark: '#f07f7f' } } },
+  success: { '9': { value: { base: '#2f7d4a', _dark: '#9ad3b0' } } },
+  warning: { '9': { value: { base: '#9a6a12', _dark: '#ebc57a' } } },
+  info: { '9': { value: { base: '#2f6fa8', _dark: '#9cc4e4' } } },
+  secondary: { value: { base: '#8f6200', _dark: '#e8b44a' } },
+  categorical,
+  wash,
   hue: { '1': { value: { base: '#2f4bff', _dark: '#7c90ff' } } },
 } satisfies ColorTokens;
 
@@ -136,7 +143,7 @@ describe('theme colors', () => {
   it('keeps the palette variables when a theme has both', () => {
     const vars = themeVariables({ ...withColors, palette: neutral.palette });
     expect(vars['--ui-ink']).toBe(neutral.palette.ink);
-    expect(Object.keys(vars)).toHaveLength(7 + 3 + 12);
+    expect(Object.keys(vars)).toHaveLength(7 + 8 + 3 + 12);
   });
 
   it('names every missing role', () => {
