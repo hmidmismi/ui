@@ -52,6 +52,9 @@ export type RoleStyle = {
   extra?: Record<string, unknown>;
 };
 
+/** A shadow: one CSS value for both modes, or one for each. Token references such as `{colors.shadow}` work. */
+export type ShadowValue = string | { light: string; dark: string };
+
 /** The heading levels a title can be set at. */
 export type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
@@ -110,6 +113,14 @@ export type Design = {
    * system's own. A name the system does not declare is an error.
    */
   sizes?: Record<string, string>;
+  /** Corner radii as CSS lengths: `xs` to `xl`. Left out, the system's own. */
+  radii?: Partial<Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', string>>;
+  /** Elevation: shadows by name (`xs` to `2xl`). Left out, the system's own. */
+  shadows?: Record<string, ShadowValue>;
+  /** Tracking by name, as `em` lengths. Left out, the system's own. */
+  letterSpacings?: Record<string, string>;
+  /** The widths where layouts change, as CSS lengths. Left out, Panda's own. */
+  breakpoints?: Partial<Record<'sm' | 'md' | 'lg' | 'xl' | '2xl', string>>;
   /** How tall, how padded and how large the icon is at each control size. Left out, the system's own. */
   controls?: Partial<Record<ControlSize, ControlStyle>>;
   motion: {

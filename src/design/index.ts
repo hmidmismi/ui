@@ -7,5 +7,6 @@ export type {
   HeadingStyle,
   RoleName,
   RoleStyle,
+  ShadowValue,
   TypeStep,
 } from './types';

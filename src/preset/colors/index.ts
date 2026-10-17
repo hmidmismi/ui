@@ -1,6 +1,7 @@
 import { defineSemanticTokens } from '@pandacss/dev';
 import type { Theme } from '../../theme';
 import { categorical, wash } from './defaults';
+import { colorTokensFromScales } from './from-scales';
 import { neutralScale, ref, tonalScale, variants } from './scale';
 
 const onSolid = { base: ref('pigment.paper'), _dark: ref('pigment.ink') };
@@ -103,6 +104,7 @@ const REQUIRED = {
  * @throws when the theme has neither, or its `colors` lack a role the components read.
  */
 export function colorTokensFor(theme: Theme): typeof semanticColors {
+  if (theme.scales) return colorTokensFromScales(theme.scales) as unknown as typeof semanticColors;
   if (!theme.colors) {
     if (!theme.palette) throw new Error(`Theme "${theme.name}" needs a palette or colors.`);
     return semanticColors;

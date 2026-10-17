@@ -23,14 +23,24 @@ import {
   easings,
   fontWeights,
   fonts,
-  letterSpacings,
-  radii,
-  shadows,
+  letterSpacingsFor,
+  radiiFor,
+  shadowsFor,
   sizesFor,
   zIndex,
 } from './tokens';
 import { createTypeSystem, type TypeSystem } from './type-scale';
 import { utilities } from './utilities';
+
+/** The widths where layouts change: Panda's own, unless the design sets them. */
+const breakpointsFor = (d: Pick<Design, 'breakpoints'>) => ({
+  sm: '40rem',
+  md: '48rem',
+  lg: '64rem',
+  xl: '80rem',
+  '2xl': '96rem',
+  ...d.breakpoints,
+});
 
 /** What a project may bring of its own, in place of the system's. */
 export type PresetOptions = {
@@ -85,15 +95,16 @@ export function createPreset(
         fontSizes: type.fontSizeTokens,
         fontWeights,
         fonts,
-        letterSpacings,
+        letterSpacings: letterSpacingsFor(design),
         lineHeights: type.lineHeightTokens,
-        radii,
+        radii: radiiFor(design),
         sizes: sizesFor(design),
         spacing: spacingFor(design),
       },
-      semanticTokens: { colors: colorTokensFor(theme) },
+      semanticTokens: { colors: colorTokensFor(theme), shadows: shadowsFor(design).semanticTokens },
       extend: {
-        tokens: { animations, durations: durationsFor(design), easings, shadows, zIndex },
+        breakpoints: breakpointsFor(design),
+        tokens: { animations, durations: durationsFor(design), easings, shadows: shadowsFor(design).tokens, zIndex },
         keyframes,
         textStyles: textStylesFor(type.scaleTextStyles),
         layerStyles,

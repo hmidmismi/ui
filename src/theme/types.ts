@@ -109,14 +109,56 @@ export type ColorTokens = {
   [name: string]: unknown;
 };
 
+/** A color in light mode and in dark mode. */
+export type ModeColor = { light: string; dark: string };
+
+/**
+ * One color as twelve steps in each mode: step 1 is the lightest in light mode and the darkest in dark mode, step 9 is
+ * the solid, 11 the text. The twelve alpha steps (the same colors at rising opacity) are optional; left out, they are
+ * mixed from step 12.
+ */
+export type ColorScale = {
+  light: readonly string[];
+  dark: readonly string[];
+  alpha?: { light: readonly string[]; dark: readonly string[] };
+  /** The text color on a solid fill of this scale. Defaults to paper in light mode and ink in dark mode. */
+  onSolid?: ModeColor;
+};
+
+/** A soft block color for filled sections of a page: the fill, the text on it and the small label on it. */
+export type Wash = { bg: ModeColor; fg: ModeColor; label: ModeColor };
+
+/**
+ * The colors of a theme as plain data: every scale and role is declared here and the system builds all the tokens and
+ * component variants from them.
+ */
+export type ThemeScales = {
+  /** The neutral: step 1 is the page, 7 the rules, 12 the text. */
+  neutral: ColorScale;
+  accent: ColorScale;
+  /** Errors. */
+  danger: ColorScale;
+  success: ColorScale;
+  warning: ColorScale;
+  info: ColorScale;
+  /** The second color, for counts and small labels. */
+  secondary: ModeColor;
+  /** Eight colors for things told apart by color, such as record labels. */
+  categorical: readonly ModeColor[];
+  /** Four soft block colors for filled sections. */
+  wash: Record<'sand' | 'green' | 'blue' | 'salmon', Wash>;
+};
+
 type ThemeBase = {
   name: string;
   faces: Record<Role, Face>;
 };
 
 /**
- * The look of a brand: colors and faces. Colors come one of two ways, and a theme gives at least one:
+ * The look of a brand: colors and faces. Colors come one of three ways, and a theme gives one:
  *
+ * - `scales`: plain data, twelve steps per color and a few single colors. The system builds every token and variant
+ *   from it. This is the form to use.
  * - `palette`: seven colors the system generates every scale from. They become CSS variables, so the look can change
  *   at runtime with no rebuild.
  * - `colors`: the project's own scales, which replace the generated ones. They are baked into the stylesheet, so a
@@ -126,4 +168,8 @@ type ThemeBase = {
  * faces become CSS variables in either case.
  */
 export type Theme = ThemeBase &
-  ({ palette: Palette; colors?: ColorTokens } | { palette?: Palette; colors: ColorTokens });
+  (
+    | { palette: Palette; colors?: ColorTokens; scales?: undefined }
+    | { palette?: Palette; colors: ColorTokens; scales?: undefined }
+    | { palette?: Palette; colors?: undefined; scales: ThemeScales }
+  );
