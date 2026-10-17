@@ -1,2 +1,11 @@
-export { defaultHeadings, design } from './default';
-export type { Design, HeadingLevel, HeadingStyle, TypeStep } from './types';
+export { defaultControls, defaultHeadings, defaultRoles, design } from './default';
+export type {
+  ControlSize,
+  ControlStyle,
+  Design,
+  HeadingLevel,
+  HeadingStyle,
+  RoleName,
+  RoleStyle,
+  TypeStep,
+} from './types';

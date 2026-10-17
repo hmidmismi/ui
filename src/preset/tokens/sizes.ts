@@ -1,16 +1,36 @@
 import { defineTokens } from '@pandacss/dev';
 import { type Design, design } from '../../design';
 import { createScale } from '../scale';
-import { scaleValuesFor } from '../spacing';
+import { controlsFor, scaleValuesFor } from '../spacing';
 
 /**
  * Sizes: the spacing scale (for control heights, icons and boxes) plus named widths for layout and dialogs. The
  * named widths are horizontal measures, so they are on the 10px scale but not tied to the vertical rhythm.
  */
-export const sizesFor = (d: Pick<Design, 'grid'>) => {
-  const { rem } = createScale(d);
-  return defineTokens.sizes({
+/**
+ * The design's own values for named sizes, on top of the defaults. A name the system does not declare is an error, so a
+ * misspelled size cannot pass silently.
+ */
+function withOverrides<T extends Record<string, unknown>>(defaults: T, own: Record<string, string> = {}) {
+  const sizes: Record<string, unknown> = { ...defaults };
+  for (const [name, value] of Object.entries(own)) {
+    if (!(name in defaults)) {
+      throw new Error(`Design.sizes has no size named "${name}". The names are: ${Object.keys(defaults).join(', ')}.`);
+    }
+    sizes[name] = { value };
+  }
+  return sizes as T;
+}
+
+export const sizesFor = (d: Pick<Design, 'grid' | 'controls' | 'sizes'>) => {
+  const { rem, baselines } = createScale(d);
+  const controls = Object.entries(controlsFor(d));
+  const defaults = {
   ...scaleValuesFor(d),
+  /** The height of each control size, and the minimum width of an icon-only control. */
+  control: Object.fromEntries(controls.map(([size, c]) => [size, { value: baselines(c.height) }])),
+  /** The icon beside the label at each control size. */
+  controlIcon: Object.fromEntries(controls.map(([size, c]) => [size, { value: baselines(c.icon) }])),
   xs: { value: rem(320) },
   sm: { value: rem(380) },
   md: { value: rem(440) },
@@ -22,6 +42,8 @@ export const sizesFor = (d: Pick<Design, 'grid'>) => {
   '5xl': { value: rem(1060) },
   '6xl': { value: rem(1200) },
   '7xl': { value: rem(1360) },
+  /** The full width or height of the parent. */
+  full: { value: '100%' },
   /** The widest the content column gets, side inset included. */
   site: { value: rem(1280) },
   /** The shortest the header bar gets. */
@@ -101,7 +123,7 @@ export const sizesFor = (d: Pick<Design, 'grid'>) => {
   /** The side of a letter key on phones. */
   keyCompact: { value: '2.25rem' },
   /** The side of a square control such as the theme button. */
-  control: { value: '2.5rem' },
+  squareControl: { value: '2.5rem' },
   /** The height of the player bar, which the queue panel sits above. */
   player: { value: '4.5rem' },
   /** The tallest the queue panel grows. */
@@ -117,7 +139,8 @@ export const sizesFor = (d: Pick<Design, 'grid'>) => {
     md: { value: '10rem' },
     lg: { value: '12rem' },
   },
-  });
+  };
+  return defineTokens.sizes(withOverrides(defaults, d.sizes));
 };
 
 export const sizes = sizesFor(design);

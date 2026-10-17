@@ -108,8 +108,8 @@ export const letterBar = (t: TypeSystem) => {
     key: {
       display: 'grid',
       placeItems: 'center',
-      width: { base: 'keyCompact', sm: 'control' },
-      height: { base: 'keyCompact', sm: 'control' },
+      width: { base: 'keyCompact', sm: 'squareControl' },
+      height: { base: 'keyCompact', sm: 'squareControl' },
       color: 'fg.default',
       fontFamily: 'display',
       ...responsive(textSize('display', 'lg'), textSize('display', 'xl'), 'sm'),

@@ -16,10 +16,12 @@ import { createRecipes } from './recipes';
 import { spacingFor } from './spacing';
 import { textStylesFor } from './text-styles';
 import {
+  animations,
   borderWidths,
   colors,
   durationsFor,
   easings,
+  fontWeights,
   fonts,
   letterSpacings,
   radii,
@@ -81,6 +83,7 @@ export function createPreset(
         borderWidths,
         colors,
         fontSizes: type.fontSizeTokens,
+        fontWeights,
         fonts,
         letterSpacings,
         lineHeights: type.lineHeightTokens,
@@ -90,7 +93,7 @@ export function createPreset(
       },
       semanticTokens: { colors: colorTokensFor(theme) },
       extend: {
-        tokens: { durations: durationsFor(design), easings, shadows, zIndex },
+        tokens: { animations, durations: durationsFor(design), easings, shadows, zIndex },
         keyframes,
         textStyles: textStylesFor(type.scaleTextStyles),
         layerStyles,

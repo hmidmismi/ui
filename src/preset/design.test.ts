@@ -117,6 +117,26 @@ const own = {
 
 const withColors: Theme = { name: 'own', faces: neutral.faces, colors: own };
 
+describe('controls', () => {
+  it('become height, padding and icon tokens for every size, from the design or the default', () => {
+    const tokens = createPreset(other, neutral).theme?.tokens as Record<string, Record<string, unknown>>;
+    for (const size of ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']) {
+      expect(tokens.sizes?.control).toHaveProperty(size);
+      expect(tokens.sizes?.controlIcon).toHaveProperty(size);
+      expect(tokens.spacing?.controlPad).toHaveProperty(size);
+    }
+  });
+
+  it('take the design\'s own sizes, in baselines', () => {
+    const design = { ...other, controls: { md: { height: 10, padX: 3.5, icon: 5 } } };
+    const tokens = createPreset(design, neutral).theme?.tokens as {
+      sizes: { control: { md: { value: string } } };
+    };
+    // a 4px baseline: ten baselines is 40px, 2.5rem
+    expect(tokens.sizes.control.md.value).toBe('2.5rem');
+  });
+});
+
 describe('theme colors', () => {
   const semantic = (theme: Theme) =>
     (createPreset(other, theme).theme?.semanticTokens ?? {}).colors as Record<string, unknown>;

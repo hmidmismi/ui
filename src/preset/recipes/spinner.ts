@@ -22,12 +22,12 @@ export const spinner = defineRecipe({
   variants: {
     size: {
       inherit: { '--spinner-size': '1em' },
-      xs: { '--spinner-size': 'sizes.3' },
-      sm: { '--spinner-size': 'sizes.4' },
-      md: { '--spinner-size': 'sizes.5' },
-      lg: { '--spinner-size': 'sizes.6' },
-      xl: { '--spinner-size': 'sizes.7' },
-      '2xl': { '--spinner-size': 'sizes.8' },
+      xs: { '--spinner-size': 'sizes.controlIcon.xs' },
+      sm: { '--spinner-size': 'sizes.controlIcon.sm' },
+      md: { '--spinner-size': 'sizes.controlIcon.md' },
+      lg: { '--spinner-size': 'sizes.controlIcon.lg' },
+      xl: { '--spinner-size': 'sizes.controlIcon.xl' },
+      '2xl': { '--spinner-size': 'sizes.controlIcon.2xl' },
     },
   },
 });

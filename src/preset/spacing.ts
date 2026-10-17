@@ -1,5 +1,5 @@
 import { defineTokens } from '@pandacss/dev';
-import { type Design, design } from '../design';
+import { type Design, defaultControls, design } from '../design';
 import { createScale } from './scale';
 
 /**
@@ -35,6 +35,19 @@ export const scaleValues = scaleValuesFor(design);
  * @param d - the design.
  * @returns the tokens.
  */
-export const spacingFor = (d: Pick<Design, 'grid'>) => defineTokens.spacing(scaleValuesFor(d));
+/** The controls of a design: the system's defaults with the design's own sizes on top. */
+export const controlsFor = (d: Pick<Design, 'controls'>) => ({ ...defaultControls, ...d.controls });
+
+export const spacingFor = (d: Pick<Design, 'grid' | 'controls'>) => {
+  const { baselines } = createScale(d);
+  const controls = controlsFor(d);
+  return defineTokens.spacing({
+    ...scaleValuesFor(d),
+    /** The side padding of each control size. */
+    controlPad: Object.fromEntries(
+      Object.entries(controls).map(([size, c]) => [size, { value: baselines(c.padX) }])
+    ),
+  });
+};
 
 export const spacing = spacingFor(design);

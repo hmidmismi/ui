@@ -1,7 +1,9 @@
 export { borderWidths } from './border-widths';
 export { colors } from './colors';
+export { animations } from './animations';
 export { durations, durationsFor } from './durations';
 export { easings } from './easings';
+export { fontWeights } from './font-weights';
 export { fonts } from './fonts';
 export { letterSpacings } from './letter-spacings';
 export { radii } from './radii';

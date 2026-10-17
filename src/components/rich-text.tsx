@@ -13,7 +13,7 @@ const wrapper = css({
   display: 'flex',
   flexDirection: 'column',
   gap: '3',
-  lineHeight: 'relaxed',
+  lineHeight: 'lg',
   maxWidth: '65ch',
   '& ul, & ol': { paddingInlineStart: '5' },
   '& a': { textDecoration: 'underline' },

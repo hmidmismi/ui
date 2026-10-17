@@ -42,7 +42,7 @@ import { statusBadge } from './status';
 import { hero } from './hero';
 import { browseNav, rangeColumns, letterBar, neighborNav, listHeader } from './browse';
 
-import { eyebrow, personName, term, entry, prose, value, caption, count, tagline, fieldLabel, notice } from './page-roles';
+import { createPageRoles } from './page-roles';
 
 import { chip, searchField, filterRow, typeahead } from './search';
 import { jumpNav, breadcrumbs, siteNav, siteFooter } from './chrome';
@@ -72,6 +72,7 @@ export function createRecipes(t: TypeSystem) {
   const { label, numeral, text, title } = createRoles(t);
   return {
     recipes: {
+      ...createPageRoles(t),
       scrollX,
       tableCell: tableCell(t),
       playableRow,
@@ -101,17 +102,6 @@ export function createRecipes(t: TypeSystem) {
       hue,
       scrollList,
       chip: chip(t),
-      eyebrow: eyebrow(t),
-      personName: personName(t),
-      term: term(t),
-      entry: entry(t),
-      prose: prose(t),
-      value: value(t),
-      caption: caption(t),
-      count: count(t),
-      tagline: tagline(t),
-      fieldLabel: fieldLabel(t),
-      notice: notice(t),
       pageColumn,
       pageHeader,
       cardItem,

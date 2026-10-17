@@ -14,12 +14,12 @@ export const icon = defineRecipe({
   },
   variants: {
     size: {
-      '2xs': { boxSize: '3' },
-      xs: { boxSize: '4' },
-      sm: { boxSize: '4.5' },
-      md: { boxSize: '5' },
-      lg: { boxSize: '5.5' },
-      xl: { boxSize: '6' },
+      '2xs': { boxSize: 'controlIcon.2xs' },
+      xs: { boxSize: 'controlIcon.xs' },
+      sm: { boxSize: 'controlIcon.sm' },
+      md: { boxSize: 'controlIcon.md' },
+      lg: { boxSize: 'controlIcon.lg' },
+      xl: { boxSize: 'controlIcon.xl' },
     },
   },
 });
