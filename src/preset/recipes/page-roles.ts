@@ -112,7 +112,9 @@ export function createPageRoles(t: TypeSystem) {
     caption: recipe('caption'),
     count: recipe('count'),
     tagline: recipe('tagline'),
-    fieldLabel: recipe('fieldLabel', { spaced: { true: { display: 'block', marginBlockEnd: '4' } } }),
+    fieldLabel: recipe('fieldLabel', {
+      spaced: { true: { display: 'block', marginBlockEnd: '4' } },
+    }),
     notice: recipe('notice'),
   };
 }

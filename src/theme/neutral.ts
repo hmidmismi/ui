@@ -21,6 +21,11 @@ export const neutral = {
   faces: {
     display: { family: 'Inter', generic: 'sans-serif', metrics: inter, cssVar: '--font-display' },
     body: { family: 'Inter', generic: 'sans-serif', metrics: inter, cssVar: '--font-body' },
-    mono: { family: 'IBM Plex Mono', generic: 'monospace', metrics: ibmPlexMono, cssVar: '--font-mono' },
+    mono: {
+      family: 'IBM Plex Mono',
+      generic: 'monospace',
+      metrics: ibmPlexMono,
+      cssVar: '--font-mono',
+    },
   },
 } as const satisfies Theme;

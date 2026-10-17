@@ -1,6 +1,6 @@
 import { defineRecipe } from '@pandacss/dev';
-import type { TypeSystem } from '../type-scale';
 import { currentBar } from '../interaction';
+import type { TypeSystem } from '../type-scale';
 
 /** A wrapper that lets a wide table scroll sideways on narrow screens. */
 export const scrollX = defineRecipe({
@@ -12,16 +12,16 @@ export const scrollX = defineRecipe({
 export const tableCell = (t: TypeSystem) => {
   const textSize = t.textSize;
   return defineRecipe({
-  className: 'table-cell',
-  staticCss: ['*'],
-  variants: {
-    kind: {
-      wrap: { whiteSpace: 'normal', overflow: 'visible' },
-      number: { width: '1', whiteSpace: 'nowrap', textAlign: 'end' },
-      mono: { fontFamily: 'mono', ...textSize('body', 'xs'), whiteSpace: 'pre-wrap' },
+    className: 'table-cell',
+    staticCss: ['*'],
+    variants: {
+      kind: {
+        wrap: { whiteSpace: 'normal', overflow: 'visible' },
+        number: { width: '1', whiteSpace: 'nowrap', textAlign: 'end' },
+        mono: { fontFamily: 'mono', ...textSize('body', 'xs'), whiteSpace: 'pre-wrap' },
+      },
     },
-  },
-});
+  });
 };
 
 /** A table row whose track is loaded in the player: `currentFill` on its cells. */

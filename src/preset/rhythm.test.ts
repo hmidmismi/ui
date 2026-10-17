@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { design } from '../design';
 import { baikikai } from '../brand';
+import { design } from '../design';
 import { xHeightAdjust } from '../theme';
 import { createRecipes } from './recipes';
 import { BASELINE, ROOT_SIZE } from './scale';
 import { scaleValues } from './spacing';
 import {
   BASE_SIZE,
+  createTypeSystem,
   MIN_LEADING,
   RATIO,
   STEPS,
@@ -16,7 +17,6 @@ import {
   textSize,
   textTrim,
   trimValues,
-  createTypeSystem,
 } from './type-scale';
 
 const { recipes, slotRecipes } = createRecipes(createTypeSystem(design));
@@ -88,7 +88,7 @@ describe('type scale', () => {
 });
 
 describe('spacing scale', () => {
-  it('is Park UI\'s ladder, each step its name times the 5px baseline', () => {
+  it("is Park UI's ladder, each step its name times the 5px baseline", () => {
     for (const [name, { value }] of Object.entries(scaleValues)) {
       expect(px(value), name).toBeCloseTo(Number(name) * BASELINE, 1);
     }

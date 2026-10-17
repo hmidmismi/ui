@@ -17,9 +17,19 @@ export const defaultRoles = {
   prose: { step: 'md' },
   value: { step: 'md' },
   caption: { step: 'sm', color: 'fg.muted' },
-  count: { step: 'sm', color: 'fg.muted', extra: { fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' } },
+  count: {
+    step: 'sm',
+    color: 'fg.muted',
+    extra: { fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' },
+  },
   tagline: { face: 'display', step: '2xl', weight: 'medium' },
-  fieldLabel: { step: 'xs', weight: 'medium', tracking: 'caps', uppercase: true, color: 'fg.muted' },
+  fieldLabel: {
+    step: 'xs',
+    weight: 'medium',
+    tracking: 'caps',
+    uppercase: true,
+    color: 'fg.muted',
+  },
   notice: { step: 'lg', color: 'fg.muted' },
 } as const satisfies Record<RoleName, RoleStyle>;
 

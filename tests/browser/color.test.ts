@@ -21,10 +21,17 @@ function contrast(a: number[], b: number[]) {
 
 /** Resolves CSS color variables to sRGB through a canvas, so any color space (color-mix in oklab) reads the same. */
 async function colors(browser: Browser, theme: Theme | null, dark: boolean) {
-  const page = await open(browser, '<div id="x"></div>', theme ? toCss(theme) : '', dark ? 'dark' : '');
+  const page = await open(
+    browser,
+    '<div id="x"></div>',
+    theme ? toCss(theme) : '',
+    dark ? 'dark' : ''
+  );
   const out = await page.evaluate(() => {
     const el = document.getElementById('x') as HTMLElement;
-    const ctx = (document.createElement('canvas').getContext('2d', { willReadFrequently: true })) as CanvasRenderingContext2D;
+    const ctx = document
+      .createElement('canvas')
+      .getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;
     const read = (name: string) => {
       el.style.color = `var(--colors-${name})`;
       const value = getComputedStyle(el).color;
@@ -66,7 +73,9 @@ run('colors in a browser', () => {
         const c = await colors(browser, theme, dark);
         expect(contrast(c.fg, c.canvas), 'fg.default on canvas').toBeGreaterThanOrEqual(7);
         expect(contrast(c.muted, c.canvas), 'fg.muted on canvas').toBeGreaterThanOrEqual(4.5);
-        expect(contrast(c.accentText, c.canvas), 'accent text on canvas').toBeGreaterThanOrEqual(4.5);
+        expect(contrast(c.accentText, c.canvas), 'accent text on canvas').toBeGreaterThanOrEqual(
+          4.5
+        );
       });
     }
   }

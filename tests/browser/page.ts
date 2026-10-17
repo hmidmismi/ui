@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { type Browser, type Page, chromium } from 'playwright-core';
+import { type Browser, chromium, type Page } from 'playwright-core';
 
 const CHROME =
   process.env.CHROME_PATH ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -29,7 +29,12 @@ export async function launch(): Promise<Browser> {
  * @param htmlClass - classes for `<html>`, such as `dark`.
  * @returns the page.
  */
-export async function open(browser: Browser, body: string, extraCss = '', htmlClass = ''): Promise<Page> {
+export async function open(
+  browser: Browser,
+  body: string,
+  extraCss = '',
+  htmlClass = ''
+): Promise<Page> {
   const page = await browser.newPage({ viewport: { width: 1000, height: 800 } });
   await page.setContent(
     `<!doctype html><html class="${htmlClass}"><head><style>${styles()}</style><style>${extraCss}</style></head><body>${body}</body></html>`

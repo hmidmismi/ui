@@ -1,8 +1,8 @@
 import { precomputeValues } from '@capsizecss/core';
 import { describe, expect, it } from 'vitest';
+import { STEPS, type StepName, stepLineHeight, stepSize, trimValues } from '../preset/type-scale';
 import { fontStack, xHeightAdjust } from '../theme';
 import { DEFAULT_FACE_SET, faceSets, resolveFaceSet } from './faces';
-import { stepLineHeight, stepSize, STEPS, type StepName, trimValues } from '../preset/type-scale';
 
 const names = Object.keys(STEPS) as StepName[];
 
@@ -26,7 +26,11 @@ describe('font sets', () => {
   it('keeps the CSS variable names identical across sets', () => {
     for (const set of Object.values(faceSets)) {
       for (const role of ['display', 'body', 'mono'] as const) {
-        const face = { family: set[role].family, generic: set[role].generic, cssVar: `--font-${role}` };
+        const face = {
+          family: set[role].family,
+          generic: set[role].generic,
+          cssVar: `--font-${role}`,
+        };
         expect(fontStack(face)).toMatch(new RegExp(`^var\\(--font-${role}, "`));
       }
     }
@@ -48,8 +52,14 @@ describe('font sets', () => {
           expect(Number.parseFloat(v.baselineTrim), `${name} ${role} ${step}`).toBeLessThan(0);
           // our formula, which the generated calc() expresses, must equal Capsize's
           const ours = trimValues(metrics, stepSize(step) * adjust, stepLineHeight(step));
-          expect(ours.capHeightTrim, `${name} ${role} ${step}`).toBeCloseTo(Number.parseFloat(v.capHeightTrim), 3);
-          expect(ours.baselineTrim, `${name} ${role} ${step}`).toBeCloseTo(Number.parseFloat(v.baselineTrim), 3);
+          expect(ours.capHeightTrim, `${name} ${role} ${step}`).toBeCloseTo(
+            Number.parseFloat(v.capHeightTrim),
+            3
+          );
+          expect(ours.baselineTrim, `${name} ${role} ${step}`).toBeCloseTo(
+            Number.parseFloat(v.baselineTrim),
+            3
+          );
         }
       }
     }

@@ -1,10 +1,16 @@
+import type { TypeSystem } from '../type-scale';
 import { absoluteCenter } from './absolute-center';
 import { accordion } from './accordion';
-import type { TypeSystem } from '../type-scale';
+import { adminBar, fieldStatus, pageBar, signInForm, viewSwitch } from './admin';
 import { announcement } from './announcement';
 import { badge } from './badge';
+import { codeBlock, disclosure, quote, timeline } from './blocks';
+import { browseNav, letterBar, listHeader, neighborNav, rangeColumns } from './browse';
 import { button } from './button';
+import { featureCard, tile } from './cards';
 import { checkbox } from './checkbox';
+import { breadcrumbs, jumpNav, siteFooter, siteNav } from './chrome';
+import { combobox } from './combobox';
 import { crumbs } from './crumbs';
 import { dialog } from './dialog';
 import { field } from './field';
@@ -14,53 +20,55 @@ import { filterGroup } from './filter-group';
 import { footer } from './footer';
 import { group } from './group';
 import { header } from './header';
+import { hero } from './hero';
 import { icon } from './icon';
 import { indexRow } from './index-row';
 import { input } from './input';
+import {
+  columnList,
+  fullRow,
+  inset,
+  itemList,
+  layout,
+  layoutStack,
+  layoutWrap,
+  measure,
+  mediaRow,
+  ruled,
+  splitGrid,
+  termList,
+  termRow,
+  tileGrid,
+} from './layout';
 import { link } from './link';
 import { list } from './list';
+import { countedList, datedList, expandableRow, listFilter, rowDrawer } from './lists';
+import { figure, picture, videoFrame } from './media';
 import { menu } from './menu';
+import { createPageRoles } from './page-roles';
+import { pageLayout, pageText } from './page-text';
+import { cardItem, centeredLines, pageColumn, pageHeader, skipLink } from './pages';
 import { pagination } from './pagination';
 import { placeholder } from './placeholder';
+import { player } from './player';
 import { popover } from './popover';
 import { radioGroup } from './radio-group';
 import { createRoles } from './roles';
+import { chip, filterRow, searchField, typeahead } from './search';
+import { section, sectionGroup } from './section';
 import { select } from './select';
 import { spinner } from './spinner';
 import { split } from './split';
+import { statusBadge } from './status';
+import { styleguide } from './styleguide';
 import { surface } from './surface';
 import { table } from './table';
+import { playableRow, scrollX, tableCell } from './table-parts';
 import { tabs } from './tabs';
+import { hue, plate, scrollList } from './tile';
 import { toast } from './toast';
 import { toggleGroup } from './toggle-group';
 import { tooltip } from './tooltip';
-
-
-import { pageColumn, pageHeader, cardItem, centeredLines, skipLink } from './pages';
-import { pageBar, adminBar, fieldStatus, signInForm, viewSwitch } from './admin';
-import { statusBadge } from './status';
-import { hero } from './hero';
-import { browseNav, rangeColumns, letterBar, neighborNav, listHeader } from './browse';
-
-import { createPageRoles } from './page-roles';
-
-import { chip, searchField, filterRow, typeahead } from './search';
-import { jumpNav, breadcrumbs, siteNav, siteFooter } from './chrome';
-import { player } from './player';
-
-import { listFilter, countedList, expandableRow, rowDrawer, datedList } from './lists';
-import { quote, codeBlock, timeline, disclosure } from './blocks';
-import { picture, figure, videoFrame } from './media';
-import { sectionGroup, section } from './section';
-import { hue, scrollList, plate } from './tile';
-import { featureCard, tile } from './cards';
-import { pageText, pageLayout } from './page-text';
-
-import { itemList, layoutStack, layoutWrap, measure, ruled, mediaRow, inset, layout, fullRow, termList, termRow, columnList, splitGrid, tileGrid } from './layout';
-
-import { scrollX, tableCell, playableRow } from './table-parts';
-import { combobox } from './combobox';
-import { styleguide } from './styleguide';
 
 /**
  * Every recipe, built for a type system. The recipes that set text take the type system; the rest are static.

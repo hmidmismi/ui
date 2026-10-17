@@ -1,33 +1,33 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import type { TypeSystem } from '../type-scale';
-import { responsive } from '../type-scale';
 import { column, ruleAbove, ruleBelow, stickBelowHeader } from '../fragments';
 import { currentMark, hoverAccent } from '../interaction';
+import type { TypeSystem } from '../type-scale';
+import { responsive } from '../type-scale';
 
 /** A row of links that choose a group of a browse list: a letter, a decade or a view. The current one is marked. */
 export const browseNav = (t: TypeSystem) => {
   const labelCaps = t.caps('sm', 'normal');
   return defineSlotRecipe({
-  className: 'browse-nav',
-  staticCss: ['*'],
-  slots: ['root', 'link'],
-  base: {
-    root: { display: 'flex', flexWrap: 'wrap', gap: '1', paddingBlock: '2', ...ruleBelow },
-    link: {
-      paddingBlock: '1',
-      paddingInline: '2',
-      color: 'fg.muted',
-      ...labelCaps,
-      ...hoverAccent,
+    className: 'browse-nav',
+    staticCss: ['*'],
+    slots: ['root', 'link'],
+    base: {
+      root: { display: 'flex', flexWrap: 'wrap', gap: '1', paddingBlock: '2', ...ruleBelow },
+      link: {
+        paddingBlock: '1',
+        paddingInline: '2',
+        color: 'fg.muted',
+        ...labelCaps,
+        ...hoverAccent,
+      },
     },
-  },
-  variants: {
-    current: {
-      true: { link: currentMark },
-      false: {},
+    variants: {
+      current: {
+        true: { link: currentMark },
+        false: {},
+      },
     },
-  },
-});
+  });
 };
 
 /**
@@ -39,51 +39,51 @@ export const browseNav = (t: TypeSystem) => {
 export const rangeColumns = (t: TypeSystem) => {
   const textSize = t.textSize;
   return defineSlotRecipe({
-  className: 'range-columns',
-  slots: ['root', 'column', 'heading', 'label', 'count', 'list', 'link', 'note'],
-  base: {
-    root: {
-      display: 'grid',
-      gridTemplateColumns: {
-        base: 'minmax(0, 1fr)',
-        sm: 'repeat(2, minmax(0, 1fr))',
-        md: 'repeat(3, minmax(0, 1fr))',
-        lg: 'repeat(5, minmax(0, 1fr))',
+    className: 'range-columns',
+    slots: ['root', 'column', 'heading', 'label', 'count', 'list', 'link', 'note'],
+    base: {
+      root: {
+        display: 'grid',
+        gridTemplateColumns: {
+          base: 'minmax(0, 1fr)',
+          sm: 'repeat(2, minmax(0, 1fr))',
+          md: 'repeat(3, minmax(0, 1fr))',
+          lg: 'repeat(5, minmax(0, 1fr))',
+        },
+        columnGap: '6',
+        rowGap: { base: '8', sm: '12' },
       },
-      columnGap: '6',
-      rowGap: { base: '8', sm: '12' },
+      column: { ...column, minWidth: '0' },
+      heading: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'baseline',
+        gap: '2',
+        paddingBlockEnd: '2',
+        marginBlockEnd: '1',
+        borderBlockEndWidth: 'hairline',
+        borderBlockEndStyle: 'solid',
+        borderBlockEndColor: 'fg.default',
+      },
+      label: { fontFamily: 'display', fontWeight: 'medium', ...textSize('display', '2xl') },
+      count: { color: 'secondary', ...textSize('body', 'sm'), fontVariantNumeric: 'tabular-nums' },
+      list: { ...column },
+      link: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'baseline',
+        gap: '2',
+        paddingBlock: '1',
+        color: 'fg.default',
+        ...textSize('body', 'md'),
+        ...ruleBelow,
+        transitionProperty: 'color',
+        transitionDuration: 'fast',
+        _hover: { color: 'accent' },
+      },
+      note: { flexShrink: 0, color: 'fg.muted', whiteSpace: 'nowrap', ...textSize('body', 'sm') },
     },
-    column: { ...column, minWidth: '0' },
-    heading: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'baseline',
-      gap: '2',
-      paddingBlockEnd: '2',
-      marginBlockEnd: '1',
-      borderBlockEndWidth: 'hairline',
-      borderBlockEndStyle: 'solid',
-      borderBlockEndColor: 'fg.default',
-    },
-    label: { fontFamily: 'display', fontWeight: 'medium', ...textSize('display', '2xl') },
-    count: { color: 'secondary', ...textSize('body', 'sm'), fontVariantNumeric: 'tabular-nums' },
-    list: { ...column },
-    link: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'baseline',
-      gap: '2',
-      paddingBlock: '1',
-      color: 'fg.default',
-      ...textSize('body', 'md'),
-      ...ruleBelow,
-      transitionProperty: 'color',
-      transitionDuration: 'fast',
-      _hover: { color: 'accent' },
-    },
-    note: { flexShrink: 0, color: 'fg.muted', whiteSpace: 'nowrap', ...textSize('body', 'sm') },
-  },
-});
+  });
 };
 
 /**
@@ -93,46 +93,46 @@ export const rangeColumns = (t: TypeSystem) => {
 export const letterBar = (t: TypeSystem) => {
   const textSize = t.textSize;
   return defineSlotRecipe({
-  className: 'letter-bar',
-  slots: ['root', 'list', 'key'],
-  base: {
-    root: {
-      ...stickBelowHeader,
-      zIndex: 'docked',
-      paddingBlock: '3',
-      marginBlockEnd: '6',
-      background: 'canvas',
-      ...ruleBelow,
-    },
-    list: { display: 'flex', flexWrap: 'wrap', gap: '1' },
-    key: {
-      display: 'grid',
-      placeItems: 'center',
-      width: { base: 'keyCompact', sm: 'squareControl' },
-      height: { base: 'keyCompact', sm: 'squareControl' },
-      color: 'fg.default',
-      fontFamily: 'display',
-      ...responsive(textSize('display', 'lg'), textSize('display', 'xl'), 'sm'),
-      borderWidth: 'hairline',
-      borderStyle: 'solid',
-      borderColor: 'border',
-      transitionProperty: 'background-color, border-color, color',
-      transitionDuration: 'fast',
-      _hover: { borderColor: 'fg.default' },
-      '&[aria-current="page"]': {
-        background: 'fg.default',
-        borderColor: 'fg.default',
-        color: 'canvas',
+    className: 'letter-bar',
+    slots: ['root', 'list', 'key'],
+    base: {
+      root: {
+        ...stickBelowHeader,
+        zIndex: 'docked',
+        paddingBlock: '3',
+        marginBlockEnd: '6',
+        background: 'canvas',
+        ...ruleBelow,
       },
-      '&[aria-disabled="true"]': {
-        color: 'fg.muted',
-        opacity: '0.45',
-        borderStyle: 'dashed',
-        pointerEvents: 'none',
+      list: { display: 'flex', flexWrap: 'wrap', gap: '1' },
+      key: {
+        display: 'grid',
+        placeItems: 'center',
+        width: { base: 'keyCompact', sm: 'squareControl' },
+        height: { base: 'keyCompact', sm: 'squareControl' },
+        color: 'fg.default',
+        fontFamily: 'display',
+        ...responsive(textSize('display', 'lg'), textSize('display', 'xl'), 'sm'),
+        borderWidth: 'hairline',
+        borderStyle: 'solid',
+        borderColor: 'border',
+        transitionProperty: 'background-color, border-color, color',
+        transitionDuration: 'fast',
+        _hover: { borderColor: 'fg.default' },
+        '&[aria-current="page"]': {
+          background: 'fg.default',
+          borderColor: 'fg.default',
+          color: 'canvas',
+        },
+        '&[aria-disabled="true"]': {
+          color: 'fg.muted',
+          opacity: '0.45',
+          borderStyle: 'dashed',
+          pointerEvents: 'none',
+        },
       },
     },
-  },
-});
+  });
 };
 
 /** The previous and next links under a letter list: a hairline above, the two links at the ends. */
@@ -162,26 +162,26 @@ export const listHeader = (t: TypeSystem) => {
   const textSize = t.textSize;
   const textRole = t.textRole;
   return defineSlotRecipe({
-  className: 'list-header',
-  slots: ['root', 'title', 'count'],
-  base: {
-    root: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      alignItems: 'baseline',
-      justifyContent: 'space-between',
-      columnGap: '6',
-      rowGap: '2',
-      marginBlockEnd: '6',
+    className: 'list-header',
+    slots: ['root', 'title', 'count'],
+    base: {
+      root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'baseline',
+        justifyContent: 'space-between',
+        columnGap: '6',
+        rowGap: '2',
+        marginBlockEnd: '6',
+      },
+      title: {
+        color: 'fg.default',
+        fontFamily: 'display',
+        fontWeight: 'medium',
+        letterSpacing: 'display',
+        ...responsive(textRole('display', '4xl'), textRole('display', '6xl'), 'sm'),
+      },
+      count: { color: 'fg.muted', ...textSize('body', 'md') },
     },
-    title: {
-      color: 'fg.default',
-      fontFamily: 'display',
-      fontWeight: 'medium',
-      letterSpacing: 'display',
-      ...responsive(textRole('display', '4xl'), textRole('display', '6xl'), 'sm'),
-    },
-    count: { color: 'fg.muted', ...textSize('body', 'md') },
-  },
-});
+  });
 };

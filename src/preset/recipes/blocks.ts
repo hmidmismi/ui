@@ -1,6 +1,6 @@
 import { defineRecipe } from '@pandacss/dev';
-import type { TypeSystem } from '../type-scale';
 import { column } from '../fragments';
+import type { TypeSystem } from '../type-scale';
 
 /** A quoted passage with a bar on its left. */
 export const quote = defineRecipe({
@@ -17,17 +17,17 @@ export const quote = defineRecipe({
 export const codeBlock = (t: TypeSystem) => {
   const textSize = t.textSize;
   return defineRecipe({
-  className: 'code-block',
-  base: {
-    padding: '4',
-    borderRadius: 'l2',
-    background: 'gray.2',
-    fontFamily: 'mono',
-    ...textSize('body', 'xs'),
-    whiteSpace: 'pre-wrap',
-    overflowWrap: 'anywhere',
-  },
-});
+    className: 'code-block',
+    base: {
+      padding: '4',
+      borderRadius: 'l2',
+      background: 'gray.2',
+      fontFamily: 'mono',
+      ...textSize('body', 'xs'),
+      whiteSpace: 'pre-wrap',
+      overflowWrap: 'anywhere',
+    },
+  });
 };
 
 /** A vertical timeline: an ordered list with a rail on its left and a dot at each item. */
@@ -58,14 +58,14 @@ export const timeline = defineRecipe({
 export const disclosure = (t: TypeSystem) => {
   const textSize = t.textSize;
   return defineRecipe({
-  className: 'disclosure',
-  base: {
-    '& summary': {
-      cursor: 'pointer',
-      color: 'accent',
-      ...textSize('body', 'sm'),
-      marginBlockEnd: '4',
+    className: 'disclosure',
+    base: {
+      '& summary': {
+        cursor: 'pointer',
+        color: 'accent',
+        ...textSize('body', 'sm'),
+        marginBlockEnd: '4',
+      },
     },
-  },
-});
+  });
 };

@@ -8,13 +8,17 @@ import { withOverrides } from './overrides';
 export const radiiFor = (d: Pick<Design, 'radii'>) =>
   defineTokens.radii({
     none: { value: '0' },
-    ...withOverrides('radii', {
-      xs: { value: '1px' },
-      sm: { value: '2px' },
-      md: { value: '3px' },
-      lg: { value: '5px' },
-      xl: { value: '8px' },
-    }, d.radii),
+    ...withOverrides(
+      'radii',
+      {
+        xs: { value: '1px' },
+        sm: { value: '2px' },
+        md: { value: '3px' },
+        lg: { value: '5px' },
+        xl: { value: '8px' },
+      },
+      d.radii
+    ),
     full: { value: '9999px' },
     l1: { value: '{radii.xs}' },
     l2: { value: '{radii.sm}' },

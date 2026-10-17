@@ -13,7 +13,9 @@ export const hue = defineRecipe({
   className: 'hue',
   staticCss: ['*'],
   variants: {
-    hue: Object.fromEntries(HUES.map((hue) => [hue, { '--tone': `token(colors.categorical.${hue})` }])),
+    hue: Object.fromEntries(
+      HUES.map((hue) => [hue, { '--tone': `token(colors.categorical.${hue})` }])
+    ),
   },
 });
 
@@ -24,43 +26,43 @@ export const hue = defineRecipe({
 export const plate = (t: TypeSystem) => {
   const textSize = t.textSize;
   return defineSlotRecipe({
-  className: 'plate',
-  slots: ['root', 'name', 'number'],
-  base: {
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      flexShrink: 0,
-      width: { base: 'plateCompact', sm: 'plate' },
-      height: { base: 'plateCompact', sm: 'plate' },
-      padding: '1',
-      borderWidth: 'hairline',
-      borderStyle: 'solid',
-      toneEdge: '40',
-      toneFill: '10',
-      color: 'var(--tone)',
-      fontFamily: 'body',
-      fontVariantNumeric: 'tabular-nums',
-      ...textSize('body', 'sm'),
+    className: 'plate',
+    slots: ['root', 'name', 'number'],
+    base: {
+      root: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        flexShrink: 0,
+        width: { base: 'plateCompact', sm: 'plate' },
+        height: { base: 'plateCompact', sm: 'plate' },
+        padding: '1',
+        borderWidth: 'hairline',
+        borderStyle: 'solid',
+        toneEdge: '40',
+        toneFill: '10',
+        color: 'var(--tone)',
+        fontFamily: 'body',
+        fontVariantNumeric: 'tabular-nums',
+        ...textSize('body', 'sm'),
+      },
+      name: {
+        alignSelf: 'flex-start',
+        maxWidth: 'full',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        fontWeight: 'semibold',
+      },
+      number: {
+        alignSelf: 'flex-end',
+        maxWidth: 'full',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      },
     },
-    name: {
-      alignSelf: 'flex-start',
-      maxWidth: 'full',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-      fontWeight: 'semibold',
-    },
-    number: {
-      alignSelf: 'flex-end',
-      maxWidth: 'full',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-    },
-  },
-});
+  });
 };
 
 /** A scrolling list with a fixed maximum height: the track drawer and the instrument list. */

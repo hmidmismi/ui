@@ -21,8 +21,8 @@ import {
   colors,
   durationsFor,
   easings,
-  fontWeights,
   fonts,
+  fontWeights,
   letterSpacingsFor,
   radiiFor,
   shadowsFor,
@@ -104,7 +104,13 @@ export function createPreset(
       semanticTokens: { colors: colorTokensFor(theme), shadows: shadowsFor(design).semanticTokens },
       extend: {
         breakpoints: breakpointsFor(design),
-        tokens: { animations, durations: durationsFor(design), easings, shadows: shadowsFor(design).tokens, zIndex },
+        tokens: {
+          animations,
+          durations: durationsFor(design),
+          easings,
+          shadows: shadowsFor(design).tokens,
+          zIndex,
+        },
         keyframes,
         textStyles: textStylesFor(type.scaleTextStyles),
         layerStyles,
@@ -121,8 +127,8 @@ export * from './fragments';
 export * from './interaction';
 export { createRecipes } from './recipes';
 export { input } from './recipes/input';
-export { TONE_STEPS, type ToneStep } from './utilities';
 export { createTypeSystem, responsive, STEPS, type StepName, type TypeSystem } from './type-scale';
+export { TONE_STEPS, type ToneStep } from './utilities';
 
 /** The preset for the default design and the neutral theme. */
 export const preset = createPreset();

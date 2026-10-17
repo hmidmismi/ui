@@ -1,6 +1,6 @@
 import { defineRecipe } from '@pandacss/dev';
-import type { TypeSystem } from '../type-scale';
 import { column, ruleAbove, ruleBelow } from '../fragments';
+import type { TypeSystem } from '../type-scale';
 
 /** One gap variant per spacing step in common use, named by the step. */
 const gaps = {
@@ -125,17 +125,17 @@ export const fullRow = defineRecipe({
 export const termList = (t: TypeSystem) => {
   const textSize = t.textSize;
   return defineRecipe({
-  className: 'term-list',
-  base: {
-    display: 'grid',
-    gridTemplateColumns: { base: '1fr', sm: 'minmax(token(sizes.label), max-content) 1fr' },
-    columnGap: '6',
-    rowGap: { base: '0', sm: '2' },
-    ...textSize('body', 'md'),
-    '& dd': { marginBlockEnd: { base: '2', sm: '0' } },
-    '& dt': { paddingBlockStart: { base: '0', sm: '1' } },
-  },
-});
+    className: 'term-list',
+    base: {
+      display: 'grid',
+      gridTemplateColumns: { base: '1fr', sm: 'minmax(token(sizes.label), max-content) 1fr' },
+      columnGap: '6',
+      rowGap: { base: '0', sm: '2' },
+      ...textSize('body', 'md'),
+      '& dd': { marginBlockEnd: { base: '2', sm: '0' } },
+      '& dt': { paddingBlockStart: { base: '0', sm: '1' } },
+    },
+  });
 };
 
 /** Lets a term row's `dt` and `dd` take part in the list's grid. */
@@ -148,15 +148,15 @@ export const termRow = defineRecipe({
 export const columnList = (t: TypeSystem) => {
   const textSize = t.textSize;
   return defineRecipe({
-  className: 'column-list',
-  staticCss: ['*'],
-  base: {
-    ...textSize('body', 'md'),
-    columnGap: '8',
-    '& > div': { breakInside: 'avoid', marginBlockEnd: '4' },
-  },
-  variants: { width: { wide: { columnWidth: 'column' }, single: {} } },
-});
+    className: 'column-list',
+    staticCss: ['*'],
+    base: {
+      ...textSize('body', 'md'),
+      columnGap: '8',
+      '& > div': { breakInside: 'avoid', marginBlockEnd: '4' },
+    },
+    variants: { width: { wide: { columnWidth: 'column' }, single: {} } },
+  });
 };
 
 /**

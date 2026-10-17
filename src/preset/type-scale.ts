@@ -162,7 +162,10 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
    * The uppercase, tracked label: section labels, the main nav, the jump bar and footer headings. A step and a weight
    * make the variants, so every place that sets a label is one definition.
    */
-  const caps = (step: StepName = 'xs', weight: 'normal' | 'medium' | 'semibold' = 'medium'): Styles => ({
+  const caps = (
+    step: StepName = 'xs',
+    weight: 'normal' | 'medium' | 'semibold' = 'medium'
+  ): Styles => ({
     fontFamily: 'body',
     fontWeight: weight,
     letterSpacing: 'caps',

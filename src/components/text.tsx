@@ -1,6 +1,6 @@
+import type { VariantOf } from '@hmidmismi/ui';
 import type { ReactNode } from 'react';
 import { visuallyHidden } from '../../styled-system/patterns';
-import type { VariantOf } from '@hmidmismi/ui';
 import {
   caption,
   count,

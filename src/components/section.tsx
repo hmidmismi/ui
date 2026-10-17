@@ -1,7 +1,7 @@
-import { Title } from './typography';
 import { createContext, type ReactNode, useContext } from 'react';
 import { section, sectionGroup } from '../../styled-system/recipes';
 import { Count } from './text';
+import { Title } from './typography';
 
 /** The fill of a {@link Section}: `plain` has no fill, the others are tint blocks. */
 export type SectionTone = 'plain' | 'sand' | 'green' | 'blue' | 'salmon';

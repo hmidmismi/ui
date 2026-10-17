@@ -1,10 +1,10 @@
 import { StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import '../styled-system/styles.css';
-import { Badge, Button, Input, Label, Stack, Text, Title } from '../src';
-import { baikikai } from '../src/brand';
 import fraunces from '@capsizecss/metrics/fraunces';
 import karla from '@capsizecss/metrics/karla';
+import { Badge, Button, Input, Label, Stack, Text, Title } from '../src';
+import { baikikai } from '../src/brand';
 import { neutral, type Theme, toCss } from '../src/theme';
 
 /** A second theme, to show that a theme is only variables: nothing is rebuilt when it is applied. */
@@ -37,7 +37,11 @@ function Swatches({ palette }: { palette: string }) {
         <div
           key={i}
           title={`${palette}.${i + 1}`}
-          style={{ height: 50, background: `var(--colors-${palette}-${i + 1})`, border: '1px solid var(--colors-gray-7)' }}
+          style={{
+            height: 50,
+            background: `var(--colors-${palette}-${i + 1})`,
+            border: '1px solid var(--colors-gray-7)',
+          }}
         />
       ))}
     </div>
@@ -90,7 +94,11 @@ function App() {
             {grid ? 'Hide baseline grid' : 'Show baseline grid'}
           </Button>
           {Object.keys(themes).map((name) => (
-            <Button key={name} variant={name === themeName ? 'solid' : 'outline'} onClick={() => setThemeName(name)}>
+            <Button
+              key={name}
+              variant={name === themeName ? 'solid' : 'outline'}
+              onClick={() => setThemeName(name)}
+            >
               Theme: {name}
             </Button>
           ))}
@@ -101,13 +109,22 @@ function App() {
         {STEPS.map((step) => (
           <div key={step} style={{ display: 'flex', alignItems: 'baseline', gap: 20 }}>
             <Label>{step}</Label>
-            <span style={{ fontFamily: 'var(--fonts-display)', fontSize: `var(--font-sizes-${step})`, lineHeight: `var(--line-heights-${step})` }}>
+            <span
+              style={{
+                fontFamily: 'var(--fonts-display)',
+                fontSize: `var(--font-sizes-${step})`,
+                lineHeight: `var(--line-heights-${step})`,
+              }}
+            >
               Aikido is a martial way
             </span>
           </div>
         ))}
         <Title level="h2">Title level 2</Title>
-        <Text>Body text sits on the 5px baseline, with the space above the capitals and below the baseline trimmed.</Text>
+        <Text>
+          Body text sits on the 5px baseline, with the space above the capitals and below the
+          baseline trimmed.
+        </Text>
         <Text variant="small">Small text.</Text>
         <Text variant="caption">Caption text.</Text>
       </Section>
@@ -116,7 +133,13 @@ function App() {
         {SPACING.map((n) => (
           <div key={n} style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
             <Label>{n}</Label>
-            <div style={{ height: 10, width: `var(--spacing-${n})`, background: 'var(--colors-accent-9)' }} />
+            <div
+              style={{
+                height: 10,
+                width: `var(--spacing-${n})`,
+                background: 'var(--colors-accent-9)',
+              }}
+            />
           </div>
         ))}
       </Section>

@@ -1,7 +1,7 @@
-import * as Table from './table';
 import type { ReactNode } from 'react';
 import { visuallyHidden } from '../../styled-system/patterns';
 import { playableRow, scrollX, tableCell } from '../../styled-system/recipes';
+import * as Table from './table';
 
 /**
  * Lets a wide table scroll sideways on narrow screens instead of overflowing the page.

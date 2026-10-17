@@ -1,5 +1,11 @@
 import type { ReactNode } from 'react';
-import { cardItem, centeredLines, listHeader, pageColumn, pageHeader } from '../../styled-system/recipes';
+import {
+  cardItem,
+  centeredLines,
+  listHeader,
+  pageColumn,
+  pageHeader,
+} from '../../styled-system/recipes';
 
 /** Props for {@link PageColumn}. */
 type PageColumnProps = {

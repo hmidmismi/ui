@@ -52,7 +52,8 @@ export type FaceVar = 'adj' | 'cap' | 'base' | 'normal';
 export const faceVar = (role: Role, key: FaceVar) => `--ui-${role}-${key}`;
 
 /** Family names CSS reads as keywords, which must stay unquoted (`ui-monospace`, `system-ui`, `sans-serif`). */
-const KEYWORD_FAMILY = /^(ui-[a-z-]+|system-ui|serif|sans-serif|monospace|cursive|fantasy|math|emoji|fangsong)$/;
+const KEYWORD_FAMILY =
+  /^(ui-[a-z-]+|system-ui|serif|sans-serif|monospace|cursive|fantasy|math|emoji|fangsong)$/;
 
 /** A family name as CSS: quoted, unless it is a keyword. */
 const cssFamily = (family: string) => (KEYWORD_FAMILY.test(family) ? family : `"${family}"`);

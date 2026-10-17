@@ -60,7 +60,13 @@ export function Menu({ id, open, onClose, items, footerUtility, as: Tag = 'a' }:
       {footerUtility?.length ? (
         <nav className={m.utility} aria-label="Footer">
           {footerUtility.map((link) => (
-            <Tag key={link.href} href={link.href} className={m.utilityLink} onClick={onClose} tabIndex={open ? 0 : -1}>
+            <Tag
+              key={link.href}
+              href={link.href}
+              className={m.utilityLink}
+              onClick={onClose}
+              tabIndex={open ? 0 : -1}
+            >
               {link.label}
             </Tag>
           ))}

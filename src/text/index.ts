@@ -1,4 +1,5 @@
-export { type Segment, highlightSegments } from './highlight';
+export { highlightSegments, type Segment } from './highlight';
+export type { JsonValue, TextBlock } from './json';
 export { normalize, tokenize } from './normalize';
 export {
   announceCount,
@@ -9,4 +10,3 @@ export {
   type TypeaheadKey,
   type TypeaheadOption,
 } from './typeahead';
-export type { JsonValue, TextBlock } from './json';

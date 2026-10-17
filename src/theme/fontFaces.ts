@@ -9,7 +9,8 @@ type FaceRule = {
 };
 
 /** The CSS `format()` of a font file, from its extension. */
-const formatOf = (file: string) => (file.endsWith('.woff2') ? 'woff2' : file.endsWith('.woff') ? 'woff' : 'truetype');
+const formatOf = (file: string) =>
+  file.endsWith('.woff2') ? 'woff2' : file.endsWith('.woff') ? 'woff' : 'truetype';
 
 /**
  * The `@font-face` rules for the files a theme's faces declare, in the shape Panda's `globalFontface` takes. Each family

@@ -1,9 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { type Design, design } from '../design';
-import { type ColorTokens, fontFaces, fontStack, neutral, type Theme, themeVariables, toCss } from '../theme';
+import {
+  type ColorTokens,
+  fontFaces,
+  fontStack,
+  neutral,
+  type Theme,
+  themeVariables,
+  toCss,
+} from '../theme';
+import { categorical, wash } from './colors/defaults';
 import { createPreset, createRecipes, explicitScale } from './index';
 import { createScale } from './scale';
-import { categorical, wash } from './colors/defaults';
 import { scaleValuesFor } from './spacing';
 import { createTypeSystem, STEPS, type StepName } from './type-scale';
 
@@ -27,7 +35,10 @@ describe('design', () => {
       const { ROOT_SIZE, BASELINE } = createScale(d);
       for (const [name, token] of Object.entries(scaleValuesFor(d))) {
         const px = Number.parseFloat(token.value) * ROOT_SIZE;
-        expect(px, `${d.grid.baseline}px grid, spacing ${name}`).toBeCloseTo(Number(name) * BASELINE, 2);
+        expect(px, `${d.grid.baseline}px grid, spacing ${name}`).toBeCloseTo(
+          Number(name) * BASELINE,
+          2
+        );
       }
     }
   });
@@ -119,7 +130,10 @@ const withColors: Theme = { name: 'own', faces: neutral.faces, colors: own };
 
 describe('controls', () => {
   it('become height, padding and icon tokens for every size, from the design or the default', () => {
-    const tokens = createPreset(other, neutral).theme?.tokens as Record<string, Record<string, unknown>>;
+    const tokens = createPreset(other, neutral).theme?.tokens as Record<
+      string,
+      Record<string, unknown>
+    >;
     for (const size of ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']) {
       expect(tokens.sizes?.control).toHaveProperty(size);
       expect(tokens.sizes?.controlIcon).toHaveProperty(size);
@@ -127,7 +141,7 @@ describe('controls', () => {
     }
   });
 
-  it('take the design\'s own sizes, in baselines', () => {
+  it("take the design's own sizes, in baselines", () => {
     const design = { ...other, controls: { md: { height: 10, padX: 3.5, icon: 5 } } };
     const tokens = createPreset(design, neutral).theme?.tokens as {
       sizes: { control: { md: { value: string } } };
@@ -199,9 +213,15 @@ describe('explicit scales', () => {
 
   it('uses the alpha steps it is given, and mixes them from step 12 when it is not', () => {
     const alpha = { light: light.map((c) => `${c}80`), dark: dark.map((c) => `${c}80`) };
-    const given = explicitScale('brand', { light, dark, alpha, ...roles }) as unknown as Record<string, { value: { base: string } }>;
+    const given = explicitScale('brand', { light, dark, alpha, ...roles }) as unknown as Record<
+      string,
+      { value: { base: string } }
+    >;
     expect(given.a1?.value.base).toBe('#01000080');
-    const mixed = explicitScale('brand', { light, dark, ...roles }) as unknown as Record<string, { value: { base: string } }>;
+    const mixed = explicitScale('brand', { light, dark, ...roles }) as unknown as Record<
+      string,
+      { value: { base: string } }
+    >;
     expect(mixed.a1?.value.base).toContain('color-mix(in oklab, #120000');
   });
 
@@ -212,20 +232,20 @@ describe('explicit scales', () => {
   });
 
   it('keeps a keyword family unquoted in a font stack', () => {
-    expect(fontStack({ family: 'ui-monospace', generic: 'monospace', fallbacks: ['Menlo', 'monospace'] })).toBe(
-      'ui-monospace, Menlo, monospace'
-    );
+    expect(
+      fontStack({ family: 'ui-monospace', generic: 'monospace', fallbacks: ['Menlo', 'monospace'] })
+    ).toBe('ui-monospace, Menlo, monospace');
     expect(fontStack({ family: 'Life LT Std', generic: 'serif' })).toBe('"Life LT Std", serif');
   });
 });
 
-describe('a project\'s own recipes and global styles', () => {
+describe("a project's own recipes and global styles", () => {
   const own = {
     recipes: { onlyMine: { className: 'only-mine', base: { color: 'red' } } },
     slotRecipes: {},
   };
 
-  it('replaces the system\'s recipes instead of merging into them', () => {
+  it("replaces the system's recipes instead of merging into them", () => {
     const preset = createPreset(other, neutral, { recipes: () => own });
     const theme = preset.theme?.extend as { recipes?: Record<string, unknown> };
     expect(Object.keys(theme.recipes ?? {})).toEqual(['onlyMine']);
@@ -242,15 +262,17 @@ describe('a project\'s own recipes and global styles', () => {
     expect(seen).toBe(24);
   });
 
-  it('uses its own global styles and still sets the theme\'s variables', () => {
+  it("uses its own global styles and still sets the theme's variables", () => {
     const preset = createPreset(other, neutral, { globalCss: { body: { color: 'red' } } });
     const css = (preset.globalCss?.extend ?? {}) as Record<string, unknown>;
     expect(Object.keys(css)).toEqual(['body', ':root']);
   });
 
-  it('keeps the system\'s own when it is given none', () => {
+  it("keeps the system's own when it is given none", () => {
     const theme = createPreset(other).theme?.extend as { recipes?: Record<string, unknown> };
-    expect(Object.keys(theme.recipes ?? {})).toEqual(Object.keys(createRecipes(createTypeSystem(other)).recipes));
+    expect(Object.keys(theme.recipes ?? {})).toEqual(
+      Object.keys(createRecipes(createTypeSystem(other)).recipes)
+    );
   });
 });
 
@@ -265,7 +287,11 @@ describe('font faces', () => {
         { file: 'life-italic.woff2', weight: 400, style: 'italic' },
       ],
     },
-    body: { ...neutral.faces.body, family: 'Univers', files: [{ file: 'univers-bold.woff', weight: 700 }] },
+    body: {
+      ...neutral.faces.body,
+      family: 'Univers',
+      files: [{ file: 'univers-bold.woff', weight: 700 }],
+    },
   } as const;
   const themed: Theme = { ...neutral, faces };
 
@@ -273,8 +299,18 @@ describe('font faces', () => {
     const rules = fontFaces(themed, (file) => `../fonts/${file}`);
     expect(Object.keys(rules)).toEqual(['Life', 'Univers']);
     expect(rules.Life).toEqual([
-      { src: 'url(../fonts/life-regular.woff2) format("woff2")', fontWeight: 400, fontStyle: 'normal', fontDisplay: 'swap' },
-      { src: 'url(../fonts/life-italic.woff2) format("woff2")', fontWeight: 400, fontStyle: 'italic', fontDisplay: 'swap' },
+      {
+        src: 'url(../fonts/life-regular.woff2) format("woff2")',
+        fontWeight: 400,
+        fontStyle: 'normal',
+        fontDisplay: 'swap',
+      },
+      {
+        src: 'url(../fonts/life-italic.woff2) format("woff2")',
+        fontWeight: 400,
+        fontStyle: 'italic',
+        fontDisplay: 'swap',
+      },
     ]);
     expect(rules.Univers?.[0]?.src).toBe('url(../fonts/univers-bold.woff) format("woff")');
   });

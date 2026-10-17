@@ -1,5 +1,11 @@
 import type { ReactNode } from 'react';
-import { adminBar, fieldStatus, pageBar, signInForm, viewSwitch } from '../../styled-system/recipes';
+import {
+  adminBar,
+  fieldStatus,
+  pageBar,
+  signInForm,
+  viewSwitch,
+} from '../../styled-system/recipes';
 
 /** Props for {@link FieldStatus}. */
 type FieldStatusProps = {

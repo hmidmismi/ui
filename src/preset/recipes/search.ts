@@ -1,7 +1,7 @@
 import { defineRecipe, defineSlotRecipe } from '@pandacss/dev';
+import { boxed, hideScrollbar } from '../fragments';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
-import { boxed, hideScrollbar } from '../fragments';
 
 /**
  * The big search field: one line with a 2px foreground rule under it (accent while the field has focus), the magnifier
@@ -11,65 +11,65 @@ import { boxed, hideScrollbar } from '../fragments';
 export const searchField = (t: TypeSystem) => {
   const textSize = t.textSize;
   return defineSlotRecipe({
-  className: 'search-field',
-  slots: ['root', 'icon', 'input', 'clear', 'hint'],
-  base: {
-    root: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '4',
-      marginBlockStart: '8',
-      paddingBlockEnd: '2',
-      borderBlockEndWidth: 'rail',
-      borderBlockEndStyle: 'solid',
-      borderBlockEndColor: 'fg.default',
-      transitionProperty: 'border-color',
-      transitionDuration: 'fast',
-      '&:focus-within': { borderBlockEndColor: 'accent' },
+    className: 'search-field',
+    slots: ['root', 'icon', 'input', 'clear', 'hint'],
+    base: {
+      root: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4',
+        marginBlockStart: '8',
+        paddingBlockEnd: '2',
+        borderBlockEndWidth: 'rail',
+        borderBlockEndStyle: 'solid',
+        borderBlockEndColor: 'fg.default',
+        transitionProperty: 'border-color',
+        transitionDuration: 'fast',
+        '&:focus-within': { borderBlockEndColor: 'accent' },
+      },
+      icon: {
+        flexShrink: 0,
+        color: 'fg.muted',
+        width: { base: 'searchIconCompact', sm: 'searchIcon' },
+        height: { base: 'searchIconCompact', sm: 'searchIcon' },
+      },
+      input: {
+        flex: '1',
+        minWidth: '0',
+        paddingBlock: '2',
+        background: 'transparent',
+        border: '0',
+        outline: 'none',
+        color: 'fg.default',
+        fontFamily: 'display',
+        ...responsive(textSize('display', '2xl'), textSize('display', '4xl'), 'sm'),
+        '&::placeholder': { color: 'fg.muted', opacity: 1 },
+        '&::-webkit-search-cancel-button': { display: 'none' },
+      },
+      clear: {
+        ...boxed,
+        flexShrink: 0,
+        paddingBlock: '1',
+        paddingInline: '3',
+        background: 'transparent',
+        color: 'fg.muted',
+        cursor: 'pointer',
+        ...textSize('body', 'sm'),
+        transitionProperty: 'border-color, color',
+        transitionDuration: 'fast',
+        _hover: { borderColor: 'fg.default', color: 'fg.default' },
+      },
+      hint: {
+        ...boxed,
+        display: { base: 'none', sm: 'block' },
+        flexShrink: 0,
+        paddingBlock: '1',
+        paddingInline: '2',
+        color: 'fg.muted',
+        ...textSize('body', 'sm'),
+      },
     },
-    icon: {
-      flexShrink: 0,
-      color: 'fg.muted',
-      width: { base: 'searchIconCompact', sm: 'searchIcon' },
-      height: { base: 'searchIconCompact', sm: 'searchIcon' },
-    },
-    input: {
-      flex: '1',
-      minWidth: '0',
-      paddingBlock: '2',
-      background: 'transparent',
-      border: '0',
-      outline: 'none',
-      color: 'fg.default',
-      fontFamily: 'display',
-      ...responsive(textSize('display', '2xl'), textSize('display', '4xl'), 'sm'),
-      '&::placeholder': { color: 'fg.muted', opacity: 1 },
-      '&::-webkit-search-cancel-button': { display: 'none' },
-    },
-    clear: {
-      ...boxed,
-      flexShrink: 0,
-      paddingBlock: '1',
-      paddingInline: '3',
-      background: 'transparent',
-      color: 'fg.muted',
-      cursor: 'pointer',
-      ...textSize('body', 'sm'),
-      transitionProperty: 'border-color, color',
-      transitionDuration: 'fast',
-      _hover: { borderColor: 'fg.default', color: 'fg.default' },
-    },
-    hint: {
-      ...boxed,
-      display: { base: 'none', sm: 'block' },
-      flexShrink: 0,
-      paddingBlock: '1',
-      paddingInline: '2',
-      color: 'fg.muted',
-      ...textSize('body', 'sm'),
-    },
-  },
-});
+  });
 };
 
 /**
@@ -79,64 +79,64 @@ export const searchField = (t: TypeSystem) => {
 export const filterRow = (t: TypeSystem) => {
   const microLabel = t.microLabel;
   return defineSlotRecipe({
-  className: 'filter-row',
-  slots: ['root', 'group', 'label'],
-  base: {
-    root: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      alignItems: 'center',
-      columnGap: '8',
-      rowGap: '4',
-      marginBlockStart: '4',
-      marginBlockEnd: { base: '4', sm: '6' },
+    className: 'filter-row',
+    slots: ['root', 'group', 'label'],
+    base: {
+      root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        columnGap: '8',
+        rowGap: '4',
+        marginBlockStart: '4',
+        marginBlockEnd: { base: '4', sm: '6' },
+      },
+      group: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2' },
+      label: { ...microLabel },
     },
-    group: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2' },
-    label: { ...microLabel },
-  },
-  variants: {
-    scroll: {
-      true: {
-        group: {
-          flexWrap: { base: 'nowrap', sm: 'wrap' },
-          width: { base: 'full', sm: 'auto' },
-          minWidth: '0',
-          overflowX: { base: 'auto', sm: 'visible' },
-          ...hideScrollbar,
-          '& > *': { flexShrink: 0 },
+    variants: {
+      scroll: {
+        true: {
+          group: {
+            flexWrap: { base: 'nowrap', sm: 'wrap' },
+            width: { base: 'full', sm: 'auto' },
+            minWidth: '0',
+            overflowX: { base: 'auto', sm: 'visible' },
+            ...hideScrollbar,
+            '& > *': { flexShrink: 0 },
+          },
         },
       },
     },
-  },
-  staticCss: ['*'],
-});
+    staticCss: ['*'],
+  });
 };
 
 /** A pill button: a decade, or the selected label with its ×. Pressed (`aria-pressed`) is inverted. */
 export const chip = (t: TypeSystem) => {
   const textSize = t.textSize;
   return defineRecipe({
-  className: 'chip',
-  base: {
-    ...boxed,
-    borderRadius: 'full',
-    paddingBlock: '1',
-    paddingInline: '3',
-    background: 'transparent',
-    color: 'fg.muted',
-    cursor: 'pointer',
-    ...textSize('body', 'sm'),
-    transitionProperty: 'background-color, border-color, color',
-    transitionDuration: 'fast',
-    _hover: { borderColor: 'fg.default', color: 'fg.default' },
-    '&[aria-pressed="true"], &[data-on]': {
-      background: 'fg.default',
-      borderColor: 'fg.default',
-      color: 'canvas',
+    className: 'chip',
+    base: {
+      ...boxed,
+      borderRadius: 'full',
+      paddingBlock: '1',
+      paddingInline: '3',
+      background: 'transparent',
+      color: 'fg.muted',
+      cursor: 'pointer',
+      ...textSize('body', 'sm'),
+      transitionProperty: 'background-color, border-color, color',
+      transitionDuration: 'fast',
+      _hover: { borderColor: 'fg.default', color: 'fg.default' },
+      '&[aria-pressed="true"], &[data-on]': {
+        background: 'fg.default',
+        borderColor: 'fg.default',
+        color: 'canvas',
+      },
+      '&[data-removable]::after': { content: '" ×"' },
     },
-    '&[data-removable]::after': { content: '" ×"' },
-  },
-});
+  });
 };
 
 /**
@@ -147,55 +147,55 @@ export const chip = (t: TypeSystem) => {
 export const typeahead = (t: TypeSystem) => {
   const textSize = t.textSize;
   return defineSlotRecipe({
-  className: 'typeahead',
-  slots: ['root', 'input', 'list', 'option', 'count', 'empty'],
-  base: {
-    root: { position: 'relative', width: { base: 'full', sm: 'combo' } },
-    input: {
-      ...boxed,
-      width: 'full',
-      paddingBlock: '1',
-      paddingInline: '3',
-      background: 'transparent',
-      outline: 'none',
-      color: 'fg.default',
-      ...textSize('body', 'sm'),
-      '&::placeholder': { color: 'fg.muted' },
-      transitionProperty: 'border-color',
-      transitionDuration: 'fast',
-      _focus: { borderColor: 'accent' },
+    className: 'typeahead',
+    slots: ['root', 'input', 'list', 'option', 'count', 'empty'],
+    base: {
+      root: { position: 'relative', width: { base: 'full', sm: 'combo' } },
+      input: {
+        ...boxed,
+        width: 'full',
+        paddingBlock: '1',
+        paddingInline: '3',
+        background: 'transparent',
+        outline: 'none',
+        color: 'fg.default',
+        ...textSize('body', 'sm'),
+        '&::placeholder': { color: 'fg.muted' },
+        transitionProperty: 'border-color',
+        transitionDuration: 'fast',
+        _focus: { borderColor: 'accent' },
+      },
+      list: {
+        ...boxed,
+        position: 'absolute',
+        top: '100%',
+        insetInlineStart: '0',
+        zIndex: 'dropdown',
+        width: { base: 'full', sm: 'comboList' },
+        maxHeight: 'scrollList',
+        marginBlockStart: '1',
+        overflowY: 'auto',
+        background: 'canvas',
+        borderColor: 'fg.default',
+      },
+      option: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        gap: '3',
+        paddingBlock: '2',
+        paddingInline: '3',
+        cursor: 'pointer',
+        ...textSize('body', 'md'),
+        _hover: { background: 'gray.surface.bg.hover' },
+        '&[aria-selected="true"]': { background: 'gray.surface.bg.hover' },
+      },
+      count: { color: 'fg.muted' },
+      empty: {
+        paddingBlock: '2',
+        paddingInline: '3',
+        color: 'fg.muted',
+        ...textSize('body', 'md'),
+      },
     },
-    list: {
-      ...boxed,
-      position: 'absolute',
-      top: '100%',
-      insetInlineStart: '0',
-      zIndex: 'dropdown',
-      width: { base: 'full', sm: 'comboList' },
-      maxHeight: 'scrollList',
-      marginBlockStart: '1',
-      overflowY: 'auto',
-      background: 'canvas',
-      borderColor: 'fg.default',
-    },
-    option: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      gap: '3',
-      paddingBlock: '2',
-      paddingInline: '3',
-      cursor: 'pointer',
-      ...textSize('body', 'md'),
-      _hover: { background: 'gray.surface.bg.hover' },
-      '&[aria-selected="true"]': { background: 'gray.surface.bg.hover' },
-    },
-    count: { color: 'fg.muted' },
-    empty: {
-      paddingBlock: '2',
-      paddingInline: '3',
-      color: 'fg.muted',
-      ...textSize('body', 'md'),
-    },
-  },
-});
+  });
 };

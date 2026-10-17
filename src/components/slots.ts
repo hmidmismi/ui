@@ -1,4 +1,11 @@
-import { breadcrumbs, link, player, siteFooter, siteNav, typeahead } from '../../styled-system/recipes';
+import {
+  breadcrumbs,
+  link,
+  player,
+  siteFooter,
+  siteNav,
+  typeahead,
+} from '../../styled-system/recipes';
 
 /**
  * Slot recipes that feature components need the class names of. Each is wrapped in a function that calls the recipe

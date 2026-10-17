@@ -1,6 +1,14 @@
-import type { ReactNode } from 'react';
-import { plate, featureCard, hue, tileGrid, scrollList, splitGrid, tile } from '../../styled-system/recipes';
 import type { VariantOf } from '@hmidmismi/ui';
+import type { ReactNode } from 'react';
+import {
+  featureCard,
+  hue,
+  plate,
+  scrollList,
+  splitGrid,
+  tile,
+  tileGrid,
+} from '../../styled-system/recipes';
 
 /** The hue numbers `'1'` to `'8'`. */
 export type Hue = VariantOf<typeof hue, 'hue'>;

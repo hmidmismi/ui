@@ -1,7 +1,7 @@
 import { defineSlotRecipe } from '@pandacss/dev';
+import { column } from '../fragments';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
-import { column } from '../fragments';
 
 /**
  * The editorial hero: a full-width block of art with a kicker, a headline, one paragraph and one link. The art is a
@@ -15,88 +15,88 @@ export const hero = (t: TypeSystem) => {
   const textRole = t.textRole;
   const labelCaps = t.caps('sm', 'normal');
   return defineSlotRecipe({
-  className: 'hero',
-  slots: ['root', 'art', 'text', 'kicker', 'headline', 'summary', 'link'],
-  staticCss: [{ orientation: ['*'] }],
-  base: {
-    root: {
-      position: 'relative',
-      overflow: 'hidden',
-      borderWidth: 'hairline',
-      borderStyle: 'solid',
-      borderColor: 'border',
-      background: 'gray.surface.bg.hover',
-    },
-    art: {
-      backgroundImage:
-        'repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent token(spacing.8), color-mix(in srgb, token(colors.accent) 35%, transparent) token(spacing.8), color-mix(in srgb, token(colors.accent) 35%, transparent) calc(token(spacing.8) + token(borderWidths.hairline)))',
-    },
-    text: { ...column, gap: '4', padding: { base: '4', md: '8' } },
-    kicker: { ...labelCaps, color: 'accent' },
-    headline: {
-      marginBlockEnd: '2',
-      fontFamily: 'display',
-      fontWeight: 'medium',
-      color: 'fg.default',
-      ...responsive(textRole('display', '2xl'), textRole('display', '4xl')),
-    },
-    summary: {
-      maxWidth: 'narrow',
-      color: 'fg.default',
-      fontFamily: 'body',
-      ...textSize('body', 'md'),
-    },
-    link: {
-      alignSelf: 'flex-start',
-      color: 'accent',
-      fontFamily: 'body',
-      fontWeight: 'medium',
-      ...textSize('body', 'md'),
-      textDecoration: 'underline',
-      textDecorationThickness: 'token(borderWidths.hairline)',
-      textUnderlineOffset: 'token(spacing.1)',
-      textDecorationColor: 'color-mix(in srgb, currentColor 45%, transparent)',
-      transitionProperty: 'color, text-decoration-color, text-underline-offset',
-      transitionDuration: 'fast',
-      _hover: {
+    className: 'hero',
+    slots: ['root', 'art', 'text', 'kicker', 'headline', 'summary', 'link'],
+    staticCss: [{ orientation: ['*'] }],
+    base: {
+      root: {
+        position: 'relative',
+        overflow: 'hidden',
+        borderWidth: 'hairline',
+        borderStyle: 'solid',
+        borderColor: 'border',
+        background: 'gray.surface.bg.hover',
+      },
+      art: {
+        backgroundImage:
+          'repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent token(spacing.8), color-mix(in srgb, token(colors.accent) 35%, transparent) token(spacing.8), color-mix(in srgb, token(colors.accent) 35%, transparent) calc(token(spacing.8) + token(borderWidths.hairline)))',
+      },
+      text: { ...column, gap: '4', padding: { base: '4', md: '8' } },
+      kicker: { ...labelCaps, color: 'accent' },
+      headline: {
+        marginBlockEnd: '2',
+        fontFamily: 'display',
+        fontWeight: 'medium',
         color: 'fg.default',
-        textDecorationColor: 'currentColor',
-        textUnderlineOffset: 'token(spacing.2)',
+        ...responsive(textRole('display', '2xl'), textRole('display', '4xl')),
       },
-      _active: { color: 'accent' },
-    },
-  },
-  variants: {
-    orientation: {
-      landscape: {
-        root: {
-          display: 'grid',
-          alignItems: 'end',
-          minHeight: { base: 'heroTall', md: 'hero' },
-          aspectRatio: { base: 'auto', md: '21 / 9' },
-        },
-        art: { position: 'absolute', inset: '0' },
-        text: {
-          position: 'relative',
-          paddingBlockStart: '16',
-          backgroundImage:
-            'linear-gradient(to bottom, transparent, color-mix(in srgb, token(colors.canvas) 90%, transparent) token(spacing.16))',
-        },
+      summary: {
+        maxWidth: 'narrow',
+        color: 'fg.default',
+        fontFamily: 'body',
+        ...textSize('body', 'md'),
       },
-      portrait: {
-        root: {
-          display: 'grid',
-          gridTemplateColumns: { base: '1fr', md: 'token(sizes.heroArt) 1fr' },
+      link: {
+        alignSelf: 'flex-start',
+        color: 'accent',
+        fontFamily: 'body',
+        fontWeight: 'medium',
+        ...textSize('body', 'md'),
+        textDecoration: 'underline',
+        textDecorationThickness: 'token(borderWidths.hairline)',
+        textUnderlineOffset: 'token(spacing.1)',
+        textDecorationColor: 'color-mix(in srgb, currentColor 45%, transparent)',
+        transitionProperty: 'color, text-decoration-color, text-underline-offset',
+        transitionDuration: 'fast',
+        _hover: {
+          color: 'fg.default',
+          textDecorationColor: 'currentColor',
+          textUnderlineOffset: 'token(spacing.2)',
         },
-        art: {
-          aspectRatio: '4 / 5',
-          borderInlineEndWidth: { md: 'hairline' },
-          borderColor: 'border',
-        },
-        text: { justifyContent: 'center' },
+        _active: { color: 'accent' },
       },
     },
-  },
-  defaultVariants: { orientation: 'landscape' },
-});
+    variants: {
+      orientation: {
+        landscape: {
+          root: {
+            display: 'grid',
+            alignItems: 'end',
+            minHeight: { base: 'heroTall', md: 'hero' },
+            aspectRatio: { base: 'auto', md: '21 / 9' },
+          },
+          art: { position: 'absolute', inset: '0' },
+          text: {
+            position: 'relative',
+            paddingBlockStart: '16',
+            backgroundImage:
+              'linear-gradient(to bottom, transparent, color-mix(in srgb, token(colors.canvas) 90%, transparent) token(spacing.16))',
+          },
+        },
+        portrait: {
+          root: {
+            display: 'grid',
+            gridTemplateColumns: { base: '1fr', md: 'token(sizes.heroArt) 1fr' },
+          },
+          art: {
+            aspectRatio: '4 / 5',
+            borderInlineEndWidth: { md: 'hairline' },
+            borderColor: 'border',
+          },
+          text: { justifyContent: 'center' },
+        },
+      },
+    },
+    defaultVariants: { orientation: 'landscape' },
+  });
 };

@@ -7,39 +7,39 @@ import type { TypeSystem } from '../type-scale';
  */
 export const indexRow = ({ labelCaps }: TypeSystem) =>
   defineSlotRecipe({
-  className: 'index-row',
-  slots: ['root', 'numeral', 'label', 'kanji', 'aside'],
-  base: {
-    root: {
-      alignItems: 'center',
-      borderBottomWidth: 'hairline',
-      borderColor: 'border.muted',
-      color: 'fg.default',
-      columnGap: '4',
-      cursor: 'pointer',
-      display: 'grid',
-      flex: '1',
-      gridTemplateColumns: '{sizes.20} minmax(0, 1fr) auto',
-      minH: '16',
-      px: '8',
-      transitionProperty: 'background-color, padding-inline-start',
-      transitionDuration: 'slow',
-      focusVisibleRing: 'inside',
-      _hover: { bg: 'gray.2', paddingInlineStart: '10' },
+    className: 'index-row',
+    slots: ['root', 'numeral', 'label', 'kanji', 'aside'],
+    base: {
+      root: {
+        alignItems: 'center',
+        borderBottomWidth: 'hairline',
+        borderColor: 'border.muted',
+        color: 'fg.default',
+        columnGap: '4',
+        cursor: 'pointer',
+        display: 'grid',
+        flex: '1',
+        gridTemplateColumns: '{sizes.20} minmax(0, 1fr) auto',
+        minH: '16',
+        px: '8',
+        transitionProperty: 'background-color, padding-inline-start',
+        transitionDuration: 'slow',
+        focusVisibleRing: 'inside',
+        _hover: { bg: 'gray.2', paddingInlineStart: '10' },
+      },
+      numeral: { color: 'accent.9', fontFamily: 'display', textStyle: 'xl' },
+      label: { fontFamily: 'display', fontWeight: 'normal', minW: '0' },
+      kanji: { color: 'fg.muted', fontFamily: 'display', marginInlineStart: '3', textStyle: 'xl' },
+      aside: { color: 'fg.muted', ...labelCaps },
     },
-    numeral: { color: 'accent.9', fontFamily: 'display', textStyle: 'xl' },
-    label: { fontFamily: 'display', fontWeight: 'normal', minW: '0' },
-    kanji: { color: 'fg.muted', fontFamily: 'display', marginInlineStart: '3', textStyle: 'xl' },
-    aside: { color: 'fg.muted', ...labelCaps },
-  },
-  defaultVariants: { size: 'md' },
-  variants: {
-    size: {
-      md: { label: { textStyle: '3xl' } },
-      lg: { label: { textStyle: '5xl' }, kanji: { textStyle: '2xl' } },
+    defaultVariants: { size: 'md' },
+    variants: {
+      size: {
+        md: { label: { textStyle: '3xl' } },
+        lg: { label: { textStyle: '5xl' }, kanji: { textStyle: '2xl' } },
+      },
+      active: {
+        true: { root: { bg: 'gray.2' } },
+      },
     },
-    active: {
-      true: { root: { bg: 'gray.2' } },
-    },
-  },
-});
+  });

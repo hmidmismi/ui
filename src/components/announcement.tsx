@@ -15,6 +15,13 @@ export function Announcement({ children }: AnnouncementProps) {
 }
 
 /** Styled link for use inside `Announcement` text. */
-export function AnnouncementLink({ as: Tag = 'a', ...props }: { as?: LinkTag; href: string; children: ReactNode }) {
+export function AnnouncementLink({
+  as: Tag = 'a',
+  ...props
+}: {
+  as?: LinkTag;
+  href: string;
+  children: ReactNode;
+}) {
   return <Tag className={announcement().link} {...props} />;
 }

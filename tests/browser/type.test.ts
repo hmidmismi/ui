@@ -44,19 +44,22 @@ function expected(theme: Theme, c: Case) {
 async function measure(browser: Browser, theme: Theme | null) {
   const body = cases.map((c, i) => `<div id="e${i}" class="x">Hamburgefonstiv</div>`).join('');
   const page = await open(browser, body, theme ? toCss(theme) : '');
-  const out = await page.evaluate((classes) => {
-    return classes.map((cls, i) => {
-      const el = document.getElementById(`e${i}`) as HTMLElement;
-      el.className = cls;
-      const cs = getComputedStyle(el);
-      return {
-        fontSize: Number.parseFloat(cs.fontSize),
-        lineHeight: Number.parseFloat(cs.lineHeight),
-        before: Number.parseFloat(getComputedStyle(el, '::before').marginBottom),
-        after: Number.parseFloat(getComputedStyle(el, '::after').marginTop),
-      };
-    });
-  }, cases.map((c) => c.cls));
+  const out = await page.evaluate(
+    (classes) => {
+      return classes.map((cls, i) => {
+        const el = document.getElementById(`e${i}`) as HTMLElement;
+        el.className = cls;
+        const cs = getComputedStyle(el);
+        return {
+          fontSize: Number.parseFloat(cs.fontSize),
+          lineHeight: Number.parseFloat(cs.lineHeight),
+          before: Number.parseFloat(getComputedStyle(el, '::before').marginBottom),
+          after: Number.parseFloat(getComputedStyle(el, '::after').marginTop),
+        };
+      });
+    },
+    cases.map((c) => c.cls)
+  );
   await page.close();
   return out;
 }

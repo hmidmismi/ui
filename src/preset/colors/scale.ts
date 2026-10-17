@@ -205,7 +205,9 @@ export function explicitScale(name: string, spec: ExplicitScale) {
   const { light, dark, alpha, ...roles } = spec;
   for (const [label, list] of Object.entries({ light, dark, ...alpha })) {
     if (list.length !== STEP_NAMES.length) {
-      throw new Error(`Scale "${name}" ${label} has ${list.length} entries, not ${STEP_NAMES.length}.`);
+      throw new Error(
+        `Scale "${name}" ${label} has ${list.length} entries, not ${STEP_NAMES.length}.`
+      );
     }
   }
   const last = STEP_NAMES.length - 1;
@@ -215,7 +217,9 @@ export function explicitScale(name: string, spec: ExplicitScale) {
       ? Object.fromEntries(
           ALPHA_NAMES.map((alphaName, index) => [
             alphaName,
-            { value: { base: alpha.light[index] as string, _dark: alpha.dark[index] as string } } as Step,
+            {
+              value: { base: alpha.light[index] as string, _dark: alpha.dark[index] as string },
+            } as Step,
           ])
         )
       : alphas(light[last] as string, dark[last] as string)),
