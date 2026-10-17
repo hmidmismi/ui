@@ -36,8 +36,8 @@ export const globalCss = {
       background: 'canvas',
       color: 'fg.default',
       fontFamily: 'body',
-      fontSize: 'md',
-      lineHeight: 'md',
+      fontSize: '1rem',
+      lineHeight: '1.5',
       textRendering: 'optimizeLegibility',
     },
     main: {
