@@ -9,8 +9,6 @@
     "./preset": "./src/preset/index.ts",
     "./theme": "./src/theme/index.ts",
     "./design": "./src/design/index.ts",
-    "./brand": "./src/brand/index.ts",
-    "./palette": "./src/brand/palette.ts",
     "./styles.css": "./styled-system/styles.css",
     "./text": "./src/text/index.ts"
   },

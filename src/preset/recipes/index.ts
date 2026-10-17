@@ -2,7 +2,6 @@ import type { TypeSystem } from '../type-scale';
 import { absoluteCenter } from './absolute-center';
 import { accordion } from './accordion';
 import { adminBar, fieldStatus, pageBar, signInForm, viewSwitch } from './admin';
-import { announcement } from './announcement';
 import { badge } from './badge';
 import { codeBlock, disclosure, quote, timeline } from './blocks';
 import { browseNav, letterBar, listHeader, neighborNav, rangeColumns } from './browse';
@@ -11,18 +10,13 @@ import { featureCard, tile } from './cards';
 import { checkbox } from './checkbox';
 import { breadcrumbs, jumpNav, siteFooter, siteNav } from './chrome';
 import { combobox } from './combobox';
-import { crumbs } from './crumbs';
 import { dialog } from './dialog';
 import { field } from './field';
 import { fieldRow } from './field-row';
 import { fieldset } from './fieldset';
-import { filterGroup } from './filter-group';
-import { footer } from './footer';
 import { group } from './group';
-import { header } from './header';
 import { hero } from './hero';
 import { icon } from './icon';
-import { indexRow } from './index-row';
 import { input } from './input';
 import {
   columnList,
@@ -41,15 +35,12 @@ import {
   tileGrid,
 } from './layout';
 import { link } from './link';
-import { list } from './list';
 import { countedList, datedList, expandableRow, listFilter, rowDrawer } from './lists';
 import { figure, picture, videoFrame } from './media';
-import { menu } from './menu';
 import { createPageRoles } from './page-roles';
 import { pageLayout, pageText } from './page-text';
 import { cardItem, centeredLines, pageColumn, pageHeader, skipLink } from './pages';
 import { pagination } from './pagination';
-import { placeholder } from './placeholder';
 import { player } from './player';
 import { popover } from './popover';
 import { radioGroup } from './radio-group';
@@ -58,10 +49,8 @@ import { chip, filterRow, searchField, typeahead } from './search';
 import { section, sectionGroup } from './section';
 import { select } from './select';
 import { spinner } from './spinner';
-import { split } from './split';
 import { statusBadge } from './status';
 import { styleguide } from './styleguide';
-import { surface } from './surface';
 import { table } from './table';
 import { playableRow, scrollX, tableCell } from './table-parts';
 import { tabs } from './tabs';
@@ -130,9 +119,7 @@ export function createRecipes(t: TypeSystem) {
       label,
       link,
       numeral,
-      placeholder: placeholder(t),
       spinner,
-      surface,
       text,
       title,
     },
@@ -166,22 +153,13 @@ export function createRecipes(t: TypeSystem) {
       listHeader: listHeader(t),
       accordion,
       checkbox,
-      crumbs: crumbs(t),
       dialog,
       field,
       fieldset,
-      filterGroup: filterGroup(t),
-      indexRow: indexRow(t),
-      list,
       popover,
       radioGroup,
       select,
-      footer: footer(t),
-      header: header(t),
-      menu: menu(t),
       pagination,
-      announcement: announcement(t),
-      split,
       table,
       tabs,
       toast,

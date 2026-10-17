@@ -1,6 +1,5 @@
 import type { Browser } from 'playwright-core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { baikikai } from '../../src/brand';
 import { neutral, type Theme, toCss } from '../../src/theme';
 import { hasChrome, hasStyles, launch, open } from './page';
 
@@ -62,9 +61,24 @@ run('colors in a browser', () => {
     await browser?.close();
   });
 
+  /** A second palette, to load in place of the built-in one. */
+  const alternate: Theme = {
+    ...neutral,
+    name: 'alternate',
+    palette: {
+      ink: '#14171C',
+      paper: '#ECEDE8',
+      line: '#C4C8C0',
+      accent: '#2C3E72',
+      accentSoft: '#9AA7D4',
+      danger: '#B4432F',
+      dangerSoft: '#E3A596',
+    },
+  };
+
   const themes: [string, Theme | null][] = [
     ['the built-in theme', null],
-    ['a neutral theme loaded at runtime', neutral],
+    ['another theme loaded at runtime', alternate],
   ];
 
   for (const [name, theme] of themes) {
@@ -82,10 +96,10 @@ run('colors in a browser', () => {
 
   it('re-themes the canvas and text with no rebuild', async () => {
     const a = await colors(browser, null, false);
-    const b = await colors(browser, neutral, false);
+    const b = await colors(browser, alternate, false);
     expect(a.canvas).not.toEqual(b.canvas);
-    expect(b.canvas).toEqual([0xf7, 0xf7, 0xf4]);
-    expect(a.canvas).toEqual([0xec, 0xed, 0xe8]);
-    expect(baikikai.palette.paper).toBe('#ECEDE8');
+    expect(a.canvas).toEqual([0xf7, 0xf7, 0xf4]);
+    expect(b.canvas).toEqual([0xec, 0xed, 0xe8]);
+    expect(alternate.palette?.paper).toBe('#ECEDE8');
   });
 });

@@ -1,10 +1,9 @@
 import { precomputeValues } from '@capsizecss/core';
 import type { Browser } from 'playwright-core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { baikikai } from '../../src/brand';
 import { design } from '../../src/design';
 import { stepLineHeight, stepSize } from '../../src/preset/type-scale';
-import { neutral, type Role, type Theme, toCss, xHeightAdjust } from '../../src/theme';
+import { neutral, neutral, type Role, type Theme, toCss, xHeightAdjust } from '../../src/theme';
 import { label, numeral, text, title } from '../../styled-system/recipes';
 import { hasChrome, hasStyles, launch, open } from './page';
 
@@ -87,7 +86,7 @@ run('type system in a browser', () => {
   ];
   for (const [label_, theme] of themes) {
     it(`sizes and trims every role to Capsize's numbers with ${label_}`, async () => {
-      const used = theme ?? baikikai;
+      const used = theme ?? neutral;
       const rows = await measure(browser, theme);
       for (const [i, row] of rows.entries()) {
         const c = cases[i] as Case;

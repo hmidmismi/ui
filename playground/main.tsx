@@ -4,7 +4,6 @@ import '../styled-system/styles.css';
 import fraunces from '@capsizecss/metrics/fraunces';
 import karla from '@capsizecss/metrics/karla';
 import { Badge, Button, Input, Label, Stack, Text, Title } from '../src';
-import { baikikai } from '../src/brand';
 import { neutral, type Theme, toCss } from '../src/theme';
 
 /** A second theme, to show that a theme is only variables: nothing is rebuilt when it is applied. */
@@ -26,7 +25,7 @@ const warm: Theme = {
   },
 };
 
-const themes: Record<string, Theme> = { neutral, baikikai, warm };
+const themes: Record<string, Theme> = { neutral, warm };
 const STEPS = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl'] as const;
 const SPACING = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24] as const;
 

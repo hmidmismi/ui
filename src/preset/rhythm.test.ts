@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { baikikai } from '../brand';
 import { design } from '../design';
-import { xHeightAdjust } from '../theme';
+import { neutral, xHeightAdjust } from '../theme';
 import { createRecipes } from './recipes';
 import { BASELINE, ROOT_SIZE } from './scale';
 import { scaleValues } from './spacing';
@@ -61,7 +60,7 @@ describe('type scale', () => {
   });
 
   it('matches x-heights to the body face', () => {
-    const { body, display, mono } = baikikai.faces;
+    const { body, display, mono } = neutral.faces;
     expect(xHeightAdjust(body.metrics, body.metrics)).toBe(1);
     expect(xHeightAdjust(body.metrics, display.metrics)).toBeGreaterThan(0.5);
     expect(xHeightAdjust(body.metrics, mono.metrics)).toBeGreaterThan(0.5);
@@ -69,8 +68,8 @@ describe('type scale', () => {
 
   it('trims every face and step above and below', () => {
     for (const face of ['display', 'body', 'mono'] as const) {
-      const metrics = baikikai.faces[face].metrics;
-      const adjust = xHeightAdjust(baikikai.faces.body.metrics, metrics);
+      const metrics = neutral.faces[face].metrics;
+      const adjust = xHeightAdjust(neutral.faces.body.metrics, metrics);
       for (const name of names) {
         const { capHeightTrim, baselineTrim } = trimValues(
           metrics,

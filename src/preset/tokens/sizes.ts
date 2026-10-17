@@ -102,14 +102,6 @@ export const sizesFor = (d: Pick<Design, 'grid' | 'controls' | 'sizes'>) => {
     article: { value: '43.375rem' },
     /** The width of the term column of a key-value list. */
     term: { value: '10rem' },
-    /** The width of the date column of a post. */
-    postDate: { value: '8rem' },
-    /** The side of a timeline marker. */
-    marker: { value: '0.5625rem' },
-    /** The width of a step's numeral column. */
-    stepNumber: { value: '2.5rem' },
-    /** The width of the step numeral column on phones. */
-    stepNumberCompact: { value: '2rem' },
     /** The side of a letter key on phones. */
     keyCompact: { value: '2.25rem' },
     /** The side of a square control such as the theme button. */
@@ -124,11 +116,6 @@ export const sizesFor = (d: Pick<Design, 'grid' | 'controls' | 'sizes'>) => {
     slider: { value: '5rem' },
     /** The width of a narrow form such as sign-in. */
     form: { value: '22.5rem' },
-    avatar: {
-      sm: { value: '6rem' },
-      md: { value: '10rem' },
-      lg: { value: '12rem' },
-    },
   };
   return defineTokens.sizes(withOverrides('sizes', defaults, d.sizes));
 };
