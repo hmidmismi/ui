@@ -1,33 +1,19 @@
 import { defineRecipe } from '@pandacss/dev';
+import { hoverAccentUnderline, linkStyles } from '../interaction';
 
-/** An inline link. Preflight removes the browser color and underline, so the recipe sets both. */
+/**
+ * A text link. `tone` picks the resting color: `accent` for links in content, `muted` for quiet links such as
+ * breadcrumbs. Apply it with `className={link()}` on a router `Link` or an anchor. States come from `interaction.ts`.
+ */
 export const link = defineRecipe({
   className: 'link',
-  base: {
-    color: 'accent.11',
-    cursor: 'pointer',
-    textDecorationLine: 'underline',
-    textDecorationColor: 'accent.7',
-    textUnderlineOffset: '0.2em',
-    transitionProperty: 'color, text-decoration-color',
-    transitionDuration: 'fast',
-    focusVisibleRing: 'outside',
-    _hover: { color: 'accent.12', textDecorationColor: 'accent.9' },
-  },
+  staticCss: ['*'],
+  base: linkStyles,
   defaultVariants: { tone: 'accent' },
   variants: {
     tone: {
       accent: {},
-      muted: {
-        color: 'fg.muted',
-        textDecorationColor: 'border',
-        _hover: { color: 'fg.default', textDecorationColor: 'border.emphasized' },
-      },
-      plain: {
-        textDecorationLine: 'none',
-        color: 'inherit',
-        _hover: { textDecorationLine: 'underline' },
-      },
+      muted: { color: 'fg.muted', ...hoverAccentUnderline },
     },
   },
 });

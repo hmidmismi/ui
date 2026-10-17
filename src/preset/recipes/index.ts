@@ -58,6 +58,10 @@ import { pageText, pageLayout } from './page-text';
 
 import { itemList, layoutStack, layoutWrap, measure, ruled, mediaRow, inset, layout, fullRow, termList, termRow, columnList, splitGrid, tileGrid } from './layout';
 
+import { scrollX, tableCell, playableRow } from './table-parts';
+import { combobox } from './combobox';
+import { styleguide } from './styleguide';
+
 /**
  * Every recipe, built for a type system. The recipes that set text take the type system; the rest are static.
  *
@@ -68,6 +72,9 @@ export function createRecipes(t: TypeSystem) {
   const { label, numeral, text, title } = createRoles(t);
   return {
     recipes: {
+      scrollX,
+      tableCell: tableCell(t),
+      playableRow,
       itemList,
       layoutStack,
       layoutWrap,
@@ -132,6 +139,8 @@ export function createRecipes(t: TypeSystem) {
       title,
     },
     slotRecipes: {
+      combobox,
+      styleguide: styleguide(t),
       countedList: countedList(t),
       expandableRow: expandableRow(t),
       rowDrawer,

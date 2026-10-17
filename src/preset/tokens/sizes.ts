@@ -30,6 +30,93 @@ export const sizesFor = (d: Pick<Design, 'grid'>) => {
   prose: { value: '65ch' },
   /** The page's centered inset. */
   inset: { value: rem(1120) },
+  narrow: { value: '60ch' },
+  /** The ideal column width of a column list. */
+  column: { value: '22rem' },
+  /** The minimum width of the side column in the overview layout. */
+  aside: { value: '16rem' },
+  /** The minimum width of the label column in a term list. */
+  label: { value: '8rem' },
+  /** The largest a cover image grows. */
+  cover: { value: '28rem' },
+  /** The square cover plate in a release row. */
+  plate: { value: '4rem' },
+  /** The shortest a label tile gets. */
+  tile: { value: '8rem' },
+  /** The tallest a scrolling list gets: the track drawer and the instrument list. */
+  scrollList: { value: '14rem' },
+  /** The diameter of a status dot. */
+  dot: { value: '0.5rem' },
+  /** The widest the signed-in institution's name may be in the header before it is cut off. */
+  institution: { value: '12rem' },
+  /** The widest a breadcrumb's current page may be before it is cut off. */
+  crumb: { value: '60vw' },
+  /** The shortest the landscape editorial hero gets. */
+  hero: { value: '20rem' },
+  /** The shortest the landscape editorial hero gets on phones. */
+  heroTall: { value: '22.5rem' },
+  /** The width of the art in the portrait editorial hero. */
+  heroArt: { value: '22.5rem' },
+  /** The height of the header's utility row, hairline included. The sticky header hides exactly this much. */
+  utility: { value: '2.5rem' },
+  /** The shortest the header's wordmark row gets on phones. */
+  barCompact: { value: '3.5rem' },
+  /** The side of a small icon beside text, such as the institution chip's building. */
+  glyph: { value: '1.25rem' },
+  /** The side of the search icon, and on phones. */
+  searchIcon: { value: '1.75rem' },
+  searchIconCompact: { value: '1.5rem' },
+  /** The width of the label combobox's input and of its list. */
+  combo: { value: '13.75rem' },
+  comboList: { value: '20rem' },
+  /** The shortest a spotlight card gets. */
+  card: { value: '15rem' },
+  /** The shortest a label tile gets on phones. */
+  tileCompact: { value: '7rem' },
+  /** The cover plate's side on phones. */
+  plateCompact: { value: '3.5rem' },
+  /** The date column of an event row, and on phones. */
+  dateColumn: { value: '6rem' },
+  dateColumnCompact: { value: '4rem' },
+  /** The side of the chevron on a release row. */
+  chevron: { value: '0.5rem' },
+  /** The side of the search keycap and clear button targets. */
+  halo: { value: '0.1875rem' },
+  /** The side of an icon in the utility row. */
+  glyphSm: { value: '1rem' },
+  /** The width of the info page sidebar. */
+  sidebar: { value: '14rem' },
+  /** Info page article column: 72ch at the 17px long-form size (694px in Rev 19). */
+  article: { value: '43.375rem' },
+  /** The width of the term column of a key-value list. */
+  term: { value: '10rem' },
+  /** The width of the date column of a post. */
+  postDate: { value: '8rem' },
+  /** The side of a timeline marker. */
+  marker: { value: '0.5625rem' },
+  /** The width of a step's numeral column. */
+  stepNumber: { value: '2.5rem' },
+  /** The width of the step numeral column on phones. */
+  stepNumberCompact: { value: '2rem' },
+  /** The side of a letter key on phones. */
+  keyCompact: { value: '2.25rem' },
+  /** The side of a square control such as the theme button. */
+  control: { value: '2.5rem' },
+  /** The height of the player bar, which the queue panel sits above. */
+  player: { value: '4.5rem' },
+  /** The tallest the queue panel grows. */
+  panel: { value: '50vh' },
+  /** The widest the now-playing title may be. */
+  now: { value: '17.5rem' },
+  /** The width of the volume slider. */
+  slider: { value: '5rem' },
+  /** The width of a narrow form such as sign-in. */
+  form: { value: '22.5rem' },
+  avatar: {
+    sm: { value: '6rem' },
+    md: { value: '10rem' },
+    lg: { value: '12rem' },
+  },
   });
 };
 

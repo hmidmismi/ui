@@ -25,13 +25,23 @@ export const globalCss = {
     'html.dark': {
       colorScheme: 'dark',
     },
+    // The header sets this while the reader scrolls up; sticky bars under it add it to their offset.
+    'html[data-utility="shown"]': {
+      '--ut': 'calc({sizes.utility} - {borderWidths.hairline})',
+    },
     body: {
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100dvh',
       background: 'canvas',
       color: 'fg.default',
       fontFamily: 'body',
       fontSize: 'md',
       lineHeight: 'md',
       textRendering: 'optimizeLegibility',
+    },
+    main: {
+      flex: '1 0 auto',
     },
     ':focus-visible': {
       outline: '2px solid',
