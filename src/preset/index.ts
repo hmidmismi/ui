@@ -22,7 +22,7 @@ import {
   durationsFor,
   easings,
   fonts,
-  fontWeights,
+  fontWeightsFor,
   letterSpacingsFor,
   radiiFor,
   shadowsFor,
@@ -44,10 +44,13 @@ const breakpointsFor = (d: Pick<Design, 'breakpoints'>) => ({
 
 /** What a project may bring of its own, in place of the system's. */
 export type PresetOptions = {
-  /** The recipes to use instead of the system's own, built from the design's type system. */
+  /**
+   * Recipes of the project's own, built from the design's type system. One named like a recipe of the system replaces
+   * it; the others are added. This is the place for a look the tokens cannot express.
+   */
   recipes?: (type: TypeSystem) => {
-    recipes: Record<string, RecipeConfig>;
-    slotRecipes: Record<string, SlotRecipeConfig>;
+    recipes?: Record<string, RecipeConfig>;
+    slotRecipes?: Record<string, SlotRecipeConfig>;
   };
   /** The global styles to use instead of the system's own. The theme's variables on `:root` are always added. */
   globalCss?: Record<string, SystemStyleObject>;
@@ -76,7 +79,10 @@ export function createPreset(
   options: PresetOptions = {}
 ) {
   const type = createTypeSystem(design);
-  const { recipes, slotRecipes } = (options.recipes ?? createRecipes)(type);
+  const system = createRecipes(type);
+  const own = options.recipes?.(type);
+  const recipes = { ...system.recipes, ...own?.recipes };
+  const slotRecipes = { ...system.slotRecipes, ...own?.slotRecipes };
   return definePreset({
     name: '@hmidmismi/ui',
     conditions,
@@ -93,7 +99,7 @@ export function createPreset(
         borderWidths,
         colors,
         fontSizes: type.fontSizeTokens,
-        fontWeights,
+        fontWeights: fontWeightsFor(design),
         fonts,
         letterSpacings: letterSpacingsFor(design),
         lineHeights: type.lineHeightTokens,

@@ -245,10 +245,12 @@ describe("a project's own recipes and global styles", () => {
     slotRecipes: {},
   };
 
-  it("replaces the system's recipes instead of merging into them", () => {
+  it("adds its recipes to the system's, and a recipe named like one of the system's replaces it", () => {
     const preset = createPreset(other, neutral, { recipes: () => own });
     const theme = preset.theme?.extend as { recipes?: Record<string, unknown> };
-    expect(Object.keys(theme.recipes ?? {})).toEqual(['onlyMine']);
+    const names = Object.keys(theme.recipes ?? {});
+    expect(names).toContain('onlyMine');
+    expect(names).toContain('button');
   });
 
   it('hands the recipes the type system of the design', () => {

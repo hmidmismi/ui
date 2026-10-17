@@ -158,33 +158,24 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
   const textRole = (role: Role, step: StepName): Styles =>
     ({ ...(textSize(role, step) as Loose), ...(textTrim(role, step) as Loose) }) as Styles;
 
-  /**
-   * The uppercase, tracked label: section labels, the main nav, the jump bar and footer headings. A step and a weight
-   * make the variants, so every place that sets a label is one definition.
-   */
-  const caps = (
-    step: StepName = 'xs',
-    weight: 'normal' | 'medium' | 'semibold' = 'medium'
-  ): Styles => ({
-    fontFamily: 'body',
-    fontWeight: weight,
-    letterSpacing: 'caps',
-    textTransform: 'uppercase',
-    ...textSize('body', step),
+  /** The design's text roles: the system's own, with the design's on top. */
+  const roles = { ...defaultRoles, ...d.type.roles } as Record<RoleName, RoleStyle>;
+
+  /** A role's face, weight, tracking, case and size as styles; its color only when asked. */
+  const roleStyle = (role: RoleStyle, color: boolean): Styles => ({
+    fontFamily: role.family ?? role.face ?? 'body',
+    ...(role.weight ? { fontWeight: role.weight } : {}),
+    ...(role.tracking ? { letterSpacing: role.tracking } : {}),
+    ...(role.uppercase ? { textTransform: 'uppercase' } : {}),
+    ...(color && role.color ? { color: role.color } : {}),
+    ...textSize(role.face ?? 'body', role.step),
   });
 
-  /** The default caps label. */
-  const labelCaps: Styles = caps();
+  /** The uppercase, tracked label of the nav, the jump bar and footer headings: the `eyebrow` role, without its color. */
+  const labelCaps: Styles = roleStyle(roles.eyebrow, false);
 
-  /** The small muted label that opens a field, a filter group or a section. */
-  const microLabel: Styles = {
-    color: 'fg.muted',
-    fontFamily: 'body',
-    fontWeight: 'medium',
-    letterSpacing: 'title',
-    textTransform: 'uppercase',
-    ...textSize('body', 'sm'),
-  };
+  /** The small label that opens a field, a filter group or a section: the `fieldLabel` role. */
+  const microLabel: Styles = roleStyle(roles.fieldLabel, true);
 
   /**
    * Long-form body text: the body face at the `lg` step with a roomier line than the step has elsewhere. Phones set it
@@ -205,12 +196,11 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
     textSize,
     textTrim,
     textRole,
-    caps,
     labelCaps,
     microLabel,
     longForm,
     headings: { ...defaultHeadings, ...d.type.headings } as Record<HeadingLevel, HeadingStyle>,
-    roles: { ...defaultRoles, ...d.type.roles } as Record<RoleName, RoleStyle>,
+    roles,
   };
 }
 

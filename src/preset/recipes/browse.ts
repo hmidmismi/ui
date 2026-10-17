@@ -6,7 +6,7 @@ import { responsive } from '../type-scale';
 
 /** A row of links that choose a group of a browse list: a letter, a decade or a view. The current one is marked. */
 export const browseNav = (t: TypeSystem) => {
-  const labelCaps = t.caps('sm', 'normal');
+  const labelCaps = t.labelCaps;
   return defineSlotRecipe({
     className: 'browse-nav',
     staticCss: ['*'],

@@ -53,6 +53,53 @@ describe('design inputs that name tokens', () => {
   });
 });
 
+describe('what the design and the project can change', () => {
+  it('sets font weights from the design', () => {
+    const t = tokens(preset({ fontWeights: { semibold: '650' } }));
+    expect(t.fontWeights?.semibold.value).toBe('650');
+    expect(t.fontWeights?.medium.value).toBe('500');
+    expect(() => preset({ fontWeights: { heavy: '900' } })).toThrow(/Design\.fontWeights/);
+  });
+
+  it('builds the label styles from the eyebrow and field label roles', () => {
+    const p = preset({
+      type: {
+        ...base.type,
+        roles: {
+          eyebrow: {
+            step: 'sm',
+            weight: 'bold',
+            tracking: 'caps',
+            uppercase: true,
+            color: 'accent',
+          },
+          fieldLabel: { step: 'xs', weight: 'normal', color: 'fg.muted' },
+        },
+      },
+    });
+    const recipes = (p.theme?.extend as { recipes: Record<string, any> }).recipes;
+    expect(recipes.eyebrow.base.fontWeight).toBe('bold');
+    const slots = (p.theme?.extend as { slotRecipes: Record<string, any> }).slotRecipes;
+    expect(slots.filterRow.base.label.fontWeight).toBe('normal');
+    expect(slots.filterRow.base.label.color).toBe('fg.muted');
+  });
+
+  it('lets a project replace one recipe by name and add its own', () => {
+    const p = createPreset(base, neutral, {
+      recipes: () => ({
+        recipes: {
+          link: { className: 'link', base: { color: 'red' } },
+          mine: { className: 'mine', base: {} },
+        },
+      }),
+    });
+    const recipes = (p.theme?.extend as { recipes: Record<string, any> }).recipes;
+    expect(recipes.link.base).toEqual({ color: 'red' });
+    expect(recipes.mine.className).toBe('mine');
+    expect(recipes.button.className).toBe('button');
+  });
+});
+
 describe('headings and text roles read the design', () => {
   it('set a heading level from the design', () => {
     const p = preset({

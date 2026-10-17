@@ -3,7 +3,7 @@ export { borderWidths } from './border-widths';
 export { colors } from './colors';
 export { durations, durationsFor } from './durations';
 export { easings } from './easings';
-export { fontWeights } from './font-weights';
+export { fontWeights, fontWeightsFor } from './font-weights';
 export { fonts } from './fonts';
 export { letterSpacings, letterSpacingsFor } from './letter-spacings';
 export { radii, radiiFor } from './radii';

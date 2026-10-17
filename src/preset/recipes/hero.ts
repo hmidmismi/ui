@@ -13,7 +13,7 @@ import { responsive } from '../type-scale';
 export const hero = (t: TypeSystem) => {
   const textSize = t.textSize;
   const textRole = t.textRole;
-  const labelCaps = t.caps('sm', 'normal');
+  const labelCaps = t.labelCaps;
   return defineSlotRecipe({
     className: 'hero',
     slots: ['root', 'art', 'text', 'kicker', 'headline', 'summary', 'link'],

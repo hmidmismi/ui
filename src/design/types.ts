@@ -124,6 +124,8 @@ export type Design = {
    * system's own. A name the system does not declare is an error.
    */
   sizes?: Record<string, string>;
+  /** The font weights recipes name, as CSS weights (`400`, `500`, ...). Left out, the system's own. */
+  fontWeights?: Partial<Record<'normal' | 'medium' | 'semibold' | 'bold', string>>;
   /** Corner radii as CSS lengths: `xs` to `xl`. Left out, the system's own. */
   radii?: Partial<Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', string>>;
   /** Elevation: shadows by name (`xs` to `2xl`). Left out, the system's own. */
