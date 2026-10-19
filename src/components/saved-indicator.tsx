@@ -1,7 +1,7 @@
-// packages/chorus-ui/src/components/fields/SavedIndicator.tsx
 'use client';
 import { useEffect, useState } from 'react';
 import { css } from '../../styled-system/css';
+import { useUiText } from './ui-text';
 
 const savedIndicatorStyle = css({
   color: 'success.9',
@@ -10,6 +10,7 @@ const savedIndicatorStyle = css({
 });
 
 export function SavedIndicator({ trigger }: { trigger: unknown }) {
+  const t = useUiText();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -21,5 +22,5 @@ export function SavedIndicator({ trigger }: { trigger: unknown }) {
 
   if (!visible) return null;
 
-  return <span className={savedIndicatorStyle}>Saved</span>;
+  return <span className={savedIndicatorStyle}>{t.saved}</span>;
 }

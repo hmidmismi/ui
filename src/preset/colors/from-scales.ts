@@ -62,7 +62,7 @@ export function colorTokensFromScales(scales: ThemeScales) {
     info: scale('info', scales.info),
     secondary: mode(scales.secondary),
     categorical: Object.fromEntries(
-      scales.categorical.map((color, index) => [String(index + 1), mode(color)])
+      Object.entries(scales.categorical).map(([name, color]) => [name, mode(color)])
     ),
     wash: Object.fromEntries(
       Object.entries(scales.wash).map(([name, { bg, fg, label }]) => [

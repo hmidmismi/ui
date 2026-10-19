@@ -1,3 +1,15 @@
+import {
+  type CenteredBox,
+  centeredLine as baselineCenteredLine,
+  type FaceVars,
+  lineMargins as baselineLineMargins,
+  lineRelative as baselineLineRelative,
+  lineShift as baselineLineShift,
+  LONGFORM_OFFSET_VAR,
+  measuredOffsetVar,
+  paddedLine as baselinePaddedLine,
+  trim as baselineTrim,
+} from '../grid';
 import type { SystemStyleObject } from '@pandacss/dev';
 import {
   type Design,
@@ -9,8 +21,8 @@ import {
   type RoleName,
   type RoleStyle,
 } from '../design';
-import { type FaceMetrics, faceVar, type Role } from '../theme';
-import { createScale, round } from './scale';
+import { faceVar, type Role } from '../theme';
+import { createScale, round } from '../grid';
 
 /**
  * The type system, generated from a design so every size, line height and trim comes from one model.
@@ -22,10 +34,11 @@ import { createScale, round } from './scale';
  * below and falls by `leading.falloff` per step; it is clamped to `leading.floor`, the result is rounded to a baseline,
  * then raised if rounding left it under the floor. Those three numbers are the rhythm a design plugs in.
  *
- * Trim (Capsize): text roles remove the space above the capitals and below the baseline with negative margins on
- * `::before` and `::after`. The margins are `calc()` over the theme's per-face variables (see `theme/toCss.ts`), so
- * they follow the face the theme sets, at runtime. Sizes are adjusted the same way so the lowercase x-height matches
- * the body face's at the same step.
+ * Baseline: text sits on the grid (see `../grid/README.md`). A role is either trimmed to the space between the top of the
+ * capitals and the baseline (`textRole`), or its first baseline is moved to the nearest grid line with the box unchanged
+ * (`textLine` and its siblings). Both are `calc()` over the theme's per-face variables (see `theme/toCss.ts`), so they follow
+ * the face the theme sets, at runtime. Sizes are adjusted the same way so the lowercase x-height matches the body face's
+ * at the same step.
  */
 
 /** The named steps. `md` is the body size; negative steps are smaller. */
@@ -53,26 +66,6 @@ type Styles = SystemStyleObject;
 type Loose = Record<string, unknown>;
 
 const NAMES = Object.keys(STEPS) as StepName[];
-
-/**
- * The Capsize trim of a block in em, from a face's metrics. This is the formula the generated `calc()` expresses; the
- * tests check it against Capsize itself and the browser tests check the rendered margins against it.
- *
- * @param metrics - the face's metrics.
- * @param fontSize - the set font size in px.
- * @param leading - the line height in px.
- * @returns the margins in em: `capHeightTrim` goes above, `baselineTrim` below (both negative).
- */
-export function trimValues(metrics: FaceMetrics, fontSize: number, leading: number) {
-  const upm = metrics.unitsPerEm;
-  const descent = Math.abs(metrics.descent);
-  const normal = (metrics.ascent + metrics.lineGap + descent) / upm;
-  const extra = (normal - leading / fontSize) / 2;
-  return {
-    capHeightTrim: extra - (metrics.ascent - metrics.capHeight + metrics.lineGap / 2) / upm,
-    baselineTrim: extra - (descent + metrics.lineGap / 2) / upm,
-  };
-}
 
 /**
  * The type system of a design: step sizes and line heights, tokens, and the text styles roles use.
@@ -131,28 +124,80 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
     lineHeight: scale.rem(stepLineHeight(step)),
   });
 
+  /** The CSS variables a role's face metrics live in. */
+  const faceVars = (
+    role: Role,
+    step?: StepName,
+    lineHeight?: string,
+    measured?: string
+  ): FaceVars => ({
+    // A custom line height has no measured offset of its own unless one is named: only a face at a step with its own line
+    // height does.
+    ...(measured
+      ? { measured }
+      : step && !lineHeight
+        ? { measured: measuredOffsetVar(role, step) }
+        : {}),
+    asc: faceVar(role, 'asc'),
+    desc: faceVar(role, 'desc'),
+    capHeight: faceVar(role, 'capheight'),
+  });
+
+  /** One grid row, as a token. */
+  const ROW = 'token(spacing.1)';
+
+  /** The line height of a step as CSS, unless a text style sets its own. */
+  const lineOf = (step: StepName, lineHeight?: string) =>
+    lineHeight ?? scale.rem(stepLineHeight(step));
+
   /**
-   * The Capsize trim of a step in a role: negative margins on `::before` and `::after`, as `calc()` over the role's
-   * variables. It needs a block box, so roles turn it off for inline elements. Do not put margin on a trimmed element;
-   * padding is measured from the cap and baseline edges.
+   * Puts the first baseline of a block of text on a grid line without changing its height or its box (see
+   * `../grid/README.md`). For a block whose text is its own, not a flex or grid container.
    */
-  const textTrim = (role: Role, step: StepName): Styles => {
-    const size = num(stepSize(step));
-    const leading = num(stepLineHeight(step));
-    const extra = `(var(${faceVar(role, 'normal')}) - ${leading} / (${size} * var(${faceVar(role, 'adj')}))) / 2`;
-    return {
-      '&::before': {
-        content: '""',
-        display: 'table',
-        marginBottom: `calc((${extra} - var(${faceVar(role, 'cap')})) * 1em)`,
-      },
-      '&::after': {
-        content: '""',
-        display: 'table',
-        marginTop: `calc((${extra} - var(${faceVar(role, 'base')})) * 1em)`,
-      },
-    };
-  };
+  const lineShift = (role: Role, step: StepName, lineHeight?: string, measured?: string): Styles =>
+    baselineLineShift(
+      lineOf(step, lineHeight),
+      faceVars(role, step, lineHeight, measured),
+      ROW
+    ) as Styles;
+
+  /**
+   * Puts the first baseline of one line of text on a grid line when a flex or grid box of fixed height centers it, by
+   * unequal padding. The box keeps its height; pass that height and any border or padding inside it.
+   */
+  const lineCentered = (role: Role, step: StepName, box: CenteredBox): Styles =>
+    baselineCenteredLine(lineOf(step), faceVars(role, step), ROW, box) as Styles;
+
+  /**
+   * Puts the first baseline of text on a grid line in an auto-height box by moving padding from one side to the other.
+   * Pass the padding the box has (at least half a row on each side) and any border above the text.
+   */
+  const linePadded = (
+    role: Role,
+    step: StepName,
+    padding: { block: string; border?: string }
+  ): Styles => baselinePaddedLine(lineOf(step), faceVars(role, step), ROW, padding) as Styles;
+
+  /** The same shift by moving the element, for a block that can use neither pseudo-elements nor margins (a disclosure summary). */
+  const lineRelative = (role: Role, step: StepName): Styles =>
+    baselineLineRelative(lineOf(step), faceVars(role, step), ROW) as Styles;
+
+  /** The same shift as margins, for flex or grid items and for text that clips with an ellipsis. */
+  const lineMargins = (role: Role, step: StepName, lineHeight?: string): Styles =>
+    baselineLineMargins(lineOf(step, lineHeight), faceVars(role, step, lineHeight), ROW) as Styles;
+
+  /** Size and line height, with the first baseline on the grid. For a block whose text is its own. */
+  const textLine = (role: Role, step: StepName): Styles =>
+    ({ ...(textSize(role, step) as Loose), ...(lineShift(role, step) as Loose) }) as Styles;
+
+  /**
+   * The trim of a step in a role: negative margins on `::before` and `::after` that cut the block to the space between the
+   * top of the capitals and the baseline. With `grid.snap` it is rounded up to whole baselines, with the baseline on a grid
+   * line. It needs a block box, so roles turn it off for inline elements (and use margins instead). Do not put margin on a
+   * trimmed element; padding is measured from the cap and baseline edges.
+   */
+  const textTrim = (role: Role, step: StepName): Styles =>
+    baselineTrim(lineOf(step), faceVars(role, step), ROW, Boolean(d.grid.snap)) as Styles;
 
   /** Size, line height and trim together, for text that is always a block. */
   const textRole = (role: Role, step: StepName): Styles =>
@@ -177,10 +222,25 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
   /** The small label that opens a field, a filter group or a section: the `fieldLabel` role. */
   const microLabel: Styles = roleStyle(roles.fieldLabel, true);
 
+  /** The `eyebrow` and `fieldLabel` roles with their first baseline on the grid, for blocks whose text is their own. */
+  const labelCapsLine: Styles = {
+    ...(labelCaps as Loose),
+    ...(lineShift(roles.eyebrow.face ?? 'body', roles.eyebrow.step) as Loose),
+  } as Styles;
+  const microLabelLine: Styles = {
+    ...(microLabel as Loose),
+    ...(lineShift(roles.fieldLabel.face ?? 'body', roles.fieldLabel.step) as Loose),
+  } as Styles;
+
   /**
    * Long-form body text: the body face at the `lg` step with a roomier line than the step has elsewhere. Phones set it
    * at the body size. For running text on article pages; not trimmed.
    */
+  const longFormShift = responsive(
+    lineShift('body', 'md'),
+    lineShift('body', 'lg', 'token(spacing.7)', LONGFORM_OFFSET_VAR),
+    'sm'
+  );
   const longForm: Styles = {
     fontFamily: 'body',
     fontSize: { base: 'md', sm: 'lg' },
@@ -196,9 +256,19 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
     textSize,
     textTrim,
     textRole,
+    lineOf,
+    lineShift,
+    lineRelative,
+    lineCentered,
+    linePadded,
+    lineMargins,
+    textLine,
     labelCaps,
+    labelCapsLine,
     microLabel,
+    microLabelLine,
     longForm,
+    longFormLine: { ...(longForm as Loose), ...(longFormShift as Loose) } as Styles,
     headings: { ...defaultHeadings, ...d.type.headings } as Record<HeadingLevel, HeadingStyle>,
     roles,
   };

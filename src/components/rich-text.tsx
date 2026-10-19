@@ -5,7 +5,7 @@ import { htmlToPortableText } from '../rich-text/html-to-portable-text';
 
 /** Props for {@link RichText}. */
 export type RichTextProps = {
-  /** The catalog HTML (or plain text) to render as Portable Text. */
+  /** The HTML (or plain text) to render as Portable Text. */
   html: string;
 };
 
@@ -20,7 +20,7 @@ const wrapper = css({
 });
 
 /**
- * Renders catalog HTML as Portable Text. The HTML is converted to blocks and rendered by `@portabletext/react`, so
+ * Renders HTML as Portable Text. The HTML is converted to blocks and rendered by `@portabletext/react`, so
  * only the supported formatting reaches the page and unknown tags and unsafe links are dropped.
  *
  * @param props - the HTML to render.

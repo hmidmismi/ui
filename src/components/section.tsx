@@ -2,9 +2,10 @@ import { createContext, type ReactNode, useContext } from 'react';
 import { section, sectionGroup } from '../../styled-system/recipes';
 import { Count } from './text';
 import { Title } from './typography';
+import { declared } from './variants';
 
-/** The fill of a {@link Section}: `plain` has no fill, the others are tint blocks. */
-export type SectionTone = 'plain' | 'sand' | 'green' | 'blue' | 'salmon';
+/** The fill of a {@link Section}: `plain` has no fill, any other is a tint block named in the theme's `wash`. */
+export type SectionTone = 'plain' | (string & {});
 
 /** Whether the current section is inside a {@link SectionGroup}, which makes it a subsection. */
 const GroupContext = createContext(false);
@@ -61,14 +62,14 @@ export function Section({
 
   if (inGroup) {
     return (
-      <section id={id} className={section({ tone, nested: true }).root}>
+      <section id={id} className={section({ tone: declared(tone), nested: true }).root}>
         <Title level="h3">{label}</Title>
         {children}
       </section>
     );
   }
 
-  const classes = section({ tone, space, full: fullWidth, compact, lead });
+  const classes = section({ tone: declared(tone), space, full: fullWidth, compact, lead });
 
   return (
     <section id={id} className={classes.root} aria-label={hideLabel ? label : undefined}>

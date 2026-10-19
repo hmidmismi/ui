@@ -1,12 +1,12 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { column, ruleAbove, ruleBelow, stickBelowHeader } from '../fragments';
+import { column, ruleAbove, ruleBelow, ruleBelowOf, stickBelowHeader } from '../fragments';
 import { currentMark, hoverAccent } from '../interaction';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
 /** A row of links that choose a group of a browse list: a letter, a decade or a view. The current one is marked. */
 export const browseNav = (t: TypeSystem) => {
-  const labelCaps = t.labelCaps;
+  const labelCapsLine = t.labelCapsLine;
   return defineSlotRecipe({
     className: 'browse-nav',
     staticCss: ['*'],
@@ -17,7 +17,7 @@ export const browseNav = (t: TypeSystem) => {
         paddingBlock: '1',
         paddingInline: '2',
         color: 'fg.muted',
-        ...labelCaps,
+        ...labelCapsLine,
         ...hoverAccent,
       },
     },
@@ -37,10 +37,10 @@ export const browseNav = (t: TypeSystem) => {
  * (a date) at the end, a hairline under it, and accent on hover.
  */
 export const rangeColumns = (t: TypeSystem) => {
-  const textSize = t.textSize;
+  const { textSize, textLine } = t;
   return defineSlotRecipe({
     className: 'range-columns',
-    slots: ['root', 'column', 'heading', 'label', 'count', 'list', 'link', 'note'],
+    slots: ['root', 'column', 'heading', 'label', 'count', 'list', 'link', 'name', 'note'],
     base: {
       root: {
         display: 'grid',
@@ -61,12 +61,10 @@ export const rangeColumns = (t: TypeSystem) => {
         gap: '2',
         paddingBlockEnd: '2',
         marginBlockEnd: '1',
-        borderBlockEndWidth: 'hairline',
-        borderBlockEndStyle: 'solid',
-        borderBlockEndColor: 'fg.default',
+        ...ruleBelowOf('fg.default'),
       },
-      label: { fontFamily: 'display', fontWeight: 'medium', ...textSize('display', '2xl') },
-      count: { color: 'secondary', ...textSize('body', 'sm'), fontVariantNumeric: 'tabular-nums' },
+      label: { fontFamily: 'display', fontWeight: 'medium', ...textLine('display', '2xl') },
+      count: { color: 'secondary', ...textLine('body', 'sm'), fontVariantNumeric: 'tabular-nums' },
       list: { ...column },
       link: {
         display: 'flex',
@@ -81,7 +79,8 @@ export const rangeColumns = (t: TypeSystem) => {
         transitionDuration: 'fast',
         _hover: { color: 'accent' },
       },
-      note: { flexShrink: 0, color: 'fg.muted', whiteSpace: 'nowrap', ...textSize('body', 'sm') },
+      name: { minWidth: '0', ...textLine('body', 'md') },
+      note: { flexShrink: 0, color: 'fg.muted', whiteSpace: 'nowrap', ...textLine('body', 'sm') },
     },
   });
 };
@@ -91,7 +90,7 @@ export const rangeColumns = (t: TypeSystem) => {
  * header bar. The current letter is inverted; a letter with no entries is dashed and dimmed and is not a link.
  */
 export const letterBar = (t: TypeSystem) => {
-  const textSize = t.textSize;
+  const { textSize, lineCentered } = t;
   return defineSlotRecipe({
     className: 'letter-bar',
     slots: ['root', 'list', 'key'],
@@ -113,6 +112,19 @@ export const letterBar = (t: TypeSystem) => {
         color: 'fg.default',
         fontFamily: 'display',
         ...responsive(textSize('display', 'lg'), textSize('display', 'xl'), 'sm'),
+        ...responsive(
+          lineCentered('display', 'lg', {
+            height: 'token(sizes.keyCompact)',
+            top: 'token(borderWidths.hairline)',
+            bottom: 'token(borderWidths.hairline)',
+          }),
+          lineCentered('display', 'xl', {
+            height: 'token(sizes.squareControl)',
+            top: 'token(borderWidths.hairline)',
+            bottom: 'token(borderWidths.hairline)',
+          }),
+          'sm'
+        ),
         borderWidth: 'hairline',
         borderStyle: 'solid',
         borderColor: 'border',
@@ -159,7 +171,6 @@ export const neighborNav = defineSlotRecipe({
 
 /** The title row of a list page: the page title at the start and the number of entries, muted, at the end. */
 export const listHeader = (t: TypeSystem) => {
-  const textSize = t.textSize;
   const textRole = t.textRole;
   return defineSlotRecipe({
     className: 'list-header',
@@ -168,7 +179,7 @@ export const listHeader = (t: TypeSystem) => {
       root: {
         display: 'flex',
         flexWrap: 'wrap',
-        alignItems: 'baseline',
+        alignItems: 'flex-end',
         justifyContent: 'space-between',
         columnGap: '6',
         rowGap: '2',
@@ -181,7 +192,7 @@ export const listHeader = (t: TypeSystem) => {
         letterSpacing: 'display',
         ...responsive(textRole('display', '4xl'), textRole('display', '6xl'), 'sm'),
       },
-      count: { color: 'fg.muted', ...textSize('body', 'md') },
+      count: { color: 'fg.muted', ...textRole('body', 'md') },
     },
   });
 };

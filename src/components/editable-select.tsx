@@ -2,6 +2,7 @@
 'use client';
 import { createListCollection } from '@ark-ui/react/select';
 import * as Select from './select';
+import { useUiText } from './ui-text';
 
 export function EditableSelect<T extends string>({
   label,
@@ -18,6 +19,7 @@ export function EditableSelect<T extends string>({
   onClear?: () => void;
   disabled?: boolean;
 }) {
+  const t = useUiText();
   const sorted = [...options].sort((a, b) => a.name.localeCompare(b.name));
   const collection = createListCollection({
     items: sorted,
@@ -35,7 +37,7 @@ export function EditableSelect<T extends string>({
       {label && <Select.Label>{label}</Select.Label>}
       <Select.Control>
         <Select.Trigger>
-          <Select.ValueText placeholder="— none —" />
+          <Select.ValueText placeholder={t.nonePlaceholder} />
           <Select.Indicator />
         </Select.Trigger>
         {!disabled && onClear && value && (

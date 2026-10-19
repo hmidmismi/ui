@@ -41,7 +41,7 @@ export function CountedItem({ count, link, children }: CountedItemProps) {
       {link(
         classes.link,
         <>
-          <span>{children}</span>
+          <span className={classes.name}>{children}</span>
           <span className={classes.count}>{count}</span>
         </>
       )}
@@ -55,9 +55,9 @@ type ExpandableRowProps = {
   plate: ReactNode;
   /** The title. */
   title: ReactNode;
-  /** The line under the title, such as `Artist · Label · Catalog number`. */
+  /** The line under the title, such as `Author · Publisher · Code`. */
   meta: ReactNode;
-  /** The text at the end, such as `1993 · 12 tracks`. Phones hide it. */
+  /** The text at the end, such as `1993 · 12 items`. Phones hide it. */
   aside: ReactNode;
   /** Whether the drawer is open. */
   open: boolean;
@@ -68,7 +68,7 @@ type ExpandableRowProps = {
 };
 
 /**
- * A release row: a button with the plate, the title over its meta line, the year and track count, and a chevron that
+ * An expandable row: a button with the plate, the title over its meta line, an aside, and a chevron that
  * turns when it is open. Slot recipe `expandableRow`.
  *
  * @param props - the parts, the open state and the toggle.
@@ -83,7 +83,7 @@ export function ExpandableRow({
   controls,
   onToggle,
 }: ExpandableRowProps) {
-  const classes = expandableRow({ layout: 'release' });
+  const classes = expandableRow({ layout: 'plated' });
 
   return (
     <button
@@ -94,7 +94,7 @@ export function ExpandableRow({
       onClick={onToggle}
     >
       {plate}
-      <span>
+      <span className={classes.text}>
         <span className={classes.title}>{title}</span>
         <span className={classes.meta}>{meta}</span>
       </span>
@@ -146,22 +146,24 @@ export function LinkRow({ title, meta, aside, link }: LinkRowProps) {
 type RowDrawerProps = {
   /** The id the row's `aria-controls` points at. */
   id: string;
-  /** The line at the start, such as `12 tracks · 54 min`. */
+  /** The line at the start, such as `12 items · 54 min`. */
   summary: ReactNode;
-  /** The link to the release, built from the slot class. */
+  /** The link to the row's page, built from the slot class. */
   link: (className: string) => ReactNode;
-  /** The tracks, as {@link DrawerItem} rows. */
+  /** The accessible name of the scrolling list, such as `Tracks, scrollable`. */
+  listLabel: string;
+  /** The items, as {@link DrawerItem} rows. */
   children: ReactNode;
 };
 
 /**
- * The drawer under an open release row: a header with the summary and the link, then the track list, which scrolls
+ * The drawer under an open expandable row: a header with the summary and the link, then the item list, which scrolls
  * and takes focus so the keyboard can scroll it. Slot recipe `rowDrawer`.
  *
- * @param props - the id, the summary, the link and the tracks.
+ * @param props - the id, the summary, the link, the list's name and the items.
  * @returns the drawer.
  */
-export function RowDrawer({ id, summary, link, children }: RowDrawerProps) {
+export function RowDrawer({ id, summary, link, listLabel, children }: RowDrawerProps) {
   const classes = rowDrawer();
 
   return (
@@ -170,7 +172,7 @@ export function RowDrawer({ id, summary, link, children }: RowDrawerProps) {
         <span>{summary}</span>
         {link(classes.link)}
       </div>
-      <ol className={classes.list} tabIndex={0} aria-label="Tracks, scrollable">
+      <ol className={classes.list} tabIndex={0} aria-label={listLabel}>
         {children}
       </ol>
     </div>
@@ -179,7 +181,7 @@ export function RowDrawer({ id, summary, link, children }: RowDrawerProps) {
 
 /** Props for {@link DrawerItem}. */
 type DrawerItemProps = {
-  /** The track number. */
+  /** The item number. */
   number: ReactNode;
   /** The title. */
   title: ReactNode;
@@ -188,7 +190,7 @@ type DrawerItemProps = {
 };
 
 /**
- * One track in a {@link RowDrawer}: the number, the title (accent on hover) and the length.
+ * One item in a {@link RowDrawer}: the number, the title (accent on hover) and the length.
  *
  * @param props - the number, the title and the length.
  * @returns the row.
@@ -246,7 +248,7 @@ export function DatedRow({ month, day, dateTime, title, subtitle, aside }: Dated
     <li className={classes.row}>
       <time dateTime={dateTime} className={classes.date}>
         <span className={classes.month}>{month}</span>
-        {day}
+        <span className={classes.day}>{day}</span>
       </time>
       <div>
         <strong className={classes.title}>{title}</strong>

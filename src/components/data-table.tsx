@@ -44,7 +44,7 @@ export function NumberCell({ children }: { children: ReactNode }) {
 }
 
 /**
- * A monospace cell for codes and records. Mono is for MARC data only.
+ * A monospace cell for codes and records. Mono is for coded data only.
  *
  * @param props - the cell content.
  * @returns the cell.

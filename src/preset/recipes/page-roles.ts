@@ -15,7 +15,7 @@ import { responsive, type TypeSystem } from '../type-scale';
 /** The class name of each role. */
 const CLASS_NAMES: Record<RoleName, string> = {
   eyebrow: 'eyebrow',
-  personName: 'person-name',
+  name: 'name',
   term: 'term',
   entry: 'entry',
   prose: 'prose',
@@ -30,7 +30,7 @@ const CLASS_NAMES: Record<RoleName, string> = {
 /** The roles that can be turned off the trim, because they may render inline elements. */
 const TRIMMABLE: readonly RoleName[] = [
   'eyebrow',
-  'personName',
+  'name',
   'term',
   'entry',
   'prose',
@@ -57,6 +57,13 @@ export function createPageRoles(t: TypeSystem) {
       ? responsive(t.textTrim(face, s.step), t.textTrim(face, s.wide))
       : t.textTrim(face, s.step);
   };
+  /** The line moved onto the grid by margins, for the role when its element is not a block (a span in a flex row). */
+  const margins = (s: RoleStyle) => {
+    const face = s.face ?? 'body';
+    return s.wide
+      ? responsive(t.lineMargins(face, s.step), t.lineMargins(face, s.wide))
+      : t.lineMargins(face, s.step);
+  };
   const look = (s: RoleStyle) => ({
     fontFamily: s.family ?? s.face ?? 'body',
     ...(s.weight ? { fontWeight: s.weight } : {}),
@@ -74,7 +81,10 @@ export function createPageRoles(t: TypeSystem) {
     const config: RecipeConfig = {
       className: CLASS_NAMES[name],
       base: look(s),
-      variants: { ...(trimmable ? { trim: { true: trim(s) } } : {}), ...variants } as never,
+      variants: {
+        ...(trimmable ? { trim: { true: trim(s), false: margins(s) } } : {}),
+        ...variants,
+      } as never,
     };
     if (trimmable) config.defaultVariants = { trim: true };
     if (trimmable || name === 'fieldLabel') config.staticCss = ['*'];
@@ -88,23 +98,21 @@ export function createPageRoles(t: TypeSystem) {
     className: CLASS_NAMES.prose,
     staticCss: ['*'],
     base: {},
-    defaultVariants: { face: 'serif', trim: true },
+    defaultVariants: { face: 'serif' },
     variants: {
+      // Trimmed for a block, or `...Inline` with its baseline moved by margins for a span in a flex row.
       face: {
-        serif: look({ ...t.roles.prose, trim: false }),
-        sans: look({ ...valueWithoutColor, trim: false }),
+        serif: { ...look({ ...t.roles.prose, trim: false }), ...trim(t.roles.prose) },
+        sans: { ...look({ ...valueWithoutColor, trim: false }), ...trim(value) },
+        serifInline: { ...look({ ...t.roles.prose, trim: false }), ...margins(t.roles.prose) },
+        sansInline: { ...look({ ...valueWithoutColor, trim: false }), ...margins(value) },
       },
-      trim: { true: {} },
     },
-    compoundVariants: [
-      { face: 'serif', trim: true, css: trim(t.roles.prose) },
-      { face: 'sans', trim: true, css: trim(value) },
-    ],
   });
 
   return {
     eyebrow: recipe('eyebrow'),
-    personName: recipe('personName'),
+    name: recipe('name'),
     term: recipe('term'),
     entry: recipe('entry', { block: { true: { display: 'block' } } }),
     prose,
@@ -112,8 +120,17 @@ export function createPageRoles(t: TypeSystem) {
     caption: recipe('caption'),
     count: recipe('count'),
     tagline: recipe('tagline'),
+    // Spaced, the label is a block: its line moves onto the grid by pseudo-element margins. Not spaced it may be a span in a
+    // row, where margins on the element do the same.
     fieldLabel: recipe('fieldLabel', {
-      spaced: { true: { display: 'block', marginBlockEnd: '4' } },
+      spaced: {
+        true: {
+          display: 'block',
+          marginBlockEnd: '4',
+          ...t.lineShift(t.roles.fieldLabel.face ?? 'body', t.roles.fieldLabel.step),
+        },
+        false: t.lineMargins(t.roles.fieldLabel.face ?? 'body', t.roles.fieldLabel.step),
+      },
     }),
     notice: recipe('notice'),
   };

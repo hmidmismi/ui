@@ -35,15 +35,14 @@ export const themeVars = {
 } as const;
 
 /** The per-role numbers the type system reads to size and trim text (all unitless). */
-export type FaceVar = 'adj' | 'cap' | 'base' | 'normal';
+export type FaceVar = 'adj' | 'asc' | 'desc' | 'capheight';
 
 /**
  * The CSS variable holding one of a role's type numbers.
  *
  * - `adj`: how much larger the face is set so its x-height equals the body face's.
- * - `cap`: the space above the capitals inside the content area, in em: (ascent - capHeight + lineGap / 2) / unitsPerEm.
- * - `base`: the space below the baseline, in em: (|descent| + lineGap / 2) / unitsPerEm.
- * - `normal`: the face's natural line height, in em: (ascent + lineGap + |descent|) / unitsPerEm.
+ * - `asc`, `desc`, `capheight`: the ascent, the descent and the height of the capitals, in em. The trim rounds the first
+ *   two to whole pixels the way the browser does, to put the baseline exactly where the browser draws it.
  *
  * @param role - the role.
  * @param key - which number.
@@ -97,9 +96,9 @@ function faceVariables(role: Role, metrics: FaceMetrics, reference: FaceMetrics)
   const descent = Math.abs(metrics.descent);
   return {
     [faceVar(role, 'adj')]: round(xHeightAdjust(reference, metrics)),
-    [faceVar(role, 'cap')]: round((metrics.ascent - metrics.capHeight + metrics.lineGap / 2) / upm),
-    [faceVar(role, 'base')]: round((descent + metrics.lineGap / 2) / upm),
-    [faceVar(role, 'normal')]: round((metrics.ascent + metrics.lineGap + descent) / upm),
+    [faceVar(role, 'asc')]: round(metrics.ascent / upm),
+    [faceVar(role, 'desc')]: round(descent / upm),
+    [faceVar(role, 'capheight')]: round(metrics.capHeight / upm),
   };
 }
 

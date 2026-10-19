@@ -29,7 +29,8 @@ export function Title({ level = 'h1', as, children }: TitleProps) {
 export type TextProps = Props<ElementType> & { variant?: 'body' | 'small' | 'caption' };
 
 export function Text({ as: Tag = 'p', variant = 'body', children }: TextProps) {
-  return <Tag className={text({ variant, trim: trims(String(Tag)) })}>{children}</Tag>;
+  const shape = trims(String(Tag)) ? variant : (`${variant}Inline` as 'body');
+  return <Tag className={text({ variant: shape })}>{children}</Tag>;
 }
 
 export type LabelProps = Props<ElementType>;

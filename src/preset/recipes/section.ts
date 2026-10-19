@@ -1,12 +1,12 @@
 import { defineRecipe, defineSlotRecipe } from '@pandacss/dev';
-import { anchorOffset, column, ruleAbove } from '../fragments';
+import { anchorOffset, column, ruleAbove, ruleNone } from '../fragments';
 import type { TypeSystem } from '../type-scale';
 
 /** The fill, text color and heading color of a toned section, from one tint. */
-const toned = (tone: 'sand' | 'green' | 'blue' | 'salmon') => ({
+const toned = (tone: string) => ({
   root: {
     paddingInline: '8',
-    borderBlockStartWidth: '0',
+    ...ruleNone,
     background: `wash.${tone}.bg`,
     color: `wash.${tone}.fg`,
   },
@@ -19,8 +19,8 @@ const toned = (tone: 'sand' | 'green' | 'blue' | 'salmon') => ({
  * section with a tint and drops the rule. `space="loose"` pads 64px; `full` runs it past the page gutters; `nested` is a
  * subsection inside a group, with no rule; `compact` is a results group, with 32px before it instead of 48px.
  */
-export const section = (t: TypeSystem) => {
-  const microLabel = t.microLabel;
+export const section = (t: TypeSystem, tones: readonly string[]) => {
+  const { microLabelLine, textLine } = t;
   return defineSlotRecipe({
     className: 'section',
     staticCss: ['*'],
@@ -42,14 +42,13 @@ export const section = (t: TypeSystem) => {
         marginBlockEnd: '4',
       },
       label: {
-        ...microLabel,
+        ...microLabelLine,
         fontWeight: 'semibold',
-        display: 'flex',
-        alignItems: 'baseline',
-        gap: '2',
+        '& > * + *': { marginInlineStart: '2' },
       },
       action: {
         color: 'fg.default',
+        ...textLine('body', 'md'),
         textDecoration: 'underline',
         textUnderlineOffset: 'token(borderWidths.bar)',
         transitionProperty: 'color',
@@ -60,10 +59,7 @@ export const section = (t: TypeSystem) => {
     variants: {
       tone: {
         plain: {},
-        sand: toned('sand'),
-        green: toned('green'),
-        blue: toned('blue'),
-        salmon: toned('salmon'),
+        ...Object.fromEntries(tones.map((tone) => [tone, toned(tone)])),
       },
       space: {
         normal: {},
@@ -74,13 +70,13 @@ export const section = (t: TypeSystem) => {
       },
       nested: {
         true: {
-          root: { borderBlockStartWidth: '0', marginBlockStart: '0', scrollMarginBlockStart: '0' },
+          root: { ...ruleNone, marginBlockStart: '0', scrollMarginBlockStart: '0' },
         },
       },
       lead: {
         true: {
           root: {
-            borderBlockStartWidth: '0',
+            ...ruleNone,
             marginBlockStart: '2',
             paddingBlockStart: '0',
           },

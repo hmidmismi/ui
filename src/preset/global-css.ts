@@ -1,10 +1,11 @@
+import { gridOverlay } from '../grid';
+
 /**
  * Base styles for every app: global color variables, the canvas background and body text role, the focus ring, an
- * optional baseline-grid overlay, and print and reduced-motion rules. Add the `dark` class to `<html>` for dark mode.
+ * the grid overlay, and print and reduced-motion rules. Add the `dark` class to `<html>` for dark mode.
  * Element looks such as headings live in recipes, not here.
  *
- * Set `data-baseline-grid` on `<html>` to overlay the 5px baseline (a faint line every 5px, a stronger one every 10px)
- * and check that blocks sit on the rhythm.
+ * The graph-paper overlay (`data-baseline-grid`, `data-spacing-grid` on `<html>`) is `gridOverlay` in `../grid/overlay.ts`.
  */
 export const globalCss = {
   extend: {
@@ -43,20 +44,15 @@ export const globalCss = {
     main: {
       flex: '1 0 auto',
     },
+    // Inline code is in another face, whose metrics would make its line taller than the lines around it and push everything below off
+    // the baseline grid. A zero line height keeps the line box the paragraph's own.
+    ':not(pre) > code': { lineHeight: '0' },
     ':focus-visible': {
       outline: '2px solid',
       outlineColor: 'accent.9',
       outlineOffset: '2px',
     },
-    'html[data-baseline-grid]::after': {
-      content: '""',
-      position: 'fixed',
-      inset: '0',
-      pointerEvents: 'none',
-      zIndex: '9999',
-      backgroundImage:
-        'repeating-linear-gradient(to bottom, color-mix(in srgb, red 38%, transparent) 0 1px, transparent 1px 10px), repeating-linear-gradient(to bottom, color-mix(in srgb, red 14%, transparent) 0 1px, transparent 1px 5px)',
-    },
+    ...gridOverlay,
     '@media print': {
       '[data-no-print]': { display: 'none !important' },
       body: { background: 'white', color: 'black' },

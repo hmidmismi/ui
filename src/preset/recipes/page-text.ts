@@ -1,5 +1,5 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { boxed, ruleAbove, ruleBelow } from '../fragments';
+import { ringed, ruleAbove, ruleBelow, ruleBelowOf, toneRing } from '../fragments';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
@@ -9,10 +9,16 @@ import { responsive } from '../type-scale';
  * text (14/20 on phones). It also holds what the pages use: lists, key-value list, table, code block and label tiles.
  */
 export const pageText = (t: TypeSystem) => {
-  const textSize = t.textSize;
-  const textRole = t.textRole;
-  const microLabel = t.microLabel;
-  const longForm = t.longForm;
+  const {
+    textSize,
+    textLine,
+    textRole,
+    microLabel,
+    microLabelLine,
+    linePadded,
+    longForm,
+    longFormLine,
+  } = t;
   return defineSlotRecipe({
     className: 'page-text',
     staticCss: ['*'],
@@ -58,7 +64,7 @@ export const pageText = (t: TypeSystem) => {
         marginBlockEnd: '8',
         color: 'fg.default',
         fontFamily: 'display',
-        ...responsive(textSize('display', 'xl'), textSize('display', '2xl'), 'sm'),
+        ...responsive(textLine('display', 'xl'), textLine('display', '2xl'), 'sm'),
       },
       h2: {
         marginBlockStart: { base: '8', sm: '12' },
@@ -66,21 +72,21 @@ export const pageText = (t: TypeSystem) => {
         color: 'fg.default',
         fontFamily: 'display',
         fontWeight: 'medium',
-        ...responsive(textSize('display', 'xl'), textSize('display', '2xl'), 'sm'),
+        ...responsive(textLine('display', 'xl'), textLine('display', '2xl'), 'sm'),
       },
       h3: {
         marginBlockStart: '8',
         marginBlockEnd: '2',
-        ...microLabel,
+        ...microLabelLine,
         fontWeight: 'semibold',
       },
-      p: { ...longForm },
+      p: { ...longFormLine },
       list: {
         ...longForm,
         marginBlockStart: '4',
         paddingInlineStart: '6',
         listStyle: 'disc',
-        '& li': { ...longForm },
+        '& li': { ...longFormLine },
       },
       kv: {
         display: 'grid',
@@ -89,8 +95,13 @@ export const pageText = (t: TypeSystem) => {
         marginBlockStart: '4',
         ...ruleAbove,
         '& > *': { paddingBlock: '3', ...ruleBelow },
+        '& > dd': { ...linePadded('body', 'md', { block: 'token(spacing.3)' }) },
       },
-      term: { color: 'fg.muted', '&&': { paddingBlockEnd: { base: '0', sm: '3' } } },
+      term: {
+        color: 'fg.muted',
+        ...textLine('body', 'md'),
+        '&&': { paddingBlockEnd: { base: '0', sm: '3' } },
+      },
       detail: { ...textSize('body', 'md') },
       table: {
         width: 'full',
@@ -99,14 +110,14 @@ export const pageText = (t: TypeSystem) => {
         ...textSize('body', 'md'),
       },
       th: {
-        paddingBlock: '2',
         paddingInlineEnd: '4',
         textAlign: 'start',
         ...microLabel,
+        ...linePadded(t.roles.fieldLabel.face ?? 'body', t.roles.fieldLabel.step, {
+          block: 'token(spacing.2)',
+        }),
         fontWeight: 'semibold',
-        borderBlockEndWidth: 'hairline',
-        borderBlockEndStyle: 'solid',
-        borderBlockEndColor: 'fg.default',
+        ...ruleBelowOf('fg.default'),
         '&[data-num]': {
           textAlign: 'end',
           fontVariantNumeric: 'tabular-nums',
@@ -114,8 +125,8 @@ export const pageText = (t: TypeSystem) => {
         },
       },
       td: {
-        paddingBlock: '3',
         paddingInlineEnd: '4',
+        ...linePadded('body', 'md', { block: 'token(spacing.3)' }),
         verticalAlign: 'top',
         ...ruleBelow,
         '&[data-num]': {
@@ -125,14 +136,15 @@ export const pageText = (t: TypeSystem) => {
         },
       },
       code: {
-        ...boxed,
+        ...ringed,
         display: 'block',
         marginBlockStart: '4',
-        padding: '4',
+        paddingInline: '4',
+        ...linePadded('mono', 'md', { block: 'token(spacing.4)' }),
         overflow: 'auto',
         background: 'gray.surface.bg.hover',
         fontFamily: 'mono',
-        ...textSize('body', 'md'),
+        ...textSize('mono', 'md'),
         whiteSpace: 'pre',
       },
       tileGrid: {
@@ -149,23 +161,19 @@ export const pageText = (t: TypeSystem) => {
         paddingBlock: '3',
         paddingInline: '4',
         color: 'fg.default',
-        borderWidth: 'hairline',
-        borderStyle: 'solid',
-        toneEdge: '40',
-        borderInlineStartWidth: 'edge',
-        borderInlineStartColor: 'var(--tone)',
+        ...toneRing(40, 'left'),
         toneFill: '10',
         transitionProperty: 'background-color',
         transitionDuration: 'fast',
         '&&': { textDecoration: 'none', color: 'fg.default' },
         _hover: { toneFill: '20' },
       },
-      tileName: { fontFamily: 'display', fontWeight: 'medium', ...textSize('display', 'xl') },
+      tileName: { fontFamily: 'display', fontWeight: 'medium', ...textLine('display', 'xl') },
       tileCount: {
         color: 'var(--tone)',
         fontFamily: 'display',
         fontVariantNumeric: 'tabular-nums',
-        ...textSize('display', '2xl'),
+        ...textLine('display', '2xl'),
       },
     },
     variants: {
@@ -199,8 +207,7 @@ export const pageText = (t: TypeSystem) => {
 
 /** The page layout: the section sidebar beside the article, or a disclosure above it below 960px. */
 export const pageLayout = (t: TypeSystem) => {
-  const textSize = t.textSize;
-  const microLabel = t.microLabel;
+  const { textLine, microLabelLine, linePadded } = t;
   return defineSlotRecipe({
     className: 'page-layout',
     slots: [
@@ -231,13 +238,13 @@ export const pageLayout = (t: TypeSystem) => {
         transitionTimingFunction: 'ease-in-out',
       },
       sideGroup: { '& + &': { marginBlockStart: '6' } },
-      sideLabel: { marginBlockEnd: '2', ...microLabel, fontWeight: 'semibold' },
+      sideLabel: { marginBlockEnd: '2', ...microLabelLine, fontWeight: 'semibold' },
       sideLink: {
         display: 'block',
         paddingBlock: '1',
         paddingInlineStart: '3',
         marginInlineStart: '-3',
-        ...textSize('body', 'md'),
+        ...textLine('body', 'md'),
         borderInlineStartWidth: 'rail',
         borderInlineStartStyle: 'solid',
         borderInlineStartColor: 'transparent',
@@ -247,9 +254,9 @@ export const pageLayout = (t: TypeSystem) => {
         _hover: { color: 'fg.default' },
         '&[aria-current="page"]': { color: 'fg.default', borderInlineStartColor: 'accent' },
       },
-      disclosure: { ...boxed, display: { base: 'block', md: 'none' }, paddingInline: '4' },
+      disclosure: { ...ringed, display: { base: 'block', md: 'none' }, paddingInline: '4' },
       summary: {
-        paddingBlock: '3',
+        ...linePadded('body', 'md', { block: 'token(spacing.3)' }),
         cursor: 'pointer',
         listStyle: 'none',
         '&::-webkit-details-marker': { display: 'none' },

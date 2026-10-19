@@ -3,7 +3,7 @@ import { columnList, termList, termRow } from '../../styled-system/recipes';
 import { Term } from './text';
 
 /**
- * A two-column list of labels and values, one row per term: the release metadata. The columns collapse to one on
+ * A two-column list of labels and values, one row per term, such as a record's metadata. The columns collapse to one on
  * narrow screens. Recipe `termList`.
  *
  * @param props - the `TermRow` children.
@@ -45,7 +45,7 @@ type ColumnListProps = {
 };
 
 /**
- * A list of terms that flows into columns, so long lists such as a large ensemble stay compact. Recipe `columnList`.
+ * A list of terms that flows into columns, so long lists such as a long list of members stay compact. Recipe `columnList`.
  *
  * @param props - the column width and the rows.
  * @returns the list.

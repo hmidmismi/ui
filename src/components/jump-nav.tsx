@@ -3,6 +3,7 @@ import { jumpNav } from '../../styled-system/recipes';
 import { useActiveSection } from '../hooks/use-active-section';
 import { useMeasuredHeight } from '../hooks/use-measured-height';
 import type { JumpLink } from './jump-links';
+import { useUiText } from './ui-text';
 
 export type { JumpLink };
 
@@ -15,13 +16,14 @@ export type { JumpLink };
  * @returns the navigation element.
  */
 export function JumpNav({ links }: { links: JumpLink[] }) {
+  const t = useUiText();
   const active = useActiveSection(links.map((link) => link.id));
   const classes = jumpNav();
   const root = useRef<HTMLElement>(null);
   useMeasuredHeight(root, '--jh');
 
   return (
-    <nav ref={root} className={classes.root} aria-label="On this page" data-no-print>
+    <nav ref={root} className={classes.root} aria-label={t.jumpNav} data-no-print>
       {links.map((link) => (
         <a
           key={link.id}

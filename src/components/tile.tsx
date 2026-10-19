@@ -1,4 +1,3 @@
-import type { VariantOf } from '@hmidmismi/ui';
 import type { ReactNode } from 'react';
 import {
   featureCard,
@@ -9,9 +8,10 @@ import {
   tile,
   tileGrid,
 } from '../../styled-system/recipes';
+import { declared } from './variants';
 
-/** The hue numbers `'1'` to `'8'`. */
-export type Hue = VariantOf<typeof hue, 'hue'>;
+/** A hue: a name from the theme's `categorical` colors. */
+export type Hue = string;
 
 /** Props for {@link Tile}. */
 type TileProps = {
@@ -19,7 +19,7 @@ type TileProps = {
   hue: Hue;
   /** The large figure at the bottom right, such as a count. */
   figure: ReactNode;
-  /** The small line under the name, such as `NW catalog`. */
+  /** The small line under the name, such as `Series A`. */
   note?: ReactNode;
   /** Called when the tile is pressed. */
   onClick: () => void;
@@ -38,7 +38,11 @@ export function Tile({ hue: color, figure, note, onClick, children }: TileProps)
   const classes = tile();
 
   return (
-    <button type="button" className={`${hue({ hue: color })} ${classes.root}`} onClick={onClick}>
+    <button
+      type="button"
+      className={`${hue({ hue: declared(color) })} ${classes.root}`}
+      onClick={onClick}
+    >
       <span>
         <span className={classes.name}>{children}</span>
         {note && <span className={classes.note}>{note}</span>}
@@ -80,14 +84,14 @@ export function SplitGrid({ gap = 'md', children }: SplitGridProps) {
 type PlateProps = {
   /** The plate's hue. */
   hue: Hue;
-  /** The label's short name, at the upper left. */
+  /** The short name, at the upper left. */
   name: string;
-  /** The catalog number, at the lower right. */
+  /** The code, at the lower right. */
   number: string;
 };
 
 /**
- * A square plate in a hue: the label's short name at the upper left and the catalog number at the lower right, both in
+ * A square plate in a hue: a short name at the upper left and a code at the lower right, both in
  * the body face. It is decorative. Recipes `hue` and `plate`.
  *
  * @param props - the hue, the name and the number.
@@ -97,7 +101,7 @@ export function Plate({ hue: color, name, number }: PlateProps) {
   const classes = plate();
 
   return (
-    <span aria-hidden="true" className={`${hue({ hue: color })} ${classes.root}`}>
+    <span aria-hidden="true" className={`${hue({ hue: declared(color) })} ${classes.root}`}>
       <span className={classes.name}>{name}</span>
       <span className={classes.number}>{number}</span>
     </span>
@@ -108,7 +112,7 @@ export function Plate({ hue: color, name, number }: PlateProps) {
 type FeatureCardProps = {
   /** The card's hue, or omitted for a neutral card. */
   hue?: Hue;
-  /** The small label, such as `Composer`. */
+  /** The small label, such as `Category`. */
   label: string;
   /** The title. */
   title: ReactNode;
@@ -131,7 +135,7 @@ export function FeatureCard({ hue: color, label, title, text, meta, link }: Feat
   const classes = featureCard({ tinted: color !== undefined });
 
   return (
-    <article className={color ? `${hue({ hue: color })} ${classes.root}` : classes.root}>
+    <article className={color ? `${hue({ hue: declared(color) })} ${classes.root}` : classes.root}>
       <p className={classes.label}>{label}</p>
       <h3 className={classes.title}>{title}</h3>
       <p className={classes.text}>{text}</p>

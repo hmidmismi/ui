@@ -65,7 +65,10 @@ import { tooltip } from './tooltip';
  * @param t - the type system of a design.
  * @returns the recipes and slot recipes.
  */
-export function createRecipes(t: TypeSystem) {
+/** The names a project gave its colors: the label hues (`categorical`) and the section tones (`wash`). */
+export type ColorNames = { hues: readonly string[]; tones: readonly string[] };
+
+export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], tones: [] }) {
   const { label, numeral, text, title } = createRoles(t);
   return {
     recipes: {
@@ -90,34 +93,34 @@ export function createRecipes(t: TypeSystem) {
       listFilter: listFilter(t),
       quote,
       codeBlock: codeBlock(t),
-      timeline,
+      timeline: timeline(t),
       disclosure: disclosure(t),
       picture,
       figure,
       videoFrame,
       sectionGroup,
-      hue,
+      hue: hue(names.hues),
       scrollList,
       chip: chip(t),
       pageColumn,
       pageHeader,
       cardItem,
       centeredLines,
-      skipLink,
+      skipLink: skipLink(t),
       pageBar,
       adminBar,
       fieldStatus,
       signInForm,
-      statusBadge,
+      statusBadge: statusBadge(t),
       absoluteCenter,
-      badge,
-      button,
+      badge: badge(t),
+      button: button(t),
       fieldRow,
       group,
       icon,
       input,
       label,
-      link,
+      link: link(t),
       numeral,
       spinner,
       text,
@@ -130,7 +133,7 @@ export function createRecipes(t: TypeSystem) {
       expandableRow: expandableRow(t),
       rowDrawer,
       datedList: datedList(t),
-      section: section(t),
+      section: section(t, names.tones),
       plate: plate(t),
       featureCard: featureCard(t),
       tile: tile(t),
@@ -160,7 +163,7 @@ export function createRecipes(t: TypeSystem) {
       radioGroup,
       select,
       pagination,
-      table,
+      table: table(t),
       tabs,
       toast,
       toggleGroup,

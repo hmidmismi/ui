@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import '../styled-system/styles.css';
 import fraunces from '@capsizecss/metrics/fraunces';
 import karla from '@capsizecss/metrics/karla';
-import { Badge, Button, Input, Label, Stack, Text, Title } from '../src';
+import { Badge, Button, Input, Label, Section as RuledSection, Stack, Text, Title } from '../src';
 import { neutral, type Theme, toCss } from '../src/theme';
 
 /** A second theme, to show that a theme is only variables: nothing is rebuilt when it is applied. */
@@ -26,7 +26,6 @@ const warm: Theme = {
 };
 
 const themes: Record<string, Theme> = { neutral, warm };
-const STEPS = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl'] as const;
 const SPACING = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24] as const;
 
 function Swatches({ palette }: { palette: string }) {
@@ -47,14 +46,12 @@ function Swatches({ palette }: { palette: string }) {
   );
 }
 
+/** A part of the page: the library's ruled section, so the playground's own rhythm comes from the library. */
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section style={{ padding: '30px 0', borderTop: '1px solid var(--colors-gray-7)' }}>
-      <Stack gap="8">
-        <Label>{title}</Label>
-        {children}
-      </Stack>
-    </section>
+    <RuledSection id={title.toLowerCase().replace(/\W+/g, '-')} label={title}>
+      <Stack gap="8">{children}</Stack>
+    </RuledSection>
   );
 }
 
@@ -62,6 +59,7 @@ function App() {
   const query = new URLSearchParams(window.location.search);
   const [dark, setDark] = useState(query.has('dark'));
   const [grid, setGrid] = useState(query.has('grid'));
+  const [spacing, setSpacing] = useState(query.has('spacing'));
   const [themeName, setThemeName] = useState(query.get('theme') ?? 'neutral');
 
   useEffect(() => {
@@ -71,6 +69,10 @@ function App() {
     if (grid) document.documentElement.setAttribute('data-baseline-grid', '');
     else document.documentElement.removeAttribute('data-baseline-grid');
   }, [grid]);
+  useEffect(() => {
+    if (spacing) document.documentElement.setAttribute('data-spacing-grid', '');
+    else document.documentElement.removeAttribute('data-spacing-grid');
+  }, [spacing]);
   useEffect(() => {
     let tag = document.getElementById('theme-override') as HTMLStyleElement | null;
     if (!tag) {
@@ -92,6 +94,9 @@ function App() {
           <Button variant="outline" onClick={() => setGrid(!grid)}>
             {grid ? 'Hide baseline grid' : 'Show baseline grid'}
           </Button>
+          <Button variant="outline" onClick={() => setSpacing(!spacing)}>
+            {spacing ? 'Hide spacing grid' : 'Show spacing grid'}
+          </Button>
           {Object.keys(themes).map((name) => (
             <Button
               key={name}
@@ -105,27 +110,27 @@ function App() {
       </Stack>
 
       <Section title="Type scale">
-        {STEPS.map((step) => (
-          <div key={step} style={{ display: 'flex', alignItems: 'baseline', gap: 20 }}>
-            <Label>{step}</Label>
-            <span
-              style={{
-                fontFamily: 'var(--fonts-display)',
-                fontSize: `var(--font-sizes-${step})`,
-                lineHeight: `var(--line-heights-${step})`,
-              }}
-            >
-              Aikido is a martial way
-            </span>
-          </div>
+        {(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const).map((level) => (
+          <Stack key={level} gap="2">
+            <Text variant="caption">{level}</Text>
+            <Title level={level}>Aikido is a martial way</Title>
+          </Stack>
         ))}
-        <Title level="h2">Title level 2</Title>
-        <Text>
-          Body text sits on the 5px baseline, with the space above the capitals and below the
-          baseline trimmed.
-        </Text>
-        <Text variant="small">Small text.</Text>
-        <Text variant="caption">Caption text.</Text>
+        <Stack gap="2">
+          <Text variant="caption">body</Text>
+          <Text>
+            Body text sits on the baseline, with the space above the capitals and below the baseline
+            trimmed.
+          </Text>
+        </Stack>
+        <Stack gap="2">
+          <Text variant="caption">small</Text>
+          <Text variant="small">Small text.</Text>
+        </Stack>
+        <Stack gap="2">
+          <Text variant="caption">caption</Text>
+          <Text variant="caption">Caption text.</Text>
+        </Stack>
       </Section>
 
       <Section title="Spacing">

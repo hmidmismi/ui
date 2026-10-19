@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { hue, pageLayout, pageText } from '../../styled-system/recipes';
 import type { Hue } from './tile';
+import { declared } from './variants';
+import { useUiText } from './ui-text';
 
 /**
  * The article of a page of text: at most 72 characters wide, holding a title and the body. Slot recipe `pageText`.
@@ -123,33 +125,33 @@ export function PageCode({ children }: { children: string }) {
 }
 
 /** The grid of record label tiles. */
-export function PageTileGrid({ children }: { children: ReactNode }) {
+export function CountTileGrid({ children }: { children: ReactNode }) {
   return <ul className={pageText().tileGrid}>{children}</ul>;
 }
 
-/** Props for {@link PageTile}. */
-type PageTileProps = {
-  /** The label's hue. */
+/** Props for {@link CountTile}. */
+type CountTileProps = {
+  /** The tile's hue. */
   hue: Hue;
-  /** The label's name. */
+  /** The name. */
   name: ReactNode;
-  /** The label's release count, formatted. */
+  /** The count shown at the end, formatted. */
   count: ReactNode;
   /** Builds the tile's link from the slot class and its content. */
   link: (className: string, content: ReactNode) => ReactNode;
 };
 
 /**
- * One label tile: the name at the start and the release count at the end, in the label's color.
+ * One tile: the name at the start and a count at the end, in the hue's color.
  *
  * @param props - the hue, name, count and link builder.
  * @returns the list item.
  */
-export function PageTile({ hue: color, name, count, link }: PageTileProps) {
+export function CountTile({ hue: color, name, count, link }: CountTileProps) {
   const classes = pageText();
 
   return (
-    <li className={hue({ hue: color })}>
+    <li className={hue({ hue: declared(color) })}>
       {link(
         classes.tile,
         <>
@@ -179,18 +181,19 @@ type PageLayoutProps = {
  * @returns the layout.
  */
 export function PageLayout({ currentTitle, side, children }: PageLayoutProps) {
+  const t = useUiText();
   const classes = pageLayout();
 
   return (
     <div className={classes.root}>
-      <aside className={classes.side} aria-label="In this section">
+      <aside className={classes.side} aria-label={t.sectionNav}>
         {side}
       </aside>
       <details className={classes.disclosure}>
         <summary className={classes.summary}>
-          In this section: <span className={classes.current}>{currentTitle}</span>
+          {t.sectionNavLead} <span className={classes.current}>{currentTitle}</span>
         </summary>
-        <nav className={classes.nav} aria-label="In this section">
+        <nav className={classes.nav} aria-label={t.sectionNav}>
           {side}
         </nav>
       </details>

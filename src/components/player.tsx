@@ -1,6 +1,7 @@
 import { type ReactNode, useState } from 'react';
 import { Button } from './button';
 import { playerSlots } from './slots';
+import { fill, useUiText } from './ui-text';
 
 /** One track in the queue. */
 export type PlayerQueueItem = {
@@ -60,6 +61,7 @@ type MediaPlayerProps = {
  * @returns the player, or nothing when the queue is empty.
  */
 export function MediaPlayer(props: MediaPlayerProps) {
+  const t = useUiText();
   const {
     queue,
     currentUid,
@@ -100,25 +102,25 @@ export function MediaPlayer(props: MediaPlayerProps) {
       {panelOpen && (
         <div className={classes.panel}>
           <div className={classes.panelHead}>
-            <strong>Queue ({queue.length})</strong>
+            <strong>{fill(t.queue, { count: queue.length })}</strong>
             {props.onPermalink && (
               <button type="button" onClick={makePermalink}>
-                Permalink
+                {t.permalink}
               </button>
             )}
             <button type="button" onClick={props.onClear}>
-              Clear
+              {t.clear}
             </button>
             {permalink && (
               <input
                 readOnly
                 value={permalink}
-                aria-label="Permalink"
+                aria-label={t.permalink}
                 className={classes.permalink}
                 onFocus={(e) => e.currentTarget.select()}
               />
             )}
-            {linkError && <span>Could not create a permalink</span>}
+            {linkError && <span>{t.permalinkError}</span>}
           </div>
           <ol className={classes.queue}>
             {queue.map((item, index) => (
@@ -160,7 +162,7 @@ export function MediaPlayer(props: MediaPlayerProps) {
                 )}
                 <button
                   type="button"
-                  aria-label="Move up"
+                  aria-label={t.moveUp}
                   disabled={index === 0}
                   onClick={() => props.onMove(item.uid, index - 1)}
                 >
@@ -168,7 +170,7 @@ export function MediaPlayer(props: MediaPlayerProps) {
                 </button>
                 <button
                   type="button"
-                  aria-label="Move down"
+                  aria-label={t.moveDown}
                   disabled={index === queue.length - 1}
                   onClick={() => props.onMove(item.uid, index + 1)}
                 >
@@ -176,7 +178,7 @@ export function MediaPlayer(props: MediaPlayerProps) {
                 </button>
                 <button
                   type="button"
-                  aria-label="Remove from queue"
+                  aria-label={t.removeFromQueue}
                   onClick={() => props.onRemove(item.uid)}
                 >
                   ✕
@@ -198,7 +200,7 @@ export function MediaPlayer(props: MediaPlayerProps) {
               <div className={classes.nowArtist}>{now.artist}</div>
               {error ? (
                 <div className={classes.nowError} role="alert" title={error}>
-                  Playback failed: {error}
+                  {fill(t.playbackFailed, { error })}
                 </div>
               ) : (
                 rendition && <div className={classes.nowArtist}>{rendition}</div>
@@ -208,13 +210,13 @@ export function MediaPlayer(props: MediaPlayerProps) {
         </div>
 
         <div className={classes.controls}>
-          <button type="button" onClick={props.onPrev} aria-label="Previous track">
+          <button type="button" onClick={props.onPrev} aria-label={t.previous}>
             ◀◀
           </button>
-          <button type="button" onClick={props.onPlayPause} aria-label={playing ? 'Pause' : 'Play'}>
+          <button type="button" onClick={props.onPlayPause} aria-label={playing ? t.pause : t.play}>
             {playing ? '⏸' : '▶'}
           </button>
-          <button type="button" onClick={props.onNext} aria-label="Next track">
+          <button type="button" onClick={props.onNext} aria-label={t.next}>
             ▶▶
           </button>
         </div>
@@ -228,7 +230,7 @@ export function MediaPlayer(props: MediaPlayerProps) {
             value={Math.min(position, duration || 0)}
             step={1}
             onChange={(e) => props.onSeek(Number(e.target.value))}
-            aria-label="Seek"
+            aria-label={t.seek}
           />
           <span className={classes.time}>{formatTime(duration)}</span>
         </div>
@@ -252,7 +254,7 @@ export function MediaPlayer(props: MediaPlayerProps) {
             step={0.01}
             value={volume}
             onChange={(e) => props.onVolume(Number(e.target.value))}
-            aria-label="Volume"
+            aria-label={t.volume}
             className={classes.volume}
           />
         </div>

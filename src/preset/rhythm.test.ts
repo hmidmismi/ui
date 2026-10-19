@@ -2,8 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { design } from '../design';
 import { neutral, xHeightAdjust } from '../theme';
 import { createRecipes } from './recipes';
-import { BASELINE, ROOT_SIZE } from './scale';
-import { scaleValues } from './spacing';
+import { createScale, scaleValuesFor } from '../grid';
 import {
   BASE_SIZE,
   createTypeSystem,
@@ -15,12 +14,13 @@ import {
   stepSize,
   textSize,
   textTrim,
-  trimValues,
 } from './type-scale';
 
 const { recipes, slotRecipes } = createRecipes(createTypeSystem(design));
 
 const names = Object.keys(STEPS) as StepName[];
+const { BASELINE, ROOT_SIZE } = createScale(design);
+const scaleValues = scaleValuesFor(design);
 const px = (rem: string) => Number.parseFloat(rem) * ROOT_SIZE;
 
 describe('type scale', () => {
@@ -68,16 +68,7 @@ describe('type scale', () => {
 
   it('trims every face and step above and below', () => {
     for (const face of ['display', 'body', 'mono'] as const) {
-      const metrics = neutral.faces[face].metrics;
-      const adjust = xHeightAdjust(neutral.faces.body.metrics, metrics);
       for (const name of names) {
-        const { capHeightTrim, baselineTrim } = trimValues(
-          metrics,
-          stepSize(name) * adjust,
-          stepLineHeight(name)
-        );
-        expect(capHeightTrim, `${face} ${name}`).toBeLessThan(0);
-        expect(baselineTrim, `${face} ${name}`).toBeLessThan(0);
         const css = textTrim(face, name) as Record<string, Record<string, string>>;
         expect(css['&::before']?.marginBottom, `${face} ${name}`).toMatch(/^calc\(/);
         expect(css['&::after']?.marginTop, `${face} ${name}`).toMatch(/^calc\(/);

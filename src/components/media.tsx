@@ -35,16 +35,20 @@ type PictureProps = {
  * @returns the image.
  */
 export function Picture({ shape, src, alt, width, height, priority = false }: PictureProps) {
+  const classes = picture({ shape });
+
   return (
-    <img
-      className={picture({ shape })}
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      loading={priority ? undefined : 'lazy'}
-      fetchPriority={priority ? 'high' : undefined}
-    />
+    <span className={classes.frame}>
+      <img
+        className={classes.image}
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        loading={priority ? undefined : 'lazy'}
+        fetchPriority={priority ? 'high' : undefined}
+      />
+    </span>
   );
 }
 
@@ -83,5 +87,11 @@ export function Figure({ caption, credit, children }: FigureProps) {
  * @returns the frame.
  */
 export function VideoFrame({ children }: { children: ReactNode }) {
-  return <div className={videoFrame()}>{children}</div>;
+  const classes = videoFrame();
+
+  return (
+    <div className={classes.frame}>
+      <div className={classes.root}>{children}</div>
+    </div>
+  );
 }

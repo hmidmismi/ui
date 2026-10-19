@@ -44,11 +44,11 @@ const DECORATORS: Record<string, string> = {
 const SAFE_HREF = /^(https?:|mailto:|\/(?!\/)|#)/i;
 
 /**
- * Converts catalog HTML to Portable Text. It handles paragraphs, headings, block quotes, bullet and numbered lists,
+ * Converts HTML to Portable Text. It handles paragraphs, headings, block quotes, bullet and numbered lists,
  * line breaks, bold, italic, underline, code and links; any other tag contributes only its text. Unlike
  * `@portabletext/block-tools` it needs no DOM, so it runs on Cloudflare Workers.
  *
- * @param html - the HTML from the catalog, or plain text.
+ * @param html - the HTML, or plain text.
  * @returns the Portable Text blocks, with empty blocks dropped.
  */
 export function htmlToPortableText(html: string): PortableTextBlock[] {

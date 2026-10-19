@@ -8,14 +8,14 @@ import {
   eyebrow,
   fieldLabel,
   notice,
-  personName,
+  name as nameText,
   prose,
   tagline,
   term,
   value,
 } from '../../styled-system/recipes';
 
-/** The inline elements, where the Capsize trim cannot apply. */
+/** The inline elements, where the trim cannot apply. */
 const INLINE_TAGS = new Set(['span', 'strong', 'small']);
 
 /**
@@ -48,17 +48,17 @@ export function Eyebrow({ as: Tag = 'h2', children }: TextProps<'h2' | 'h3' | 's
 }
 
 /**
- * A person's or group's name set as a heading: uppercase sans with light tracking. Recipe `personName`.
+ * A name set as a heading, such as a person's or a group's: small, semibold, light tracking. Recipe `name`.
  *
  * @param props - the element and the name.
  * @returns the name.
  */
 export function Name({ as: Tag = 'h3', children }: TextProps<'h3' | 'h2' | 'span'>) {
-  return <Tag className={personName({ trim: isBlock(Tag) })}>{children}</Tag>;
+  return <Tag className={nameText({ trim: isBlock(Tag) })}>{children}</Tag>;
 }
 
 /**
- * A term: credit headings such as "Performing Groups", instrument and role names, metadata labels. Small, semibold,
+ * A term: headings of a credit list, names of roles, metadata labels. Small, semibold,
  * muted. Recipe `term`.
  *
  * @param props - the element and the text.
@@ -97,7 +97,8 @@ type ProseProps = TextProps<'p' | 'div'> & {
  * @returns the prose.
  */
 export function Prose({ as: Tag = 'p', face = 'serif', children }: ProseProps) {
-  return <Tag className={prose({ face, trim: isBlock(Tag) })}>{children}</Tag>;
+  const shape = isBlock(Tag) ? face : (`${face}Inline` as 'serif');
+  return <Tag className={prose({ face: shape })}>{children}</Tag>;
 }
 
 /**

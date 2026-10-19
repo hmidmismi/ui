@@ -1,4 +1,5 @@
 import type { SystemStyleObject } from '@pandacss/dev';
+import { createRules } from '../grid';
 
 /**
  * Style fragments used by more than one recipe. A fragment is spread into a recipe (`...ruleBelow`), so a repeated look
@@ -10,17 +11,22 @@ import type { SystemStyleObject } from '@pandacss/dev';
 /** A column of children: the base of most block recipes. Set `gap` beside it. */
 export const column: SystemStyleObject = { display: 'flex', flexDirection: 'column' };
 
-/** A hairline rule above the block. */
-export const ruleAbove: SystemStyleObject = {
-  borderBlockStartWidth: 'hairline',
-  borderColor: 'border',
-};
+const rules = createRules({
+  hairline: 'token(borderWidths.hairline)',
+  border: 'token(colors.border)',
+  edge: 'token(borderWidths.edge)',
+});
 
-/** A hairline rule below the block. */
-export const ruleBelow: SystemStyleObject = {
-  borderBlockEndWidth: 'hairline',
-  borderColor: 'border',
-};
+/** Hairline rules and outlines drawn as inset shadows, so they take no height (see `../grid`). */
+export const ruleAbove = rules.ruleAbove as SystemStyleObject;
+export const ruleBelow = rules.ruleBelow as SystemStyleObject;
+export const ruleBoth = rules.ruleBoth as SystemStyleObject;
+export const ringed = rules.ringed as SystemStyleObject;
+export const ruleNone = rules.ruleNone as SystemStyleObject;
+export const ruleBelowOf = (color: string) =>
+  rules.ruleBelowOf(`token(colors.${color})`) as SystemStyleObject;
+export const toneRing = (percent: number, edge?: 'top' | 'left') =>
+  rules.toneRing(percent, edge) as SystemStyleObject;
 
 /** A hairline box: the border of a field, a chip, a button or a card. Set the color where it differs. */
 export const boxed: SystemStyleObject = {

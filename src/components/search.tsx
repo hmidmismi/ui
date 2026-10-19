@@ -2,6 +2,7 @@ import { Search } from 'lucide-react';
 import { type ReactNode, type Ref, useId } from 'react';
 import { visuallyHidden } from '../../styled-system/patterns';
 import { chip, filterRow, listFilter, searchField } from '../../styled-system/recipes';
+import { useUiText } from './ui-text';
 
 /** Props for {@link SearchField}. */
 type SearchFieldProps = {
@@ -23,6 +24,7 @@ type SearchFieldProps = {
  * @returns the search form.
  */
 export function SearchField({ value, onChange, placeholder, inputRef }: SearchFieldProps) {
+  const t = useUiText();
   const id = useId();
   const classes = searchField();
 
@@ -34,7 +36,7 @@ export function SearchField({ value, onChange, placeholder, inputRef }: SearchFi
       onSubmit={(event) => event.preventDefault()}
     >
       <label htmlFor={id} className={visuallyHidden()}>
-        Search
+        {t.search}
       </label>
       <Search className={classes.icon} aria-hidden />
       <input
@@ -53,7 +55,7 @@ export function SearchField({ value, onChange, placeholder, inputRef }: SearchFi
       />
       {value !== '' && (
         <button type="button" className={classes.clear} onClick={() => onChange('')}>
-          Clear
+          {t.clear}
         </button>
       )}
       <kbd className={classes.hint} aria-hidden>
@@ -142,7 +144,7 @@ type ListFilterProps = {
   value: string;
   /** Called with the new text. */
   onChange: (value: string) => void;
-  /** The hint, such as `Find an instrument (22)`. */
+  /** The hint, such as `Find an item (22)`. */
   placeholder: string;
   /** The accessible name. */
   label: string;

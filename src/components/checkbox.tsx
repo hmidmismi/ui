@@ -21,10 +21,12 @@ export {
   type CheckboxCheckedState as CheckedState,
   CheckboxGroupProvider as GroupProvider,
 } from '@ark-ui/react/checkbox';
+import { useUiText } from './ui-text';
 
 export const Indicator = forwardRef<SVGSVGElement, HTMLStyledProps<'svg'>>(
   function Indicator(props, ref) {
     const { indeterminate, checked } = useCheckboxContext();
+    const t = useUiText();
 
     return (
       <Checkbox.Indicator indeterminate={indeterminate} asChild>
@@ -38,7 +40,7 @@ export const Indicator = forwardRef<SVGSVGElement, HTMLStyledProps<'svg'>>(
           strokeLinejoin="round"
           {...props}
         >
-          <title>Checkmark</title>
+          <title>{t.checkmark}</title>
           {indeterminate ? <path d="M5 12h14" /> : checked ? <path d="M20 6 9 17l-5-5" /> : null}
         </styled.svg>
       </Checkbox.Indicator>

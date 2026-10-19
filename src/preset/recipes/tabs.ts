@@ -1,3 +1,4 @@
+import { ruleBelow } from '../fragments';
 import { tabsAnatomy } from '@ark-ui/react/anatomy';
 import { defineSlotRecipe } from '@pandacss/dev';
 
@@ -111,7 +112,7 @@ export const tabs = defineSlotRecipe({
         },
         list: {
           _horizontal: {
-            borderBottomWidth: 'hairline',
+            ...ruleBelow,
           },
           _vertical: {
             borderStartWidth: 'hairline',

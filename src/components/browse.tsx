@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { browseNav, letterBar, neighborNav, rangeColumns } from '../../styled-system/recipes';
+import { useUiText } from './ui-text';
 
 /**
  * A row of links that choose a group of a browse list. Recipe `browseNav`.
@@ -92,7 +93,7 @@ export function RangeItem({ note, link, children }: RangeItemProps) {
       {link(
         classes.link,
         <>
-          <span>{children}</span>
+          <span className={classes.name}>{children}</span>
           {note && <small className={classes.note}>{note}</small>}
         </>
       )}
@@ -128,7 +129,7 @@ export function LetterBar({ label, children }: LetterBarProps) {
 type LetterKeyProps = {
   /** The letter shown. */
   letter: string;
-  /** The accessible name, such as `E, 142 people`. */
+  /** The accessible name, such as `E, 142 entries`. */
   label: string;
   /** Whether this is the letter being shown. */
   current: boolean;
@@ -182,10 +183,11 @@ type NeighborNavProps = {
  * @returns the navigation.
  */
 export function NeighborNav({ previous, next }: NeighborNavProps) {
+  const t = useUiText();
   const classes = neighborNav();
 
   return (
-    <nav aria-label="Previous and next letter" className={classes.root}>
+    <nav aria-label={t.adjacentNav} className={classes.root}>
       <span>{previous}</span>
       <span>{next}</span>
     </nav>

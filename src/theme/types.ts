@@ -87,8 +87,8 @@ export type Palette = {
  * - `canvas`, `fg` (`default`, `muted`, `subtle`, `disabled`), `border` (`DEFAULT`, `muted`, `emphasized`), `error`,
  *   `secondary` (the second color, for counts and small labels) and `shadow`: the semantic roles, usually references
  *   to the scales.
- * - `categorical`: eight colors, `1` to `8`, for things told apart by color (record labels, chart series).
- * - `wash`: four soft block colors, `sand`, `green`, `blue` and `salmon`, each with `bg`, `fg` and `label`, for filled
+ * - `categorical`: any number of colors, named by the project, for things told apart by color (record labels, chart series).
+ * - `wash`: soft block colors, named by the project, each with `bg`, `fg` and `label`, for filled
  *   sections of a page.
  */
 export type ColorTokens = {
@@ -143,10 +143,10 @@ export type ThemeScales = {
   info: ColorScale;
   /** The second color, for counts and small labels. */
   secondary: ModeColor;
-  /** Eight colors for things told apart by color, such as record labels. */
-  categorical: readonly ModeColor[];
-  /** Four soft block colors for filled sections. */
-  wash: Record<'sand' | 'green' | 'blue' | 'salmon', Wash>;
+  /** Colors for things told apart by color, such as record labels, by the names the project gives them. */
+  categorical: Record<string, ModeColor>;
+  /** Soft block colors for filled sections, by the names the project gives them (`Section tone`). */
+  wash: Record<string, Wash>;
 };
 
 type ThemeBase = {

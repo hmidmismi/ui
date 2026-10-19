@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useHeaderReveal } from '../hooks/use-header-reveal';
 import { useMeasuredHeight } from '../hooks/use-measured-height';
 import { breadcrumbSlots, footerSlots, navSlots } from './slots';
+import { useUiText } from './ui-text';
 
 /**
  * Renders a link with the class a component gives it. The app passes its router's link, so the package needs no router:
@@ -39,6 +40,7 @@ const SWITCH_MS = 260;
  * @returns the theme button.
  */
 export function ThemeToggle() {
+  const t = useUiText();
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
@@ -65,7 +67,7 @@ export function ThemeToggle() {
       className={navSlots().themeButton}
       onClick={toggle}
       aria-pressed={dark}
-      aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+      aria-label={dark ? t.switchToLight : t.switchToDark}
     >
       {dark ? <Sun size={18} aria-hidden /> : <Moon size={18} aria-hidden />}
     </button>
@@ -123,6 +125,7 @@ type SiteHeaderProps = {
  * @returns the header.
  */
 export function SiteHeader({ utility, wordmark, tabs, account, actions }: SiteHeaderProps) {
+  const t = useUiText();
   const classes = navSlots({ signedIn: Boolean(account) });
   const root = useRef<HTMLElement>(null);
   useMeasuredHeight(root, '--bh', scrolledAway);
@@ -130,7 +133,7 @@ export function SiteHeader({ utility, wordmark, tabs, account, actions }: SiteHe
 
   return (
     <header ref={root} className={classes.root} data-no-print>
-      <nav aria-label="Utility" className={classes.links}>
+      <nav aria-label={t.utilityNav} className={classes.links}>
         <ul className={classes.linkList}>
           {utility.map((item) => (
             <li key={item.key}>{item.link(classes.link, item.label)}</li>
@@ -138,7 +141,7 @@ export function SiteHeader({ utility, wordmark, tabs, account, actions }: SiteHe
         </ul>
       </nav>
       {wordmark.link(classes.wordmark, wordmark.text)}
-      <nav aria-label="Browse" className={classes.tabs}>
+      <nav aria-label={t.browseNav} className={classes.tabs}>
         {tabs.map((item) => (
           <ChromeLink key={item.key} render={item.link} className={classes.tab}>
             {item.label}
@@ -197,12 +200,13 @@ type SiteFooterProps = {
  * @returns the footer.
  */
 export function SiteFooter({ links, copyright, status, note }: SiteFooterProps) {
+  const t = useUiText();
   const classes = footerSlots();
 
   return (
     <footer className={classes.root} data-no-print>
       <div className={classes.start}>
-        <nav aria-label="Footer" className={classes.links}>
+        <nav aria-label={t.footerNav} className={classes.links}>
           {links.map((item) => (
             <ChromeLink key={item.key} render={item.link} className={classes.link}>
               {item.label}
@@ -216,7 +220,7 @@ export function SiteFooter({ links, copyright, status, note }: SiteFooterProps) 
           classes.status,
           <>
             <span className={classes.dot} aria-hidden />
-            {status.label}
+            <span className={classes.statusText}>{status.label}</span>
           </>
         )}
         <p className={classes.note}>{note}</p>
@@ -252,12 +256,13 @@ type BreadcrumbTrailProps = {
  * @returns the breadcrumb navigation.
  */
 export function BreadcrumbTrail({ home, steps }: BreadcrumbTrailProps) {
+  const t = useUiText();
   const classes = breadcrumbSlots();
 
   return (
-    <nav aria-label="Breadcrumb" className={classes.root} data-no-print>
+    <nav aria-label={t.breadcrumbNav} className={classes.root} data-no-print>
       <ol className={classes.list}>
-        <li className={classes.item}>{home(classes.link, 'Home')}</li>
+        <li className={classes.item}>{home(classes.link, t.home)}</li>
         {steps.map((step) => (
           <li key={step.key} className={classes.item}>
             {step.current ? (
@@ -267,7 +272,7 @@ export function BreadcrumbTrail({ home, steps }: BreadcrumbTrailProps) {
             ) : step.link ? (
               step.link(classes.link, step.label)
             ) : (
-              <span>{step.label}</span>
+              <span className={classes.plain}>{step.label}</span>
             )}
           </li>
         ))}

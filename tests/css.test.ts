@@ -17,6 +17,12 @@ describe.skipIf(css === '')('generated css', () => {
     expect([...new Set(left)]).toEqual([]);
   });
 
+  it('holds no token name written as a plain value', () => {
+    // A name such as `avatar.lg` that no token defines is left in the stylesheet as it was written, and the browser ignores it.
+    const bare = [...css.matchAll(/[a-z-]+:\s*([a-z][a-zA-Z]*\.[a-zA-Z0-9]+)\s*[;}]/g)].map((match) => match[1]);
+    expect([...new Set(bare)].filter((name) => name !== 'colorPalette.solid')).toEqual([]);
+  });
+
   it('declares every token variable it reads', () => {
     const declared = new Set([...css.matchAll(/(--[\w-]+):/g)].map((match) => match[1]));
     const missing = new Set<string>();

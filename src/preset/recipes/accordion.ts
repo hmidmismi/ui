@@ -1,3 +1,4 @@
+import { ruleBelow, ruleBoth } from '../fragments';
 import { accordionAnatomy } from '@ark-ui/react/anatomy';
 import { defineSlotRecipe } from '@pandacss/dev';
 
@@ -7,9 +8,8 @@ export const accordion = defineSlotRecipe({
   base: {
     root: { display: 'flex', flexDirection: 'column', width: 'full' },
     item: {
-      borderBottomWidth: 'hairline',
-      borderColor: 'border',
-      _first: { borderTopWidth: 'hairline' },
+      ...ruleBelow,
+      _first: { ...ruleBoth },
     },
     itemTrigger: {
       alignItems: 'center',

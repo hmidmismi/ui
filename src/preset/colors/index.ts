@@ -92,8 +92,8 @@ const REQUIRED = {
   warning: [],
   info: [],
   secondary: [],
-  categorical: ['1', '2', '3', '4', '5', '6', '7', '8'],
-  wash: ['sand', 'green', 'blue', 'salmon'],
+  categorical: [],
+  wash: [],
 } as const;
 
 /**

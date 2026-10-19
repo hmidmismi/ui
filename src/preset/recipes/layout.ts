@@ -1,5 +1,5 @@
 import { defineRecipe } from '@pandacss/dev';
-import { column, ruleAbove, ruleBelow } from '../fragments';
+import { column, ruleAbove, ruleBelow, ruleNone } from '../fragments';
 import type { TypeSystem } from '../type-scale';
 
 /** One gap variant per spacing step in common use, named by the step. */
@@ -26,7 +26,7 @@ export const itemList = defineRecipe({
         gap: '0',
         '& > li': { paddingBlock: '4', ...ruleBelow },
         '& > li:first-child': { paddingBlockStart: '0' },
-        '& > li:last-child': { borderBlockEndWidth: '0' },
+        '& > li:last-child': { ...ruleNone },
       },
     },
   },
@@ -123,7 +123,7 @@ export const fullRow = defineRecipe({
 
 /** A two-column list of labels and values that collapses to one column on narrow screens. */
 export const termList = (t: TypeSystem) => {
-  const textSize = t.textSize;
+  const { textSize, lineShift } = t;
   return defineRecipe({
     className: 'term-list',
     base: {
@@ -132,7 +132,7 @@ export const termList = (t: TypeSystem) => {
       columnGap: '6',
       rowGap: { base: '0', sm: '2' },
       ...textSize('body', 'md'),
-      '& dd': { marginBlockEnd: { base: '2', sm: '0' } },
+      '& dd': { marginBlockEnd: { base: '2', sm: '0' }, ...lineShift('body', 'md') },
       '& dt': { paddingBlockStart: { base: '0', sm: '1' } },
     },
   });
@@ -146,7 +146,7 @@ export const termRow = defineRecipe({
 
 /** A list of terms that flows into columns, so long lists stay compact. */
 export const columnList = (t: TypeSystem) => {
-  const textSize = t.textSize;
+  const { textSize, lineShift } = t;
   return defineRecipe({
     className: 'column-list',
     staticCss: ['*'],
@@ -154,13 +154,14 @@ export const columnList = (t: TypeSystem) => {
       ...textSize('body', 'md'),
       columnGap: '8',
       '& > div': { breakInside: 'avoid', marginBlockEnd: '4' },
+      '& dd': { ...lineShift('body', 'md') },
     },
     variants: { width: { wide: { columnWidth: 'column' }, single: {} } },
   });
 };
 
 /**
- * Two equal columns from 960px, one below: the spotlight cards and the categories and instrumentation lists. `gap`
+ * Two equal columns from 960px, one below: two cards or two lists side by side. `gap`
  * is 32px (`md`) or 48px (`lg`).
  */
 export const splitGrid = defineRecipe({

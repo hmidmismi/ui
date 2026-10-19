@@ -1,52 +1,49 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { boxed, column } from '../fragments';
+import { column, ringed, ruleBelowOf, toneRing } from '../fragments';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
 /**
  * A feature card: a bordered block with a label, a display title, a blurb, a counts line and a link at the bottom. With
- * a hue (`hue` recipe sets `--tone`) the border, the 10% tint and the label take the label's color.
+ * a hue (`hue` recipe sets `--tone`) the border, the 10% tint and the label take the hue.
  */
 export const featureCard = (t: TypeSystem) => {
-  const textSize = t.textSize;
-  const microLabel = t.microLabel;
+  const { textLine, microLabelLine } = t;
   return defineSlotRecipe({
     className: 'feature-card',
     staticCss: ['*'],
     slots: ['root', 'label', 'title', 'text', 'meta', 'link'],
     base: {
       root: {
-        ...boxed,
+        ...ringed,
         ...column,
         gap: '2',
         minHeight: 'card',
         padding: { base: '4', sm: '6' },
       },
-      label: { ...microLabel },
+      label: { ...microLabelLine },
       title: {
         color: 'fg.default',
         fontFamily: 'display',
         fontWeight: 'medium',
         letterSpacing: 'card',
-        ...responsive(textSize('display', '2xl'), textSize('display', '4xl'), 'sm'),
+        ...responsive(textLine('display', '2xl'), textLine('display', '4xl'), 'sm'),
       },
-      text: { color: 'fg.muted', ...textSize('body', 'md') },
-      meta: { color: 'fg.muted', ...textSize('body', 'md') },
+      text: { color: 'fg.muted', ...textLine('body', 'md') },
+      meta: { color: 'fg.muted', ...textLine('body', 'md') },
       link: {
         alignSelf: 'flex-start',
         marginBlockStart: 'auto',
         color: 'accent',
-        borderBlockEndWidth: 'hairline',
-        borderBlockEndStyle: 'solid',
-        borderBlockEndColor: 'accent',
-        ...textSize('body', 'md'),
+        ...ruleBelowOf('accent'),
+        ...textLine('body', 'md'),
       },
     },
     variants: {
       tinted: {
         true: {
           root: {
-            borderColor: 'var(--tone)',
+            ...toneRing(100),
             toneFill: '10',
           },
           label: { color: 'var(--tone)' },
@@ -57,11 +54,11 @@ export const featureCard = (t: TypeSystem) => {
 };
 
 /**
- * A label tile: a tinted button with a 4px top edge in the label's color, the name over a small line at the top, and the
- * release count in the display face at the bottom right. It reads its hue from `hue`.
+ * A count tile: a tinted button with a 4px top edge in the hue, the name over a small line at the top, and the
+ * count in the display face at the bottom right. It reads its hue from `hue`.
  */
 export const tile = (t: TypeSystem) => {
-  const textSize = t.textSize;
+  const textLine = t.textLine;
   return defineSlotRecipe({
     className: 'tile',
     slots: ['root', 'name', 'note', 'figure'],
@@ -76,11 +73,7 @@ export const tile = (t: TypeSystem) => {
         color: 'fg.default',
         textAlign: 'start',
         cursor: 'pointer',
-        borderWidth: 'hairline',
-        borderStyle: 'solid',
-        toneEdge: '40',
-        borderBlockStartWidth: 'edge',
-        borderBlockStartColor: 'var(--tone)',
+        ...toneRing(40, 'top'),
         toneFill: '10',
         transitionProperty: 'background-color',
         transitionDuration: 'fast',
@@ -90,20 +83,20 @@ export const tile = (t: TypeSystem) => {
         display: 'block',
         fontFamily: 'display',
         fontWeight: 'medium',
-        ...textSize('display', 'xl'),
+        ...textLine('display', 'xl'),
       },
       note: {
         display: 'block',
         marginBlockStart: '1',
         color: 'fg.muted',
-        ...textSize('body', 'sm'),
+        ...textLine('body', 'sm'),
       },
       figure: {
         alignSelf: 'flex-end',
         color: 'var(--tone)',
         fontFamily: 'display',
         fontVariantNumeric: 'tabular-nums',
-        ...textSize('display', '4xl'),
+        ...textLine('display', '4xl'),
       },
     },
   });

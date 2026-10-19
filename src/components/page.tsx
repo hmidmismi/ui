@@ -62,7 +62,7 @@ export function CenteredLines({ children }: { children: ReactNode }) {
 type ListHeaderProps = {
   /** The page title. */
   title: ReactNode;
-  /** How many entries the page lists, such as `142 people`; left out when the page shows no count. */
+  /** How many entries the page lists, such as `142 entries`; left out when the page shows no count. */
   count?: ReactNode;
 };
 

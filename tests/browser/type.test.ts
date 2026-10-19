@@ -79,7 +79,7 @@ run('type system in a browser', () => {
     }
   });
 
-  // The stylesheet is built with the Baikikai theme; the others are loaded after it, as a project would, with no rebuild.
+  // The stylesheet is built with the built-in theme; the others are loaded after it, as a project would, with no rebuild.
   const themes: [string, Theme | null][] = [
     ['the built-in theme', null],
     ['a neutral theme loaded at runtime', neutral],
@@ -93,8 +93,16 @@ run('type system in a browser', () => {
         const want = expected(used, c);
         expect(row.fontSize, `${c.name} size`).toBeCloseTo(want.fontSize, 1);
         expect(row.lineHeight, `${c.name} line height`).toBeCloseTo(want.leading, 1);
-        expect(row.before, `${c.name} top trim`).toBeCloseTo(want.before, 1);
-        expect(row.after, `${c.name} bottom trim`).toBeCloseTo(want.after, 1);
+        // The trim puts the baseline where the browser draws it, which rounds the font's ascent and descent to whole pixels,
+        // so the bottom trim is Capsize's within a pixel. With `grid.snap` the top trim also holds the space added above the
+        // capitals: less than one baseline more.
+        const added = row.before - want.before;
+        expect(added, `${c.name} top trim`).toBeGreaterThan(-1);
+        expect(added, `${c.name} top trim`).toBeLessThan(design.grid.baseline + 1);
+        const box = row.lineHeight + row.before + row.after;
+        const rest = box % design.grid.baseline;
+        expect(Math.min(rest, design.grid.baseline - rest), `${c.name} box height`).toBeLessThan(0.05);
+        expect(Math.abs(row.after - want.after), `${c.name} bottom trim`).toBeLessThan(1);
       }
     });
   }

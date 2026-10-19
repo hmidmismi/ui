@@ -1,5 +1,5 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { column } from '../fragments';
+import { column, ringed } from '../fragments';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
@@ -11,28 +11,33 @@ import { responsive } from '../type-scale';
  * `portrait` is two columns, the art at 4:5 and then the text centered, one column on phones.
  */
 export const hero = (t: TypeSystem) => {
-  const textSize = t.textSize;
-  const textRole = t.textRole;
-  const labelCaps = t.labelCaps;
+  const { textLine, textRole, labelCapsLine } = t;
   return defineSlotRecipe({
     className: 'hero',
-    slots: ['root', 'art', 'text', 'kicker', 'headline', 'summary', 'link'],
+    slots: ['frame', 'root', 'art', 'text', 'kicker', 'headline', 'summary', 'link'],
     staticCss: [{ orientation: ['*'] }],
     base: {
+      // The frame is the container the landscape height is measured against.
+      frame: { containerType: 'inline-size' },
       root: {
         position: 'relative',
         overflow: 'hidden',
-        borderWidth: 'hairline',
-        borderStyle: 'solid',
-        borderColor: 'border',
         background: 'gray.surface.bg.hover',
+        // The outline is drawn over the art as a shadow, so it takes no height and the text sits on whole baselines.
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          inset: '0',
+          pointerEvents: 'none',
+          ...ringed,
+        },
       },
       art: {
         backgroundImage:
           'repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent token(spacing.8), color-mix(in srgb, token(colors.accent) 35%, transparent) token(spacing.8), color-mix(in srgb, token(colors.accent) 35%, transparent) calc(token(spacing.8) + token(borderWidths.hairline)))',
       },
       text: { ...column, gap: '4', padding: { base: '4', md: '8' } },
-      kicker: { ...labelCaps, color: 'accent' },
+      kicker: { ...labelCapsLine, color: 'accent' },
       headline: {
         marginBlockEnd: '2',
         fontFamily: 'display',
@@ -44,14 +49,14 @@ export const hero = (t: TypeSystem) => {
         maxWidth: 'narrow',
         color: 'fg.default',
         fontFamily: 'body',
-        ...textSize('body', 'md'),
+        ...textLine('body', 'md'),
       },
       link: {
         alignSelf: 'flex-start',
         color: 'accent',
         fontFamily: 'body',
         fontWeight: 'medium',
-        ...textSize('body', 'md'),
+        ...textLine('body', 'md'),
         textDecoration: 'underline',
         textDecorationThickness: 'token(borderWidths.hairline)',
         textUnderlineOffset: 'token(spacing.1)',
@@ -73,7 +78,8 @@ export const hero = (t: TypeSystem) => {
             display: 'grid',
             alignItems: 'end',
             minHeight: { base: 'heroTall', md: 'hero' },
-            aspectRatio: { base: 'auto', md: '21 / 9' },
+            // 21:9 of the frame's width, rounded up to a whole number of baselines.
+            height: { md: 'round(up, calc(100cqw * 9 / 21), token(spacing.1))' },
           },
           art: { position: 'absolute', inset: '0' },
           text: {

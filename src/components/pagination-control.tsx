@@ -1,4 +1,3 @@
-// packages/chorus-ui/src/components/fields/PaginationControl.tsx
 import * as PaginationPrimitive from './pagination';
 
 export function PaginationControl({

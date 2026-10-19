@@ -140,11 +140,12 @@ const scales: ThemeScales = {
   warning: scale('e'),
   info: scale('f'),
   secondary: { light: '#111', dark: '#eee' },
-  categorical: Array.from({ length: 8 }, (_, index) => ({
-    light: `#00000${index}`,
-    dark: `#ffffff${index}`,
-  })),
-  wash: { sand: wash, green: wash, blue: wash, salmon: wash },
+  categorical: {
+    plum: { light: '#000001', dark: '#ffffff1' },
+    moss: { light: '#000002', dark: '#ffffff2' },
+    rust: { light: '#000003', dark: '#ffffff3' },
+  },
+  wash: { quiet: wash, loud: wash },
 };
 
 describe('a theme declared as plain scales', () => {
@@ -162,8 +163,15 @@ describe('a theme declared as plain scales', () => {
     expect(c.accent.DEFAULT.value.base).toBe('{colors.accent.9}');
     expect(c.red['9'].value.base).toBe(scales.danger.light[8]);
     expect(c.secondary.value).toEqual({ base: '#111', _dark: '#eee' });
-    expect(Object.keys(c.categorical)).toHaveLength(8);
-    expect(Object.keys(c.wash)).toEqual(['sand', 'green', 'blue', 'salmon']);
+    expect(Object.keys(c.categorical)).toEqual(['plum', 'moss', 'rust']);
+    expect(Object.keys(c.wash)).toEqual(['quiet', 'loud']);
+  });
+
+  it('gives the hue and section recipes the names the theme declares', () => {
+    const recipes = preset({}, theme).theme?.extend?.recipes as Record<string, any>;
+    const slots = preset({}, theme).theme?.extend?.slotRecipes as Record<string, any>;
+    expect(Object.keys(recipes.hue.variants.hue)).toEqual(['plum', 'moss', 'rust']);
+    expect(Object.keys(slots.section.variants.tone)).toEqual(['plain', 'quiet', 'loud']);
   });
 
   it('gives each scale the component variants recipes read through colorPalette', () => {

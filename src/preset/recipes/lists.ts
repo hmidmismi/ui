@@ -1,14 +1,14 @@
 import { defineRecipe, defineSlotRecipe } from '@pandacss/dev';
-import { boxed, ruleAbove, ruleBelow } from '../fragments';
+import { boxed, ruleAbove, ruleBelow, ruleBelowOf, ruleBoth, ruleNone } from '../fragments';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
-/** A list of names with their counts at the end, one hairline between rows. Used for categories and instruments. */
+/** A list of names with their counts at the end, one hairline between rows. Used for any list of names and counts. */
 export const countedList = (t: TypeSystem) => {
-  const textSize = t.textSize;
+  const { textSize, textLine } = t;
   return defineSlotRecipe({
     className: 'counted-list',
-    slots: ['root', 'item', 'link', 'count'],
+    slots: ['root', 'item', 'link', 'name', 'count'],
     base: {
       root: { ...ruleAbove },
       item: {},
@@ -28,7 +28,8 @@ export const countedList = (t: TypeSystem) => {
         transitionDuration: 'fast',
         _hover: { color: 'accent' },
       },
-      count: { color: 'fg.muted', fontVariantNumeric: 'tabular-nums' },
+      name: { ...textLine('body', 'md') },
+      count: { color: 'fg.muted', fontVariantNumeric: 'tabular-nums', ...textLine('body', 'md') },
     },
   });
 };
@@ -42,7 +43,7 @@ export const listFilter = (t: TypeSystem) => {
       ...boxed,
       width: 'full',
       marginBlockEnd: '2',
-      paddingBlock: '2',
+      height: 'control.md',
       paddingInline: '3',
       background: 'transparent',
       outline: 'none',
@@ -57,16 +58,16 @@ export const listFilter = (t: TypeSystem) => {
 };
 
 /**
- * A release row: a full-width button (or a link, for a plain row) with the cover plate, the title over its meta line, the
- * year and track count, and a chevron that turns when the row is open. Rows are ruled, and hover and open take the
+ * An expandable row: a full-width button (or a link, for a plain row) with a plate, the title over its meta line, the
+ * aside, and a chevron that turns when the row is open. Rows are ruled, and hover and open take the
  * hover ground. `plain` has no plate or chevron.
  */
 export const expandableRow = (t: TypeSystem) => {
-  const textSize = t.textSize;
+  const textLine = t.textLine;
   return defineSlotRecipe({
     className: 'expandable-row',
     staticCss: ['*'],
-    slots: ['root', 'title', 'meta', 'aside', 'chevron'],
+    slots: ['root', 'text', 'title', 'meta', 'aside', 'chevron'],
     base: {
       root: {
         display: 'grid',
@@ -77,9 +78,7 @@ export const expandableRow = (t: TypeSystem) => {
         paddingBlock: '3',
         paddingInline: '4',
         background: 'transparent',
-        borderBlockStartWidth: 'hairline',
-        borderBlockStartStyle: 'solid',
-        borderBlockStartColor: 'border',
+        ...ruleAbove,
         color: 'fg.default',
         cursor: 'pointer',
         textAlign: 'start',
@@ -88,12 +87,15 @@ export const expandableRow = (t: TypeSystem) => {
         _hover: { background: 'gray.surface.bg.hover' },
         '&[aria-expanded="true"]': { background: 'gray.surface.bg.hover' },
       },
+      // The title and meta start at the top of the row, a whole row from the plate's top, instead of being centered by a
+      // half row that may not be a whole number of baselines.
+      text: { alignSelf: 'baseline', minWidth: '0' },
       title: {
         display: 'block',
         minWidth: '0',
         fontFamily: 'display',
         fontWeight: 'medium',
-        ...responsive(textSize('display', 'lg'), textSize('display', 'xl'), 'sm'),
+        ...responsive(textLine('display', 'lg'), textLine('display', 'xl'), 'sm'),
         '& mark': { background: 'transparent', color: 'accent' },
       },
       meta: {
@@ -101,10 +103,12 @@ export const expandableRow = (t: TypeSystem) => {
         color: 'fg.muted',
         fontFamily: 'body',
         fontWeight: 'normal',
-        ...textSize('body', 'md'),
+        ...textLine('body', 'md'),
         '& mark': { background: 'transparent', color: 'accent' },
       },
       aside: {
+        ...textLine('body', 'md'),
+        alignSelf: 'baseline',
         display: { base: 'none', sm: 'block' },
         color: 'fg.muted',
         textAlign: 'end',
@@ -128,7 +132,7 @@ export const expandableRow = (t: TypeSystem) => {
     },
     variants: {
       layout: {
-        release: {
+        plated: {
           root: {
             gridTemplateColumns: {
               base: 'token(sizes.plateCompact) minmax(0, 1fr) token(sizes.glyph)',
@@ -142,13 +146,13 @@ export const expandableRow = (t: TypeSystem) => {
         },
       },
     },
-    defaultVariants: { layout: 'release' },
+    defaultVariants: { layout: 'plated' },
   });
 };
 
 /**
- * The drawer under an open release row: the hover ground, a header line with the track count and the link to the
- * release, and a track list at most 224px tall that scrolls. The list is indented to line up under the title.
+ * The drawer under an open expandable row: the hover ground, a header line with the item count and the link to the
+ * row's page, and an item list at most 224px tall that scrolls. The list is indented to line up under the title.
  */
 export const rowDrawer = defineSlotRecipe({
   className: 'row-drawer',
@@ -173,13 +177,10 @@ export const rowDrawer = defineSlotRecipe({
     },
     link: {
       color: 'accent',
-      borderBlockEndWidth: 'hairline',
-      borderBlockEndStyle: 'solid',
-      borderBlockEndColor: 'accent',
+      ...ruleBelowOf('accent'),
     },
     list: {
-      ...ruleAbove,
-      ...ruleBelow,
+      ...ruleBoth,
       maxHeight: 'scrollList',
       overflowY: 'auto',
       scrollbarWidth: 'thin',
@@ -190,10 +191,8 @@ export const rowDrawer = defineSlotRecipe({
       alignItems: 'baseline',
       columnGap: '3',
       paddingBlock: '2',
-      borderBlockStartWidth: 'hairline',
-      borderBlockStartStyle: 'solid',
-      borderBlockStartColor: 'border',
-      '&:first-child': { borderBlockStartWidth: '0' },
+      ...ruleAbove,
+      '&:first-child': { ...ruleNone },
       '&:hover [data-part="title"]': { color: 'accent' },
     },
     number: { color: 'fg.muted', fontVariantNumeric: 'tabular-nums' },
@@ -202,13 +201,12 @@ export const rowDrawer = defineSlotRecipe({
   },
 });
 
-/** The upcoming events: a ruled list, each row a date block, the title with its composer, and the venue. */
+/** The upcoming events: a ruled list, each row a date block, the title with a subtitle, and an aside. */
 export const datedList = (t: TypeSystem) => {
-  const textSize = t.textSize;
-  const microLabel = t.microLabel;
+  const { textSize, textLine, microLabelLine } = t;
   return defineSlotRecipe({
     className: 'dated-list',
-    slots: ['root', 'row', 'date', 'month', 'title', 'with', 'where'],
+    slots: ['root', 'row', 'date', 'month', 'day', 'title', 'with', 'where'],
     base: {
       root: { ...ruleAbove },
       row: {
@@ -227,15 +225,22 @@ export const datedList = (t: TypeSystem) => {
         ...textSize('display', '2xl'),
         fontVariantNumeric: 'tabular-nums',
       },
-      month: { display: 'block', ...microLabel, color: 'secondary', fontWeight: 'normal' },
+      day: { display: 'block', ...textLine('display', '2xl') },
+      month: { display: 'block', ...microLabelLine, color: 'secondary', fontWeight: 'normal' },
       title: {
         display: 'block',
         fontFamily: 'display',
         fontWeight: 'medium',
-        ...textSize('display', 'xl'),
+        ...textLine('display', 'xl'),
       },
-      with: { color: 'fg.muted', '& a': { color: 'accent' } },
+      with: {
+        display: 'block',
+        color: 'fg.muted',
+        ...textLine('body', 'md'),
+        '& a': { color: 'accent' },
+      },
       where: {
+        ...textLine('body', 'md'),
         gridColumn: { base: '2', sm: 'auto' },
         color: 'fg.muted',
         textAlign: { base: 'start', sm: 'end' },

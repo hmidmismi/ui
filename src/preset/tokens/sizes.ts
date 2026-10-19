@@ -1,7 +1,6 @@
 import { defineTokens } from '@pandacss/dev';
 import { type Design, design } from '../../design';
-import { createScale } from '../scale';
-import { controlsFor, scaleValuesFor } from '../spacing';
+import { controlsFor, createScale, scaleValuesFor } from '../../grid';
 import { withOverrides } from './overrides';
 
 /**
@@ -21,6 +20,12 @@ export const sizesFor = (d: Pick<Design, 'grid' | 'controls' | 'sizes'>) => {
     controlIcon: Object.fromEntries(
       controls.map(([size, c]) => [size, { value: baselines(c.icon) }])
     ),
+    /** The side of a round portrait, in whole baselines so it never moves what is under it off the grid. */
+    avatar: {
+      sm: { value: baselines(10) },
+      md: { value: baselines(16) },
+      lg: { value: baselines(40) },
+    },
     xs: { value: rem(320) },
     sm: { value: rem(380) },
     md: { value: rem(440) },
@@ -51,11 +56,11 @@ export const sizesFor = (d: Pick<Design, 'grid' | 'controls' | 'sizes'>) => {
     label: { value: '8rem' },
     /** The largest a cover image grows. */
     cover: { value: '28rem' },
-    /** The square cover plate in a release row. */
+    /** The square plate in an expandable row. */
     plate: { value: '4rem' },
     /** The shortest a label tile gets. */
     tile: { value: '8rem' },
-    /** The tallest a scrolling list gets: the track drawer and the instrument list. */
+    /** The tallest a scrolling list gets: a drawer's items or a list of names. */
     scrollList: { value: '14rem' },
     /** The diameter of a status dot. */
     dot: { value: '0.5rem' },
@@ -90,7 +95,7 @@ export const sizesFor = (d: Pick<Design, 'grid' | 'controls' | 'sizes'>) => {
     /** The date column of an event row, and on phones. */
     dateColumn: { value: '6rem' },
     dateColumnCompact: { value: '4rem' },
-    /** The side of the chevron on a release row. */
+    /** The side of the chevron on an expandable row. */
     chevron: { value: '0.5rem' },
     /** The side of the search keycap and clear button targets. */
     halo: { value: '0.1875rem' },

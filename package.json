@@ -21,16 +21,19 @@
     "clean": "rm -rf styled-system .turbo node_modules",
     "playground": "vite --config playground/vite.config.ts",
     "playground:build": "vite build --config playground/vite.config.ts",
-    "test:browser": "pnpm codegen && vitest run --config vitest.browser.config.ts"
+    "test:browser": "pnpm codegen && vitest run --config vitest.browser.config.ts",
+    "check:baseline": "node src/grid/check/check-baseline.mjs",
+    "check:spacing": "node src/grid/check/check-spacing.mjs",
+    "check:baseline:firefox": "node src/grid/check/check-baseline-firefox.mjs"
   },
   "dependencies": {
     "@ark-ui/react": "^5.38.2",
     "@capsizecss/core": "^4.1.3",
     "@capsizecss/metrics": "^4.3.0",
-    "lucide-react": "^1.14.0",
     "@portabletext/react": "^8.0.1",
     "@portabletext/types": "^4.0.2",
-    "htmlparser2": "^12.0.0"
+    "htmlparser2": "^12.0.0",
+    "lucide-react": "^1.14.0"
   },
   "peerDependencies": {
     "react": "^19.0.0",

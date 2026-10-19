@@ -1,3 +1,7 @@
+import type { ControlSize, ControlStyle, Grid } from '../grid';
+
+export type { ControlSize, ControlStyle };
+
 /** The type steps, `xs` to `7xl`. */
 export type TypeStep =
   | 'xs'
@@ -12,23 +16,10 @@ export type TypeStep =
   | '6xl'
   | '7xl';
 
-/** The sizes a control (button, input, select, tab) comes in. */
-export type ControlSize = '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-
-/** One size of a control, in baselines (so it scales with the grid). Half baselines are allowed. */
-export type ControlStyle = {
-  /** The height, and the minimum width of an icon-only control. */
-  height: number;
-  /** The padding at each side. */
-  padX: number;
-  /** The icon beside the label. */
-  icon: number;
-};
-
 /** The text roles a page sets, other than headings. */
 export type RoleName =
   | 'eyebrow'
-  | 'personName'
+  | 'name'
   | 'term'
   | 'entry'
   | 'prose'
@@ -91,14 +82,7 @@ export type HeadingStyle = {
  * `Theme` instead (see `../theme`).
  */
 export type Design = {
-  grid: {
-    /** The vertical rhythm unit in px. Every line height is a multiple of it. */
-    baseline: number;
-    /** The primary spacing step in px. Two baselines, so a spacing step never breaks the rhythm. */
-    unit: number;
-    /** The root font size in px that `rem` values are computed against. */
-    root: number;
-  };
+  grid: Grid;
   type: {
     /** The body size in px, at step 0. */
     base: number;

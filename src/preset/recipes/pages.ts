@@ -1,3 +1,4 @@
+import type { TypeSystem } from '../type-scale';
 import { defineRecipe } from '@pandacss/dev';
 import { column, ruleBelow, siteInset } from '../fragments';
 import { linkStyles } from '../interaction';
@@ -44,18 +45,20 @@ export const centeredLines = defineRecipe({
 });
 
 /** The skip-to-content link: off screen until it receives keyboard focus. */
-export const skipLink = defineRecipe({
-  className: 'skip-link',
-  base: {
-    position: 'absolute',
-    insetInlineStart: '2',
-    insetBlockStart: '-16',
-    zIndex: 'skipLink',
-    paddingBlock: '2',
-    paddingInline: '4',
-    borderRadius: 'l2',
-    background: 'accent',
-    color: 'canvas',
-    _focus: { insetBlockStart: '2' },
-  },
-});
+export const skipLink = (t: TypeSystem) =>
+  defineRecipe({
+    className: 'skip-link',
+    base: {
+      position: 'absolute',
+      insetInlineStart: '2',
+      insetBlockStart: '-16',
+      zIndex: 'skipLink',
+      paddingInline: '4',
+      ...t.textSize('body', 'md'),
+      ...t.linePadded('body', 'md', { block: 'token(spacing.2)' }),
+      borderRadius: 'l2',
+      background: 'accent',
+      color: 'canvas',
+      _focus: { insetBlockStart: '2' },
+    },
+  });

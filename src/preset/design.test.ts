@@ -11,8 +11,7 @@ import {
 } from '../theme';
 import { categorical, wash } from './colors/defaults';
 import { createPreset, createRecipes, explicitScale } from './index';
-import { createScale } from './scale';
-import { scaleValuesFor } from './spacing';
+import { createScale, scaleValuesFor } from '../grid';
 import { createTypeSystem, STEPS, type StepName } from './type-scale';
 
 const names = Object.keys(STEPS) as StepName[];
@@ -23,6 +22,9 @@ const other: Design = {
   type: { base: 16, ratio: 1.25, leading: { body: 1.5, falloff: 0.05, floor: 1.3 } },
   motion: { durations: { ...design.motion.durations } },
 };
+
+/** The numbers each face sets as variables: adj, asc, desc and capheight. */
+const FACE_VARIABLES = 4;
 
 describe('design', () => {
   it('has a unit of two baselines', () => {
@@ -69,7 +71,7 @@ describe('theme', () => {
   it('turns every palette entry and face into a CSS variable', () => {
     const vars = themeVariables(neutral);
     // 7 palette colors, 3 font stacks, and 4 type numbers for each of the 3 roles
-    expect(Object.keys(vars)).toHaveLength(7 + 8 + 3 + 12);
+    expect(Object.keys(vars)).toHaveLength(7 + 8 + 3 + 3 * FACE_VARIABLES);
     for (const value of Object.values(vars)) expect(value.length).toBeGreaterThan(0);
   });
 
@@ -170,14 +172,14 @@ describe('theme colors', () => {
 
   it('sets no palette variables for a theme without a palette', () => {
     const vars = themeVariables(withColors);
-    expect(Object.keys(vars)).toHaveLength(3 + 12);
+    expect(Object.keys(vars)).toHaveLength(3 + 3 * FACE_VARIABLES);
     expect(vars['--ui-ink']).toBeUndefined();
   });
 
   it('keeps the palette variables when a theme has both', () => {
     const vars = themeVariables({ ...withColors, palette: neutral.palette });
     expect(vars['--ui-ink']).toBe(neutral.palette.ink);
-    expect(Object.keys(vars)).toHaveLength(7 + 8 + 3 + 12);
+    expect(Object.keys(vars)).toHaveLength(7 + 8 + 3 + 3 * FACE_VARIABLES);
   });
 
   it('names every missing role', () => {

@@ -68,4 +68,5 @@ export {
   type TitleLevel,
   type TitleProps,
 } from './typography';
+export * from './ui-text';
 export * from './variants';

@@ -21,6 +21,8 @@ import {
   TermList,
   TermRow,
   Tile,
+  UiTextProvider,
+  CloseButton,
   TileGrid,
   Title,
   Wrap,
@@ -166,5 +168,15 @@ describe('components render with the classes of their recipes', () => {
     );
     const skip = html(<SkipLink target="main">Skip to content</SkipLink>);
     expect(skip).toContain('href="#main"');
+  });
+
+  it('shows the default wording, and a project can change any entry', () => {
+    expect(html(<CloseButton />)).toContain('aria-label="Close"');
+    const changed = html(
+      <UiTextProvider text={{ close: 'Fermer' }}>
+        <CloseButton />
+      </UiTextProvider>
+    );
+    expect(changed).toContain('aria-label="Fermer"');
   });
 });

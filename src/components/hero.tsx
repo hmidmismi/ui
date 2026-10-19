@@ -27,14 +27,16 @@ export function Hero({ orientation, kicker, headline, summary, link }: HeroProps
   const classes = hero({ orientation });
 
   return (
-    <article className={classes.root} data-orientation={orientation}>
-      <div className={classes.art} aria-hidden />
-      <div className={classes.text}>
-        <p className={classes.kicker}>{kicker}</p>
-        <h2 className={classes.headline}>{headline}</h2>
-        <p className={classes.summary}>{summary}</p>
-        {link(classes.link)}
-      </div>
-    </article>
+    <div className={classes.frame}>
+      <article className={classes.root} data-orientation={orientation}>
+        <div className={classes.art} aria-hidden />
+        <div className={classes.text}>
+          <p className={classes.kicker}>{kicker}</p>
+          <h2 className={classes.headline}>{headline}</h2>
+          <p className={classes.summary}>{summary}</p>
+          {link(classes.link)}
+        </div>
+      </article>
+    </div>
   );
 }

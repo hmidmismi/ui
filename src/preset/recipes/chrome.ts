@@ -1,5 +1,13 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { boxed, ruleBelow, scrollRow, siteInset, stickBelowHeader } from '../fragments';
+import {
+  boxed,
+  ringed,
+  ruleAbove,
+  ruleBelow,
+  scrollRow,
+  siteInset,
+  stickBelowHeader,
+} from '../fragments';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
@@ -8,7 +16,7 @@ import { responsive } from '../type-scale';
  * section's pill is inverted. It sticks at `--bh`, the height of the header bar, and scrolls sideways on phones.
  */
 export const jumpNav = (t: TypeSystem) => {
-  const textSize = t.textSize;
+  const { textSize, lineCentered } = t;
   return defineSlotRecipe({
     className: 'jump-nav',
     slots: ['root', 'link'],
@@ -25,12 +33,19 @@ export const jumpNav = (t: TypeSystem) => {
       },
       link: {
         ...boxed,
+        display: 'inline-flex',
+        alignItems: 'center',
         flexShrink: 0,
-        paddingBlock: '2',
+        height: 'control.md',
         paddingInline: '4',
         borderRadius: 'full',
         color: 'fg.muted',
         ...textSize('body', 'md'),
+        ...lineCentered('body', 'md', {
+          height: 'token(sizes.control.md)',
+          top: 'token(borderWidths.hairline)',
+          bottom: 'token(borderWidths.hairline)',
+        }),
         whiteSpace: 'nowrap',
         transitionProperty: 'background-color, border-color, color',
         transitionDuration: 'fast',
@@ -47,10 +62,10 @@ export const jumpNav = (t: TypeSystem) => {
 
 /** The breadcrumb trail. */
 export const breadcrumbs = (t: TypeSystem) => {
-  const textSize = t.textSize;
+  const { textSize, textLine, lineMargins } = t;
   return defineSlotRecipe({
     className: 'breadcrumbs',
-    slots: ['root', 'list', 'item', 'link', 'current'],
+    slots: ['root', 'list', 'item', 'link', 'plain', 'current'],
     base: {
       root: {
         marginBlockEnd: { base: '6', md: '12' },
@@ -63,10 +78,16 @@ export const breadcrumbs = (t: TypeSystem) => {
         alignItems: 'center',
         gap: '2',
         minWidth: '0',
-        '&:not(:first-child)::before': { content: '"/"', color: 'fg.subtle' },
+        '&:not(:first-child)::before': {
+          content: '"/"',
+          color: 'fg.subtle',
+          ...lineMargins('body', 'md'),
+        },
       },
-      link: { color: 'fg.muted', _hover: { color: 'fg.default' } },
+      link: { color: 'fg.muted', _hover: { color: 'fg.default' }, ...textLine('body', 'md') },
+      plain: { color: 'fg.muted', ...textLine('body', 'md') },
       current: {
+        ...lineMargins('body', 'md'),
         color: 'fg.default',
         fontWeight: 'medium',
         overflow: 'hidden',
@@ -92,7 +113,7 @@ export const breadcrumbs = (t: TypeSystem) => {
  * `signedIn` says whether the institution block is present, so the phone grid gives it a column only when it is.
  */
 export const siteNav = (t: TypeSystem) => {
-  const textSize = t.textSize;
+  const { textSize, textLine, lineCentered, linePadded, lineOf } = t;
   return defineSlotRecipe({
     className: 'site-nav',
     staticCss: ['*'],
@@ -142,26 +163,29 @@ export const siteNav = (t: TypeSystem) => {
         display: 'flex',
         alignItems: 'center',
         flexShrink: 0,
-        height: '100%',
+        height: 'utility',
         paddingInline: '3',
-        borderBlockEndWidth: 'rail',
-        borderBlockEndStyle: 'solid',
-        borderBlockEndColor: 'transparent',
+        // The marker under the current link is a shadow, so it takes no height and the text stays centered.
+        boxShadow: 'inset 0 calc(-1 * token(borderWidths.rail)) 0 0 transparent',
         color: 'fg.muted',
         ...textSize('body', 'md'),
+        ...lineCentered('body', 'md', { height: 'token(sizes.utility)' }),
         whiteSpace: 'nowrap',
-        transitionProperty: 'color, background-color, border-color',
+        transitionProperty: 'color, background-color, box-shadow',
         transitionDuration: 'fast',
         _hover: { color: 'fg.default', background: 'gray.plain.bg.hover' },
         _active: { background: 'gray.plain.bg.active' },
-        '&[aria-current="page"]': { color: 'fg.default', borderBlockEndColor: 'accent' },
+        '&[aria-current="page"]': {
+          color: 'fg.default',
+          boxShadow: 'inset 0 calc(-1 * token(borderWidths.rail)) 0 0 token(colors.accent)',
+        },
       },
       wordmark: {
         gridArea: 'mark',
         marginInlineEnd: { sm: '6', md: '12' },
         color: 'fg.default',
         fontFamily: 'display',
-        ...textSize('display', '2xl'),
+        ...textLine('display', '2xl'),
         fontWeight: 'semibold',
         letterSpacing: 'wordmark',
         textTransform: 'uppercase',
@@ -175,18 +199,23 @@ export const siteNav = (t: TypeSystem) => {
         minWidth: '0',
         marginInline: { base: 'calc(-1 * var(--inset))', sm: '0' },
         paddingInline: { base: 'var(--inset)', sm: '0' },
-        borderBlockStartWidth: { base: 'hairline', sm: '0' },
-        borderColor: 'border',
+        boxShadow: { base: ruleAbove.boxShadow as string, sm: 'none' },
       },
       tab: {
-        display: 'inline-flex',
-        alignItems: 'center',
+        display: 'block',
         flexShrink: 0,
-        gap: '2',
-        paddingBlock: { base: '2', sm: '0' },
         color: 'fg.muted',
         fontFamily: 'body',
         ...responsive(textSize('body', 'md'), textSize('body', 'lg'), 'sm'),
+        // On phones the tab's height is its padding; from 640px it is the bar's.
+        ...responsive(
+          linePadded('body', 'md', { block: 'token(spacing.2)' }),
+          linePadded('body', 'lg', {
+            block: `calc((token(sizes.bar) - ${lineOf('lg')}) / 2)`,
+          }),
+          'sm'
+        ),
+        '& > *': { marginInlineStart: '2' },
         whiteSpace: 'nowrap',
         position: 'relative',
         transitionProperty: 'color',
@@ -211,26 +240,30 @@ export const siteNav = (t: TypeSystem) => {
       institution: {
         gridArea: 'inst',
         display: 'flex',
-        alignItems: 'center',
         gap: '2',
         minWidth: '0',
         marginInlineEnd: { sm: '4' },
-        paddingBlock: '1',
+        // A fixed height that the header's grid centers on a whole row, with the text starting a whole row below the top.
+        alignItems: 'flex-start',
+        height: { base: 'control.xs', sm: 'control.xl' },
+        paddingBlockStart: '2',
         paddingInlineStart: '2',
         paddingInlineEnd: { base: '2', sm: '4' },
-        borderWidth: 'hairline',
-        borderStyle: 'solid',
-        borderColor: 'border',
+        ...ringed,
         color: 'fg.default',
         cursor: 'pointer',
-        transitionProperty: 'border-color, background-color',
+        transitionProperty: 'box-shadow, background-color',
         transitionDuration: 'fast',
         '& > span': { minWidth: '0' },
-        _hover: { borderColor: 'fg.default', background: 'gray.plain.bg.hover' },
+        _hover: {
+          boxShadow: 'inset 0 0 0 token(borderWidths.hairline) token(colors.fg.default)',
+          background: 'gray.plain.bg.hover',
+        },
         _active: { background: 'gray.plain.bg.active' },
       },
       institutionIcon: {
         flexShrink: 0,
+        alignSelf: 'center',
         color: 'accent',
         width: { base: 'glyphSm', sm: 'glyph' },
         height: { base: 'glyphSm', sm: 'glyph' },
@@ -238,7 +271,7 @@ export const siteNav = (t: TypeSystem) => {
       signedIn: {
         display: { base: 'none', sm: 'block' },
         color: 'fg.muted',
-        ...textSize('body', 'sm'),
+        ...textLine('body', 'sm'),
       },
       name: {
         display: 'block',
@@ -248,7 +281,7 @@ export const siteNav = (t: TypeSystem) => {
         whiteSpace: 'nowrap',
         fontWeight: 'medium',
         color: 'fg.default',
-        ...responsive(textSize('body', 'sm'), textSize('body', 'md'), 'sm'),
+        ...responsive(textLine('body', 'sm'), textLine('body', 'md'), 'sm'),
       },
       themeButton: {
         gridArea: 'theme',
@@ -310,10 +343,10 @@ export const siteNav = (t: TypeSystem) => {
  * the made-in line, right-aligned (start-aligned on phones). There are no rules between the rows.
  */
 export const siteFooter = (t: TypeSystem) => {
-  const textSize = t.textSize;
+  const { textSize, textLine } = t;
   return defineSlotRecipe({
     className: 'site-footer',
-    slots: ['root', 'start', 'end', 'links', 'link', 'note', 'status', 'dot'],
+    slots: ['root', 'start', 'end', 'links', 'link', 'note', 'status', 'statusText', 'dot'],
     base: {
       root: {
         flex: 'none',
@@ -325,9 +358,7 @@ export const siteFooter = (t: TypeSystem) => {
         marginBlockStart: '8',
         paddingBlock: '8',
         ...siteInset,
-        borderBlockStartWidth: 'hairline',
-        borderBlockStartStyle: 'solid',
-        borderBlockStartColor: 'border',
+        ...ruleAbove,
       },
       start: { display: 'grid', gap: '2' },
       end: {
@@ -338,11 +369,13 @@ export const siteFooter = (t: TypeSystem) => {
       links: { display: 'flex', flexWrap: 'wrap', columnGap: '8', rowGap: '2' },
       link: {
         color: 'fg.default',
+        ...textLine('body', 'md'),
         transitionProperty: 'color',
         transitionDuration: 'fast',
         _hover: { color: 'accent' },
       },
-      note: { color: 'fg.muted', ...textSize('body', 'sm') },
+      note: { color: 'fg.muted', ...textLine('body', 'sm') },
+      statusText: { ...textLine('body', 'sm') },
       status: {
         display: 'inline-flex',
         alignItems: 'center',

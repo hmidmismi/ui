@@ -13,7 +13,7 @@ import { globalCss } from './global-css';
 import { keyframes } from './keyframes';
 import { layerStyles } from './layer-styles';
 import { createRecipes } from './recipes';
-import { spacingFor } from './spacing';
+import { spacingFor } from '../grid';
 import { textStylesFor } from './text-styles';
 import {
   animations,
@@ -79,7 +79,11 @@ export function createPreset(
   options: PresetOptions = {}
 ) {
   const type = createTypeSystem(design);
-  const system = createRecipes(type);
+  const colorTokens = colorTokensFor(theme) as Record<string, Record<string, unknown>>;
+  const system = createRecipes(type, {
+    hues: Object.keys(colorTokens.categorical ?? {}),
+    tones: Object.keys(colorTokens.wash ?? {}),
+  });
   const own = options.recipes?.(type);
   const recipes = { ...system.recipes, ...own?.recipes };
   const slotRecipes = { ...system.slotRecipes, ...own?.slotRecipes };
@@ -90,6 +94,11 @@ export function createPreset(
     globalCss: {
       extend: {
         ...(options.globalCss ?? globalCss.extend),
+        // Text with no style of its own is the body step, so it is on the type scale and its baseline is measured like any other.
+        body: {
+          ...((options.globalCss ?? globalCss.extend).body as SystemStyleObject),
+          ...type.textSize('body', 'md'),
+        } as SystemStyleObject,
         ':root': themeVariables(theme) as SystemStyleObject,
       },
     },
