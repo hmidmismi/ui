@@ -30,7 +30,7 @@ export type Face = {
    * just the generic. A project with symbols its face lacks puts the system fonts that have them here.
    */
   fallbacks?: readonly string[];
-  /** The file's vertical metrics. They become variables, so trim and x-height matching follow the face at runtime. */
+  /** The file's vertical metrics. The type system reads them when the preset is built, to put baselines on the grid and match x-heights. */
   metrics: FaceMetrics;
   /** A CSS variable the app sets with the loaded file (for example `next/font`), tried before the family name. */
   cssVar?: string;
@@ -164,8 +164,8 @@ type ThemeBase = {
  * - `colors`: the project's own scales, which replace the generated ones. They are baked into the stylesheet, so a
  *   project with a designed palette (hand-picked steps, light and dark) plugs it in as is.
  *
- * With both, `colors` supplies the scales and `palette` still sets its variables (for the parts that read them). The
- * faces become CSS variables in either case.
+* With both, `colors` supplies the scales and `palette` still sets its variables (for the parts that read them). The
+ * face stacks become CSS variables in either case; the face metrics are read when the preset is built.
  */
 export type Theme = ThemeBase &
   (

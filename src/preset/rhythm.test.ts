@@ -70,8 +70,8 @@ describe('type scale', () => {
     for (const face of ['display', 'body', 'mono'] as const) {
       for (const name of names) {
         const css = textTrim(face, name) as Record<string, Record<string, string>>;
-        expect(css['&::before']?.marginBottom, `${face} ${name}`).toMatch(/^calc\(/);
-        expect(css['&::after']?.marginTop, `${face} ${name}`).toMatch(/^calc\(/);
+        expect(css['&::before']?.marginBottom, `${face} ${name}`).toMatch(/^-?[\d.]+rem$/);
+        expect(css['&::after']?.marginTop, `${face} ${name}`).toMatch(/^-?[\d.]+rem$/);
       }
     }
   });
@@ -95,14 +95,30 @@ describe('spacing scale', () => {
 describe('recipes', () => {
   // `1rem` is the unit that turns a unitless size into rem inside the generated calc().
   const ALLOWED = new Set(['1px', '-1px', '2px', '0px', '0.5px', '1rem']);
-  // Font sizes and line heights come from the type scale through `textSize`, never typed by hand.
+  // Font sizes and line heights come from the type scale through `textSize`, never typed by hand. So does every length
+  // the baseline functions work out from the face metrics (shifts, trims, offsets), so those are allowed too.
+  const t = createTypeSystem(design);
+  const box = { height: 'token(sizes.5)', items: false };
   for (const face of ['display', 'body', 'mono'] as const) {
     for (const name of names) {
       const { fontSize, lineHeight } = textSize(face, name);
       ALLOWED.add(String(fontSize));
       ALLOWED.add(String(lineHeight));
+      const generated = JSON.stringify([
+        t.textTrim(face, name),
+        t.lineShift(face, name),
+        t.lineMargins(face, name),
+        t.lineRelative(face, name),
+        t.lineCentered(face, name, box),
+        t.linePadded(face, name, { block: 'token(spacing.2)' }),
+      ]);
+      for (const match of generated.matchAll(/-?\d*\.?\d+(?:px|rem)\b/g)) ALLOWED.add(match[0]);
     }
   }
+  for (const match of JSON.stringify(t.lineShift('body', 'lg', 7 * BASELINE)).matchAll(
+    /-?\d*\.?\d+(?:px|rem)\b/g
+  ))
+    ALLOWED.add(match[0]);
 
   it('use no literal px or rem lengths outside the allow-list', () => {
     const found = new Set<string>();

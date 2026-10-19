@@ -78,7 +78,7 @@ export function createPreset(
   theme: Theme = neutral,
   options: PresetOptions = {}
 ) {
-  const type = createTypeSystem(design);
+  const type = createTypeSystem(design, theme.faces);
   const colorTokens = colorTokensFor(theme) as Record<string, Record<string, unknown>>;
   const system = createRecipes(type, {
     hues: Object.keys(colorTokens.categorical ?? {}),

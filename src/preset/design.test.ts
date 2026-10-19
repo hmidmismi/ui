@@ -23,9 +23,6 @@ const other: Design = {
   motion: { durations: { ...design.motion.durations } },
 };
 
-/** The numbers each face sets as variables: adj, asc, desc and capheight. */
-const FACE_VARIABLES = 4;
-
 describe('design', () => {
   it('has a unit of two baselines', () => {
     expect(design.grid.unit).toBe(design.grid.baseline * 2);
@@ -71,7 +68,7 @@ describe('theme', () => {
   it('turns every palette entry and face into a CSS variable', () => {
     const vars = themeVariables(neutral);
     // 7 palette colors, 3 font stacks, and 4 type numbers for each of the 3 roles
-    expect(Object.keys(vars)).toHaveLength(7 + 8 + 3 + 3 * FACE_VARIABLES);
+    expect(Object.keys(vars)).toHaveLength(7 + 8 + 3);
     for (const value of Object.values(vars)) expect(value.length).toBeGreaterThan(0);
   });
 
@@ -172,14 +169,14 @@ describe('theme colors', () => {
 
   it('sets no palette variables for a theme without a palette', () => {
     const vars = themeVariables(withColors);
-    expect(Object.keys(vars)).toHaveLength(3 + 3 * FACE_VARIABLES);
+    expect(Object.keys(vars)).toHaveLength(3);
     expect(vars['--ui-ink']).toBeUndefined();
   });
 
   it('keeps the palette variables when a theme has both', () => {
     const vars = themeVariables({ ...withColors, palette: neutral.palette });
     expect(vars['--ui-ink']).toBe(neutral.palette.ink);
-    expect(Object.keys(vars)).toHaveLength(7 + 8 + 3 + 3 * FACE_VARIABLES);
+    expect(Object.keys(vars)).toHaveLength(7 + 8 + 3);
   });
 
   it('names every missing role', () => {

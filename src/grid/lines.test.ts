@@ -1,31 +1,42 @@
 import { describe, expect, it } from 'vitest';
-import { baselineOffset, createRules, lineMargins, lineShift, snapDistance, trim } from './index';
+import { createRules, lineMargins, lineRelative, lineShift, measureLine, trim } from './index';
 
-const vars = { asc: '--a', desc: '--d', capHeight: '--c' };
+const face = { ascent: 0.9, descent: 0.2, capHeight: 0.7 };
+const units = { row: 4, length: (px: number) => `${px}px` };
 
 describe('lines', () => {
-  it('computes the baseline the way a browser places it', () => {
-    expect(baselineOffset('20px', vars)).toBe(
-      'round(down, calc((20px + round(nearest, calc(var(--a) * 1em), 1px) - round(nearest, calc(var(--d) * 1em), 1px)) / 2), 1px)'
-    );
+  it('puts the baseline half the leftover line height below the top of the line', () => {
+    // 16px: ascent 14.4, descent 3.2, so (20 + 14.4 - 3.2) / 2 = 15.6
+    const line = measureLine(16, 20, face);
+    expect(line.offset).toBeCloseTo(15.6, 5);
+    expect(line.cap).toBeCloseTo(11.2, 5);
   });
 
   it('moves a line with opposite margins so the box keeps its size', () => {
-    const style = lineShift('20px', vars, '5px') as Record<string, Record<string, string>>;
-    const shift = snapDistance('20px', vars, '5px');
-    expect(style['&::before']?.marginBottom).toBe(shift);
-    expect(style['&::after']?.marginTop).toBe(`calc(-1 * ${shift})`);
-    expect(lineMargins('20px', vars, '5px')).toEqual({
-      marginBlockStart: shift,
-      marginBlockEnd: `calc(-1 * ${shift})`,
-    });
+    const line = measureLine(16, 20, face);
+    const style = lineShift(line, units) as Record<string, Record<string, string>>;
+    // 15.6 is 0.4px under the row line at 16
+    expect(Number.parseFloat(style['&::before']?.marginBottom ?? '')).toBeCloseTo(0.4, 5);
+    expect(Number.parseFloat(style['&::after']?.marginTop ?? '')).toBeCloseTo(-0.4, 5);
+    const margins = lineMargins(line, units) as Record<string, string>;
+    expect(Number.parseFloat(margins.marginBlockStart ?? '')).toBeCloseTo(0.4, 5);
+    expect(Number.parseFloat(margins.marginBlockEnd ?? '')).toBeCloseTo(-0.4, 5);
+    expect(lineRelative(line, units).position).toBe('relative');
+  });
+
+  it('writes a baseline that is already on a row as no shift', () => {
+    const line = { height: 20, offset: 16, cap: 11 };
+    expect(lineMargins(line, units)).toEqual({ marginBlockStart: '0px', marginBlockEnd: '0px' });
   });
 
   it('trims to the capitals, and rounds up to a row when it snaps', () => {
-    const plain = JSON.stringify(trim('20px', vars, '5px', false));
-    const snapped = JSON.stringify(trim('20px', vars, '5px', true));
-    expect(plain).not.toContain('round(up');
-    expect(snapped).toContain('round(up, calc(var(--c) * 1em), 5px)');
+    const line = measureLine(16, 20, face);
+    const plain = trim(line, units, false) as Record<string, Record<string, string>>;
+    const snapped = trim(line, units, true) as Record<string, Record<string, string>>;
+    // capitals 11.2px: unsnapped 11.2 - 15.6, snapped up to 12 - 15.6
+    expect(Number.parseFloat(plain['&::before']?.marginBottom ?? '')).toBeCloseTo(-4.4, 5);
+    expect(Number.parseFloat(snapped['&::before']?.marginBottom ?? '')).toBeCloseTo(-3.6, 5);
+    expect(Number.parseFloat(snapped['&::after']?.marginTop ?? '')).toBeCloseTo(-4.4, 5);
   });
 
   it('draws rules as shadows that take no height', () => {

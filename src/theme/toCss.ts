@@ -1,4 +1,4 @@
-import type { Face, FaceMetrics, Palette, Role, Theme } from './types';
+import type { Face, FaceMetrics, Palette, Theme } from './types';
 
 /** The colors a palette may leave out. */
 export const PALETTE_DEFAULTS = {
@@ -34,22 +34,6 @@ export const themeVars = {
   mono: '--ui-font-mono',
 } as const;
 
-/** The per-role numbers the type system reads to size and trim text (all unitless). */
-export type FaceVar = 'adj' | 'asc' | 'desc' | 'capheight';
-
-/**
- * The CSS variable holding one of a role's type numbers.
- *
- * - `adj`: how much larger the face is set so its x-height equals the body face's.
- * - `asc`, `desc`, `capheight`: the ascent, the descent and the height of the capitals, in em. The trim rounds the first
- *   two to whole pixels the way the browser does, to put the baseline exactly where the browser draws it.
- *
- * @param role - the role.
- * @param key - which number.
- * @returns the variable name.
- */
-export const faceVar = (role: Role, key: FaceVar) => `--ui-${role}-${key}`;
-
 /** Family names CSS reads as keywords, which must stay unquoted (`ui-monospace`, `system-ui`, `sans-serif`). */
 const KEYWORD_FAMILY =
   /^(ui-[a-z-]+|system-ui|serif|sans-serif|monospace|cursive|fantasy|math|emoji|fangsong)$/;
@@ -79,27 +63,6 @@ export function fontStack(face: Pick<Face, 'family' | 'generic' | 'fallbacks' | 
  */
 export function xHeightAdjust(reference: FaceMetrics, metrics: FaceMetrics) {
   return reference.xHeight / reference.unitsPerEm / (metrics.xHeight / metrics.unitsPerEm);
-}
-
-const round = (value: number) => String(Math.round(value * 100000) / 100000);
-
-/**
- * The type numbers of a face, as the variables the type system reads.
- *
- * @param role - the role.
- * @param metrics - the face's metrics.
- * @param reference - the body face's metrics.
- * @returns the variables.
- */
-function faceVariables(role: Role, metrics: FaceMetrics, reference: FaceMetrics) {
-  const upm = metrics.unitsPerEm;
-  const descent = Math.abs(metrics.descent);
-  return {
-    [faceVar(role, 'adj')]: round(xHeightAdjust(reference, metrics)),
-    [faceVar(role, 'asc')]: round(metrics.ascent / upm),
-    [faceVar(role, 'desc')]: round(descent / upm),
-    [faceVar(role, 'capheight')]: round(metrics.capHeight / upm),
-  };
 }
 
 /**
@@ -136,15 +99,11 @@ function paletteVariables(palette: Palette) {
  */
 export function themeVariables(theme: Theme): Record<string, string> {
   const { palette, faces } = theme;
-  const reference = faces.body.metrics;
   return {
     ...(palette ? paletteVariables(palette) : {}),
     [themeVars.display]: fontStack(faces.display),
     [themeVars.body]: fontStack(faces.body),
     [themeVars.mono]: fontStack(faces.mono),
-    ...faceVariables('display', faces.display.metrics, reference),
-    ...faceVariables('body', faces.body.metrics, reference),
-    ...faceVariables('mono', faces.mono.metrics, reference),
   };
 }
 

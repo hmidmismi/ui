@@ -1,14 +1,15 @@
 import {
   type CenteredBox,
   centeredLine as baselineCenteredLine,
-  type FaceVars,
+  type Line,
   lineMargins as baselineLineMargins,
   lineRelative as baselineLineRelative,
   lineShift as baselineLineShift,
-  LONGFORM_OFFSET_VAR,
-  measuredOffsetVar,
+  measureLine,
+  type Metrics,
   paddedLine as baselinePaddedLine,
   trim as baselineTrim,
+  type Units,
 } from '../grid';
 import type { SystemStyleObject } from '@pandacss/dev';
 import {
@@ -21,7 +22,7 @@ import {
   type RoleName,
   type RoleStyle,
 } from '../design';
-import { faceVar, type Role } from '../theme';
+import { neutral, type Role, type Theme, xHeightAdjust } from '../theme';
 import { createScale, round } from '../grid';
 
 /**
@@ -36,9 +37,9 @@ import { createScale, round } from '../grid';
  *
  * Baseline: text sits on the grid (see `../grid/README.md`). A role is either trimmed to the space between the top of the
  * capitals and the baseline (`textRole`), or its first baseline is moved to the nearest grid line with the box unchanged
- * (`textLine` and its siblings). Both are `calc()` over the theme's per-face variables (see `theme/toCss.ts`), so they follow
- * the face the theme sets, at runtime. Sizes are adjusted the same way so the lowercase x-height matches the body face's
- * at the same step.
+ * (`textLine` and its siblings). Both are worked out here from the theme's face metrics and written as plain lengths, so
+ * they are fixed when the preset is built: a face is chosen by the theme, not swapped at runtime. Sizes are adjusted the
+ * same way so the lowercase x-height matches the body face's at the same step.
  */
 
 /** The named steps. `md` is the body size; negative steps are smaller. */
@@ -71,11 +72,14 @@ const NAMES = Object.keys(STEPS) as StepName[];
  * The type system of a design: step sizes and line heights, tokens, and the text styles roles use.
  *
  * @param d - the design (its grid and type are read).
+ * @param faces - the theme's faces; their metrics put each baseline on the grid. Defaults to the neutral theme's.
  * @returns the functions, tokens and fragments.
  */
-export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
+export function createTypeSystem(
+  d: Pick<Design, 'grid' | 'type'>,
+  faces: Theme['faces'] = neutral.faces
+) {
   const scale = createScale(d);
-  const num = (value: number) => String(round(value));
 
   /** The nominal size of a step in px, before any per-face x-height adjustment. */
   const stepSize = (step: StepName) => d.type.base * d.type.ratio ** STEPS[step];
@@ -115,58 +119,53 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
     ])
   );
 
+  /** A face's metrics in em, and how much larger it is set so its x-height equals the body face's. */
+  const faceOf = (role: Role): Metrics & { adjust: number } => {
+    const m = faces[role].metrics;
+    return {
+      ascent: m.ascent / m.unitsPerEm,
+      descent: Math.abs(m.descent) / m.unitsPerEm,
+      capHeight: m.capHeight / m.unitsPerEm,
+      adjust: xHeightAdjust(faces.body.metrics, m),
+    };
+  };
+
+  /** The size of a step in a role in px: the step's, scaled by the role's x-height adjustment. */
+  const sizeOf = (role: Role, step: StepName) => round(stepSize(step) * faceOf(role).adjust);
+
   /**
-   * The size and line height of a step in a role. The size is the step's, scaled by the role's x-height adjustment
-   * variable; the line height is the step's, so every role has the same rhythm at the same step.
+   * The size and line height of a step in a role. The size is the step's, scaled by the role's x-height adjustment; the
+   * line height is the step's, so every role has the same rhythm at the same step.
    */
   const textSize = (role: Role, step: StepName): Styles => ({
-    fontSize: `calc(${num(stepSize(step))} / ${scale.ROOT_SIZE} * var(${faceVar(role, 'adj')}) * 1rem)`,
+    fontSize: scale.rem(sizeOf(role, step)),
     lineHeight: scale.rem(stepLineHeight(step)),
   });
 
-  /** The CSS variables a role's face metrics live in. */
-  const faceVars = (
-    role: Role,
-    step?: StepName,
-    lineHeight?: string,
-    measured?: string
-  ): FaceVars => ({
-    // A custom line height has no measured offset of its own unless one is named: only a face at a step with its own line
-    // height does.
-    ...(measured
-      ? { measured }
-      : step && !lineHeight
-        ? { measured: measuredOffsetVar(role, step) }
-        : {}),
-    asc: faceVar(role, 'asc'),
-    desc: faceVar(role, 'desc'),
-    capHeight: faceVar(role, 'capheight'),
-  });
+  /** The grid row and how to write a length, for the baseline functions. */
+  const units: Units = { row: scale.BASELINE, length: scale.rem };
 
-  /** One grid row, as a token. */
-  const ROW = 'token(spacing.1)';
+  /** The line of a step in a role: where its first baseline falls. `height` is a line height in px that replaces the step's. */
+  const lineAt = (role: Role, step: StepName, height = stepLineHeight(step)): Line =>
+    measureLine(sizeOf(role, step), height, faceOf(role));
 
-  /** The line height of a step as CSS, unless a text style sets its own. */
-  const lineOf = (step: StepName, lineHeight?: string) =>
-    lineHeight ?? scale.rem(stepLineHeight(step));
+  /** The line height of a step as CSS. */
+  const lineOf = (step: StepName) => scale.rem(stepLineHeight(step));
 
   /**
    * Puts the first baseline of a block of text on a grid line without changing its height or its box (see
-   * `../grid/README.md`). For a block whose text is its own, not a flex or grid container.
+   * `../grid/README.md`). For a block whose text is its own, not a flex or grid container. `height` is a line height in px
+   * that replaces the step's.
    */
-  const lineShift = (role: Role, step: StepName, lineHeight?: string, measured?: string): Styles =>
-    baselineLineShift(
-      lineOf(step, lineHeight),
-      faceVars(role, step, lineHeight, measured),
-      ROW
-    ) as Styles;
+  const lineShift = (role: Role, step: StepName, height?: number): Styles =>
+    baselineLineShift(lineAt(role, step, height), units) as Styles;
 
   /**
    * Puts the first baseline of one line of text on a grid line when a flex or grid box of fixed height centers it, by
    * unequal padding. The box keeps its height; pass that height and any border or padding inside it.
    */
   const lineCentered = (role: Role, step: StepName, box: CenteredBox): Styles =>
-    baselineCenteredLine(lineOf(step), faceVars(role, step), ROW, box) as Styles;
+    baselineCenteredLine(lineAt(role, step), units, box) as Styles;
 
   /**
    * Puts the first baseline of text on a grid line in an auto-height box by moving padding from one side to the other.
@@ -176,15 +175,15 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
     role: Role,
     step: StepName,
     padding: { block: string; border?: string }
-  ): Styles => baselinePaddedLine(lineOf(step), faceVars(role, step), ROW, padding) as Styles;
+  ): Styles => baselinePaddedLine(lineAt(role, step), units, padding) as Styles;
 
   /** The same shift by moving the element, for a block that can use neither pseudo-elements nor margins (a disclosure summary). */
   const lineRelative = (role: Role, step: StepName): Styles =>
-    baselineLineRelative(lineOf(step), faceVars(role, step), ROW) as Styles;
+    baselineLineRelative(lineAt(role, step), units) as Styles;
 
   /** The same shift as margins, for flex or grid items and for text that clips with an ellipsis. */
-  const lineMargins = (role: Role, step: StepName, lineHeight?: string): Styles =>
-    baselineLineMargins(lineOf(step, lineHeight), faceVars(role, step, lineHeight), ROW) as Styles;
+  const lineMargins = (role: Role, step: StepName, height?: number): Styles =>
+    baselineLineMargins(lineAt(role, step, height), units) as Styles;
 
   /** Size and line height, with the first baseline on the grid. For a block whose text is its own. */
   const textLine = (role: Role, step: StepName): Styles =>
@@ -197,7 +196,7 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
    * trimmed element; padding is measured from the cap and baseline edges.
    */
   const textTrim = (role: Role, step: StepName): Styles =>
-    baselineTrim(lineOf(step), faceVars(role, step), ROW, Boolean(d.grid.snap)) as Styles;
+    baselineTrim(lineAt(role, step), units, Boolean(d.grid.snap)) as Styles;
 
   /** Size, line height and trim together, for text that is always a block. */
   const textRole = (role: Role, step: StepName): Styles =>
@@ -238,7 +237,7 @@ export function createTypeSystem(d: Pick<Design, 'grid' | 'type'>) {
    */
   const longFormShift = responsive(
     lineShift('body', 'md'),
-    lineShift('body', 'lg', 'token(spacing.7)', LONGFORM_OFFSET_VAR),
+    lineShift('body', 'lg', 7 * scale.BASELINE),
     'sm'
   );
   const longForm: Styles = {

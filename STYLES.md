@@ -53,11 +53,11 @@ Defaults for each input are in `src/design/default.ts` and `src/theme/`. The lib
 
 ## Type and trim
 
-Every size is `base * ratio^step`. A text role asks the type system for a size at a step and, for block text, the trim, which removes the space above the capitals and below the baseline. The trim reads the face's numbers from `--ui-<role>-adj|asc|desc|capheight` (plus the Capsize `cap|base|normal`), so swapping a face changes trim at runtime. It copies how the browser places a baseline: ascent and descent rounded to whole pixels, the baseline at half the leftover line height, rounded down. The result is that the glyph baseline sits exactly at the bottom of the trimmed box (checked from rendered pixels, not from box edges). Do not put margin on a trimmed element.
+Every size is `base * ratio^step`. A text role asks the type system for a size at a step and, for block text, the trim, which removes the space above the capitals and below the baseline. The trim and the baseline shifts are worked out from the theme's face metrics when the preset is built (`createTypeSystem(design, theme.faces)`) and written as plain lengths, so a different face needs a rebuild. It uses the arithmetic a browser uses to place a baseline (half the leftover line height below the top of the line), without each engine's rounding, so the glyph baseline sits at the bottom of the trimmed box to within a pixel (checked from rendered pixels, not from box edges). Do not put margin on a trimmed element.
 
 ## Baseline grid
 
-With `design.grid.snap`, every trimmed text block is rounded up to whole baselines, with the space added above the capitals, so the baseline of the text sits on a grid line and the next block starts on one. It uses CSS `round()` (Chrome 125, Safari 15.4, Firefox 118). Hairline rules are drawn as inset shadows (`ruleAbove`, `ruleBelow`, `ruleBoth` in `fragments.ts`) so they add no height; a border would push everything under it a pixel off. Control heights are whole baselines. Check it in the playground with the baseline grid on: library text baselines are on a line. Anything above a block that is not a whole number of baselines tall (a raw border, a fixed height) shifts it; the playground and DRAM at 390px show 1px where such a thing is still above the text.
+With `design.grid.snap`, every trimmed text block is rounded up to whole baselines, with the space added above the capitals, so the baseline of the text sits on a grid line and the next block starts on one. It uses CSS `round()` (Chrome 125, Safari 15.4, Firefox 118). Hairline rules are drawn as inset shadows (`ruleAbove`, `ruleBelow`, `ruleBoth` in `fragments.ts`) so they add no height; a border would push everything under it a pixel off. Control heights are whole baselines. Check it in the playground with the baseline grid on: library text baselines are on a line, to within a pixel. Anything above a block that is not a whole number of baselines tall (a raw border, a fixed height) shifts it.
 
 ## Text in recipes
 
@@ -80,7 +80,7 @@ Panda emits a recipe variant only when it sees a literal use or `staticCss` list
 
 ## Checking it
 
-The grid is `src/grid/` (see its README for the invariant and which helper to use for which text). `check-baseline <url> --grid <baseline> --paths … --widths …` loads a page in Chrome with its real fonts, reads the baseline of every element that holds text, and exits 1 when more than `--max` are over 0.25px from a line; it groups the offenders by element and parent class. Run it against the playground (`--grid 5`) and an app at several widths. The package's own tests use a bundled font.
+The grid is `src/grid/` (see its README for the invariant and which helper to use for which text). `check-baseline <url> --grid <baseline> --paths … --widths …` loads a page in Chrome with its real fonts, reads the baseline of every element that holds text, and exits 1 when more than `--max` are over 1px (`--tolerance`) from a line, in Chrome, WebKit (`--browser webkit`) or Firefox (`check:baseline:firefox`); it groups the offenders by element and parent class. Run it against the playground (`--grid 5`) and an app at several widths. The package's own tests use a bundled font.
 
 ## Seeing it
 

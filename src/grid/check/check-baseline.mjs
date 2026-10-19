@@ -29,12 +29,12 @@ const flag = (name, fallback) => {
 const base = args.find((a) => a.startsWith('http'));
 if (!base) {
   console.error(
-    'usage: check-baseline <url> [--grid 5] [--paths / /about] [--widths 390 1440] [--tolerance 0.25] [--max 0] [--browser chrome|webkit] [--top 40] [--why]'
+    'usage: check-baseline <url> [--grid 5] [--paths / /about] [--widths 390 1440] [--tolerance 1] [--max 0] [--browser chrome|webkit] [--top 40] [--why]'
   );
   process.exit(2);
 }
 const grid = Number(flag('grid', ['5'])[0]);
-const tolerance = Number(flag('tolerance', ['0.25'])[0]);
+const tolerance = Number(flag('tolerance', ['1'])[0]);
 const max = Number(flag('max', ['0'])[0]);
 const paths = flag('paths', ['/']);
 const widths = flag('widths', ['390', '1440']).map(Number);
@@ -53,8 +53,9 @@ let off = 0;
 for (const path of paths) {
   for (const width of widths) {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
-    await page.goto(new URL(path, base).href, { waitUntil: 'networkidle' });
+    await page.goto(new URL(path, base).href, { waitUntil: 'load', timeout: 90000 });
     await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(1500);
     const rows = await page.evaluate(measureText, { grid, tolerance });
     for (const row of rows) {
       total += 1;

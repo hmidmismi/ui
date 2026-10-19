@@ -11,25 +11,19 @@
 export { type ControlSize, type ControlStyle, defaultControls } from './controls';
 export { createScale, defaultGrid, type Grid, round } from './definition';
 export {
-  baselineOffset,
   type CenteredBox,
   centeredLine,
-  type FaceVars,
+  type Line,
   lineMargins,
   lineRelative,
   lineShift,
+  measureLine,
+  type Metrics,
   paddedLine,
-  snapDistance,
   type Style,
   trim,
+  type Units,
 } from './lines';
-export {
-  CALIBRATED_ROLES,
-  CALIBRATED_STEPS,
-  calibrateBaselines,
-  LONGFORM_OFFSET_VAR,
-  measuredOffsetVar,
-} from './calibrate';
 export { gridOverlay } from './overlay';
 export { createRules, type RuleTokens } from './rules';
 export { controlsFor, scaleValuesFor, spacingFor } from './spacing';

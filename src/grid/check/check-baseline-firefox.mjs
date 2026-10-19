@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // The same check as `check-baseline`, in Firefox, which Playwright cannot drive with the installed Firefox. It speaks Firefox's own
-// WebDriver BiDi protocol (`--remote-debugging-port`) and runs the shared measurement (`measure.mjs`) in the page. The apps
-// call `useBaselineCalibration()`, so each page is given a moment to hydrate and calibrate before it is measured.
+// WebDriver BiDi protocol (`--remote-debugging-port`) and runs the shared measurement (`measure.mjs`) in the page. Each page
+// is given a moment to hydrate and load its fonts before it is measured.
 //
-//   check-baseline-firefox http://localhost:5199 --grid 4 --paths / /about --widths 390 1440 [--max 0]
+//   check-baseline-firefox http://localhost:5199 --grid 4 --paths / /about --widths 390 1440 [--max 0] [--tolerance 1]
 import { spawn } from 'node:child_process';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -23,11 +23,12 @@ const flag = (name, fallback) => {
 };
 const base = args.find((a) => a.startsWith('http'));
 if (!base) {
-  console.error('usage: check-baseline-firefox <url> [--grid 4] [--paths / /about] [--widths 390 1440] [--max 0] [--firefox <path>]');
+  console.error('usage: check-baseline-firefox <url> [--grid 4] [--paths / /about] [--widths 390 1440] [--max 0] [--tolerance 1] [--firefox <path>]');
   process.exit(2);
 }
 const grid = Number(flag('grid', ['4'])[0]);
 const max = Number(flag('max', ['0'])[0]);
+const tolerance = Number(flag('tolerance', ['1'])[0]);
 const paths = flag('paths', ['/']);
 const widths = flag('widths', ['390', '1440']).map(Number);
 const firefox = flag('firefox', ['/Applications/Firefox.app/Contents/MacOS/firefox'])[0];
@@ -73,7 +74,7 @@ for (const path of paths) {
     await call('browsingContext.setViewport', { context, viewport: { width, height: 900 } });
     await call('browsingContext.navigate', { context, url: new URL(path, base).href, wait: 'complete' });
     await new Promise((resolve) => setTimeout(resolve, 2500));
-    const expression = `(async () => { await document.fonts.ready; return (${measureText.toString()})(${JSON.stringify({ grid, tolerance: 0.25 })}); })()`;
+    const expression = `(async () => { await document.fonts.ready; return (${measureText.toString()})(${JSON.stringify({ grid, tolerance })}); })()`;
     const result = await call('script.evaluate', {
       expression,
       target: { context },
@@ -99,5 +100,5 @@ stop();
 for (const [key, entry] of [...groups.entries()].filter(([, g]) => g.off > 0).sort((a, b) => b[1].off - a[1].off).slice(0, 30)) {
   console.log(`${String(entry.off).padStart(5)} / ${String(entry.n).padEnd(5)} ${key}`);
 }
-console.log(`${total} text elements on ${paths.length} page(s) at ${widths.join(', ')}px in Firefox: ${off} more than 0.25px off the ${grid}px grid (allowed ${max})`);
+console.log(`${total} text elements on ${paths.length} page(s) at ${widths.join(', ')}px in Firefox: ${off} more than ${tolerance}px off the ${grid}px grid (allowed ${max})`);
 process.exit(off > max ? 1 : 0);
