@@ -16,21 +16,38 @@ import { responsive } from '../type-scale';
  * section's pill is inverted. It sticks at `--bh`, the height of the header bar, and scrolls sideways on phones.
  */
 export const jumpNav = (t: TypeSystem) => {
-  const { textSize, lineCentered } = t;
+  const { textSize, lineCentered, textLine } = t;
   return defineSlotRecipe({
     className: 'jump-nav',
-    slots: ['root', 'link'],
+    slots: ['root', 'bar', 'link', 'compact', 'compactTitle', 'compactMeta'],
     base: {
       root: {
         ...stickBelowHeader,
         zIndex: 'docked',
-        ...scrollRow,
-        gap: '2',
+        display: 'flex',
+        flexDirection: 'column',
         marginBlockStart: '2',
-        paddingBlock: '3',
         background: 'canvas',
         ...ruleBelow,
       },
+      bar: {
+        ...scrollRow,
+        gap: '2',
+        paddingBlock: '3',
+      },
+      compact: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'baseline',
+        columnGap: 'rhythm.item',
+        paddingBlockStart: '3',
+      },
+      compactTitle: {
+        fontFamily: 'display',
+        color: 'fg.default',
+        ...textLine('display', 'xl'),
+      },
+      compactMeta: { color: 'fg.muted', ...textLine('body', 'md') },
       link: {
         ...boxed,
         display: 'inline-flex',
@@ -113,7 +130,7 @@ export const breadcrumbs = (t: TypeSystem) => {
  * `signedIn` says whether the institution block is present, so the phone grid gives it a column only when it is.
  */
 export const siteNav = (t: TypeSystem) => {
-  const { textSize, textLine, lineCentered, linePadded, lineOf } = t;
+  const { textSize, textLine } = t;
   return defineSlotRecipe({
     className: 'site-nav',
     staticCss: ['*'],
@@ -169,7 +186,6 @@ export const siteNav = (t: TypeSystem) => {
         boxShadow: 'inset 0 calc(-1 * token(borderWidths.rail)) 0 0 transparent',
         color: 'fg.muted',
         ...textSize('body', 'md'),
-        ...lineCentered('body', 'md', { height: 'token(sizes.utility)' }),
         whiteSpace: 'nowrap',
         transitionProperty: 'color, background-color, box-shadow',
         transitionDuration: 'fast',
@@ -202,19 +218,15 @@ export const siteNav = (t: TypeSystem) => {
         boxShadow: { base: ruleAbove.boxShadow as string, sm: 'none' },
       },
       tab: {
-        display: 'block',
+        // The label is centered in the tab (the bar's height from 640px, its padding on phones); it is not held to the
+        // baseline grid here.
+        display: 'flex',
+        alignItems: 'center',
         flexShrink: 0,
+        paddingBlock: '2',
         color: 'fg.muted',
         fontFamily: 'body',
         ...responsive(textSize('body', 'md'), textSize('body', 'lg'), 'sm'),
-        // On phones the tab's height is its padding; from 640px it is the bar's.
-        ...responsive(
-          linePadded('body', 'md', { block: 'token(spacing.2)' }),
-          linePadded('body', 'lg', {
-            block: `calc((token(sizes.bar) - ${lineOf('lg')}) / 2)`,
-          }),
-          'sm'
-        ),
         '& > *': { marginInlineStart: '2' },
         whiteSpace: 'nowrap',
         position: 'relative',
@@ -243,10 +255,9 @@ export const siteNav = (t: TypeSystem) => {
         gap: '2',
         minWidth: '0',
         marginInlineEnd: { sm: '4' },
-        // A fixed height that the header's grid centers on a whole row, with the text starting a whole row below the top.
-        alignItems: 'flex-start',
+        // A fixed height with the contents centered; the text is not held to the baseline grid here.
+        alignItems: 'center',
         height: { base: 'control.xs', sm: 'control.xl' },
-        paddingBlockStart: '2',
         paddingInlineStart: '2',
         paddingInlineEnd: { base: '2', sm: '4' },
         ...ringed,

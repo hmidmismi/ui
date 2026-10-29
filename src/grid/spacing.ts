@@ -37,6 +37,9 @@ export const controlsFor = (d: { controls?: Partial<Record<ControlSize, ControlS
   ...d.controls,
 });
 
+/** The default rhythm, in baselines: 8px, 16px, 32px and 64px on a 4px baseline. */
+export const defaultRhythm = { pair: 2, item: 4, group: 8, section: 16 } as const;
+
 /**
  * The spacing tokens for a design.
  *
@@ -46,11 +49,19 @@ export const controlsFor = (d: { controls?: Partial<Record<ControlSize, ControlS
 export const spacingFor = (d: {
   grid: Grid;
   controls?: Partial<Record<ControlSize, ControlStyle>>;
+  rhythm?: Partial<Record<keyof typeof defaultRhythm, number>>;
 }) => {
   const { baselines } = createScale(d);
   const controls = controlsFor(d);
   return defineTokens.spacing({
     ...scaleValuesFor(d),
+    /** The four gaps layouts are built from (`Design.rhythm`), as a number of baselines each. */
+    rhythm: Object.fromEntries(
+      Object.entries({ ...defaultRhythm, ...d.rhythm }).map(([name, count]) => [
+        name,
+        { value: baselines(count) },
+      ])
+    ),
     /** The side padding of each control size. */
     controlPad: Object.fromEntries(
       Object.entries(controls).map(([size, c]) => [size, { value: baselines(c.padX) }])

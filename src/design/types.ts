@@ -120,6 +120,13 @@ export type Design = {
   breakpoints?: Partial<Record<'sm' | 'md' | 'lg' | 'xl' | '2xl', string>>;
   /** How tall, how padded and how large the icon is at each control size. Left out, the system's own. */
   controls?: Partial<Record<ControlSize, ControlStyle>>;
+  /**
+   * The four gaps every layout is built from, as numbers of baselines: `pair` (a label over its value, a title over its
+   * byline), `item` (between the items of a list), `group` (between groups of items) and `section` (between sections).
+   * Left out, the system's own. Components name a gap (`rhythm.item`) and never a number, so one change here moves every
+   * page together.
+   */
+  rhythm?: Partial<Record<'pair' | 'item' | 'group' | 'section', number>>;
   motion: {
     /** Named durations, as CSS times. */
     durations: Record<

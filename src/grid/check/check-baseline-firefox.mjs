@@ -23,7 +23,9 @@ const flag = (name, fallback) => {
 };
 const base = args.find((a) => a.startsWith('http'));
 if (!base) {
-  console.error('usage: check-baseline-firefox <url> [--grid 4] [--paths / /about] [--widths 390 1440] [--max 0] [--tolerance 1] [--firefox <path>]');
+  console.error(
+    'usage: check-baseline-firefox <url> [--grid 4] [--paths / /about] [--widths 390 1440] [--max 0] [--tolerance 1] [--firefox <path>]'
+  );
   process.exit(2);
 }
 const grid = Number(flag('grid', ['4'])[0]);
@@ -36,7 +38,13 @@ const port = 9300 + Math.floor(Math.random() * 500);
 
 const process_ = spawn(
   firefox,
-  ['--headless', `--remote-debugging-port=${port}`, '--no-remote', '--profile', mkdtempSync(join(tmpdir(), 'fx-'))],
+  [
+    '--headless',
+    `--remote-debugging-port=${port}`,
+    '--no-remote',
+    '--profile',
+    mkdtempSync(join(tmpdir(), 'fx-')),
+  ],
   { stdio: 'ignore' }
 );
 const stop = () => process_.kill();
@@ -72,7 +80,11 @@ let off = 0;
 for (const path of paths) {
   for (const width of widths) {
     await call('browsingContext.setViewport', { context, viewport: { width, height: 900 } });
-    await call('browsingContext.navigate', { context, url: new URL(path, base).href, wait: 'complete' });
+    await call('browsingContext.navigate', {
+      context,
+      url: new URL(path, base).href,
+      wait: 'complete',
+    });
     await new Promise((resolve) => setTimeout(resolve, 2500));
     const expression = `(async () => { await document.fonts.ready; return (${measureText.toString()})(${JSON.stringify({ grid, tolerance })}); })()`;
     const result = await call('script.evaluate', {
@@ -82,7 +94,9 @@ for (const path of paths) {
       resultOwnership: 'none',
       serializationOptions: { maxObjectDepth: 4 },
     });
-    const rows = (result.result?.value ?? []).map((item) => Object.fromEntries(item.value.map(([key, value]) => [key, value.value])));
+    const rows = (result.result?.value ?? []).map((item) =>
+      Object.fromEntries(item.value.map(([key, value]) => [key, value.value]))
+    );
     for (const row of rows) {
       total += 1;
       const entry = groups.get(row.key) ?? { n: 0, off: 0 };
@@ -97,8 +111,13 @@ for (const path of paths) {
 }
 socket.close();
 stop();
-for (const [key, entry] of [...groups.entries()].filter(([, g]) => g.off > 0).sort((a, b) => b[1].off - a[1].off).slice(0, 30)) {
+for (const [key, entry] of [...groups.entries()]
+  .filter(([, g]) => g.off > 0)
+  .sort((a, b) => b[1].off - a[1].off)
+  .slice(0, 30)) {
   console.log(`${String(entry.off).padStart(5)} / ${String(entry.n).padEnd(5)} ${key}`);
 }
-console.log(`${total} text elements on ${paths.length} page(s) at ${widths.join(', ')}px in Firefox: ${off} more than ${tolerance}px off the ${grid}px grid (allowed ${max})`);
+console.log(
+  `${total} text elements on ${paths.length} page(s) at ${widths.join(', ')}px in Firefox: ${off} more than ${tolerance}px off the ${grid}px grid (allowed ${max})`
+);
 process.exit(off > max ? 1 : 0);

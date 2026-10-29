@@ -1,5 +1,6 @@
 import { defineSlotRecipe } from '@pandacss/dev';
 import { ringed, ruleAbove, ruleBelow, ruleBelowOf, toneRing } from '../fragments';
+import { hoverRow } from '../interaction';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
@@ -40,13 +41,15 @@ export const pageText = (t: TypeSystem) => {
       'tileGrid',
       'tile',
       'tileName',
+      'tileFigure',
       'tileCount',
+      'tileUnit',
     ],
     base: {
       root: {
         minWidth: '0',
         maxWidth: 'article',
-        '& a:not([data-bare])': { color: 'accent', textDecoration: 'underline' },
+        '& a:not([data-bare], [class])': { color: 'accent', textDecoration: 'underline' },
         '& p + p': { marginBlockStart: '4' },
         '& :is(ol, ul, dl, table, div) + p': { marginBlockStart: '6' },
         '& code': { fontFamily: 'mono', fontSize: '1em' },
@@ -161,20 +164,24 @@ export const pageText = (t: TypeSystem) => {
         paddingBlock: '3',
         paddingInline: '4',
         color: 'fg.default',
-        ...toneRing(40, 'left'),
+        ...toneRing(40),
         toneFill: '10',
-        transitionProperty: 'background-color',
-        transitionDuration: 'fast',
-        '&&': { textDecoration: 'none', color: 'fg.default' },
-        _hover: { toneFill: '20' },
+        ...hoverRow,
+        '&:hover .page-text__tileCount': { color: 'secondary' },
       },
       tileName: { fontFamily: 'display', fontWeight: 'medium', ...textLine('display', 'xl') },
+      // The count over its unit at the end of the tile.
+      tileFigure: { display: 'grid', justifyItems: 'end', flexShrink: 0 },
       tileCount: {
         color: 'var(--tone)',
         fontFamily: 'display',
         fontVariantNumeric: 'tabular-nums',
+        transitionProperty: 'color',
+        transitionDuration: 'normal',
+        transitionTimingFunction: 'in-out',
         ...textLine('display', '2xl'),
       },
+      tileUnit: { color: 'fg.muted', fontFamily: 'body', ...textLine('body', 'sm') },
     },
     variants: {
       columns: {

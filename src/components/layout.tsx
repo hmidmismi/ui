@@ -1,6 +1,9 @@
 import type { VariantOf } from '@hmidmismi/ui';
 import type { ComponentProps, ReactNode } from 'react';
 import {
+  nameList,
+  columnCell,
+  columnGrid,
   fullRow,
   inset,
   itemList,
@@ -203,4 +206,40 @@ export function Wrap({ gap, align, children, ...rest }: WrapProps) {
       {children}
     </div>
   );
+}
+
+/**
+ * The page's column grid: twelve equal columns with the `item` gap between them and between rows. Place content with
+ * {@link Cell}. Below `md` every cell is the full width. Recipe `columnGrid`.
+ *
+ * @param props - the cells.
+ * @returns the grid.
+ */
+export function Grid({ children }: { children: ReactNode }) {
+  return <div className={columnGrid()}>{children}</div>;
+}
+
+/** The number of columns a {@link Cell} may span. */
+export type CellSpan = VariantOf<typeof columnCell, 'span'>;
+
+/**
+ * A cell of the {@link Grid}: it spans `span` of the twelve columns from `md` up, and is the full width below. Cells in
+ * one row should add up to twelve. Recipe `columnCell`.
+ *
+ * @param props - the number of columns and the content.
+ * @returns the cell.
+ */
+export function Cell({ span, children }: { span: CellSpan; children: ReactNode }) {
+  return <div className={columnCell({ span })}>{children}</div>;
+}
+
+/**
+ * A list of names, one per line, in a single column; `flow` lets a long list run into columns. Use it for the people
+ * credited on something. Recipe `nameList`.
+ *
+ * @param props - whether to flow into columns, and the `li` items.
+ * @returns the list.
+ */
+export function NameList({ flow = false, children }: { flow?: boolean; children: ReactNode }) {
+  return <ul className={nameList({ flow })}>{children}</ul>;
 }

@@ -9,8 +9,15 @@ import { Term } from './text';
  * @param props - the `TermRow` children.
  * @returns the list.
  */
-export function TermList({ children }: { children: ReactNode }) {
-  return <dl className={termList()}>{children}</dl>;
+export function TermList({
+  ruled = false,
+  children,
+}: {
+  /** A hairline under every row, with the row's padding. */
+  ruled?: boolean;
+  children: ReactNode;
+}) {
+  return <dl className={termList({ ruled })}>{children}</dl>;
 }
 
 /** Props for {@link TermRow} and {@link ColumnRow}. */

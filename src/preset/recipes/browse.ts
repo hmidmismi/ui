@@ -1,6 +1,14 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { column, ruleAbove, ruleBelow, ruleBelowOf, stickBelowHeader } from '../fragments';
-import { currentMark, hoverAccent } from '../interaction';
+import {
+  belowHeader,
+  bleedRow,
+  column,
+  ruleBelow,
+  ruleBelowOf,
+  scrollRow,
+  stickBelowHeader,
+} from '../fragments';
+import { currentMark, hoverAccent, hoverRow } from '../interaction';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
@@ -74,12 +82,10 @@ export const rangeColumns = (t: TypeSystem) => {
         paddingBlock: '1',
         color: 'fg.default',
         ...textSize('body', 'md'),
-        ...ruleBelow,
-        transitionProperty: 'color',
-        transitionDuration: 'fast',
-        _hover: { color: 'accent' },
+        ...bleedRow,
+        ...hoverRow,
       },
-      name: { minWidth: '0', ...textLine('body', 'md') },
+      name: { minWidth: '0', overflowWrap: 'anywhere', ...textLine('body', 'md') },
       note: { flexShrink: 0, color: 'fg.muted', whiteSpace: 'nowrap', ...textLine('body', 'sm') },
     },
   });
@@ -96,7 +102,9 @@ export const letterBar = (t: TypeSystem) => {
     slots: ['root', 'list', 'key'],
     base: {
       root: {
+        // Sticky from the small breakpoint up; on a phone the 27 keys wrap into rows too tall to keep on screen.
         ...stickBelowHeader,
+        position: { base: 'static', sm: 'sticky' },
         zIndex: 'docked',
         paddingBlock: '3',
         marginBlockEnd: '6',
@@ -147,28 +155,6 @@ export const letterBar = (t: TypeSystem) => {
   });
 };
 
-/** The previous and next links under a letter list: a hairline above, the two links at the ends. */
-export const neighborNav = defineSlotRecipe({
-  className: 'neighbor-nav',
-  slots: ['root', 'link'],
-  base: {
-    root: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      marginBlockStart: '12',
-      paddingBlockStart: '4',
-      color: 'fg.muted',
-      ...ruleAbove,
-    },
-    link: {
-      color: 'fg.default',
-      transitionProperty: 'color',
-      transitionDuration: 'fast',
-      _hover: { color: 'accent' },
-    },
-  },
-});
-
 /** The title row of a list page: the page title at the start and the number of entries, muted, at the end. */
 export const listHeader = (t: TypeSystem) => {
   const textRole = t.textRole;
@@ -193,6 +179,111 @@ export const listHeader = (t: TypeSystem) => {
         ...responsive(textRole('display', '4xl'), textRole('display', '6xl'), 'sm'),
       },
       count: { color: 'fg.muted', ...textRole('body', 'md') },
+    },
+  });
+};
+
+/**
+ * The sticky row of at most five ranges of a letter, laid out like the site header's tabs: the label in the body face,
+ * muted until it is the current range, with its count right after it. It sticks under the header and, from the small
+ * breakpoint up, under the letter strip (`--lh`, published by the strip). The row scrolls sideways when it is wider than
+ * the screen.
+ */
+export const rangeNav = (t: TypeSystem) => {
+  const { textSize, linePadded } = t;
+  return defineSlotRecipe({
+    className: 'range-nav',
+    staticCss: ['*'],
+    slots: ['root', 'scroll', 'tab'],
+    base: {
+      // The bar is opaque and sticky; the row inside it scrolls and fades at its clipped edges.
+      root: {
+        ...stickBelowHeader,
+        top: { base: belowHeader, sm: `calc(${belowHeader} + var(--lh, 0px))` },
+        zIndex: 'docked',
+        minWidth: '0',
+        background: 'canvas',
+        ...ruleBelow,
+      },
+      scroll: {
+        ...scrollRow,
+        alignItems: 'stretch',
+        gap: { base: '6', sm: '8' },
+      },
+      tab: {
+        display: 'block',
+        flexShrink: 0,
+        color: 'fg.muted',
+        fontFamily: 'body',
+        ...responsive(textSize('body', 'md'), textSize('body', 'lg'), 'sm'),
+        ...responsive(
+          linePadded('body', 'md', { block: 'token(spacing.2)' }),
+          linePadded('body', 'lg', { block: 'token(spacing.3)' }),
+          'sm'
+        ),
+        '& > *': { marginInlineStart: '2' },
+        whiteSpace: 'nowrap',
+        position: 'relative',
+        transitionProperty: 'color',
+        transitionDuration: 'fast',
+        _hover: { color: 'fg.default' },
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          insetInline: '0',
+          insetBlockEnd: '0',
+          height: 'rail',
+          background: 'accent',
+          transform: 'scaleX(0)',
+          transformOrigin: 'center',
+          transitionProperty: 'transform',
+          transitionDuration: 'normal',
+          transitionTimingFunction: 'ease-out',
+        },
+        '&[data-current="true"]': { color: 'fg.default' },
+        '&[data-current="true"]::after': { transform: 'scaleX(1)' },
+      },
+    },
+  });
+};
+
+/**
+ * The ranges of a letter as sections: a heading with the range label and its count beside it over a foreground rule, then the
+ * names in as many columns as fit. From the medium breakpoint up every section is shown; below it only the active one,
+ * so a phone scrolls one range at a time. A section clears the sticky bars when it is scrolled to.
+ */
+export const rangeSections = (t: TypeSystem) => {
+  const { textLine } = t;
+  return defineSlotRecipe({
+    className: 'range-sections',
+    slots: ['root', 'section', 'heading', 'list'],
+    base: {
+      root: { display: 'grid', rowGap: { base: '8', md: '12' } },
+      section: {
+        display: { base: 'none', md: 'grid' },
+        '&[data-active="true"]': { display: 'grid' },
+        rowGap: '3',
+        minWidth: '0',
+        // The letter strip sticks from the small breakpoint up, so only there does its height sit above a section.
+        scrollMarginBlockStart: {
+          base: 'calc(var(--bh, token(sizes.bar)) + var(--ut, 0px) + var(--rh, 0px) + token(spacing.2))',
+          sm: 'calc(var(--bh, token(sizes.bar)) + var(--ut, 0px) + var(--lh, 0px) + var(--rh, 0px) + token(spacing.2))',
+        },
+      },
+      // The label and its count share one line, the count small beside the large label, as in the site header's tabs.
+      heading: {
+        fontFamily: 'display',
+        fontWeight: 'medium',
+        ...textLine('display', '2xl'),
+        paddingBlockEnd: '2',
+        '& > *': { marginInlineStart: '3' },
+        ...ruleBelowOf('fg.default'),
+      },
+      list: {
+        columnWidth: 'token(sizes.column)',
+        columnGap: '6',
+        '& > li': { breakInside: 'avoid' },
+      },
     },
   });
 };

@@ -51,12 +51,14 @@ export function CountedItem({ count, link, children }: CountedItemProps) {
 
 /** Props for {@link ExpandableRow}. */
 type ExpandableRowProps = {
-  /** The cover plate. */
+  /** `plated` (the default) has a cover plate at the start; `numbered` has a small number, for the tracks of a release. */
+  layout?: 'plated' | 'numbered';
+  /** The cover plate, or the number in a `numbered` row. */
   plate: ReactNode;
   /** The title. */
   title: ReactNode;
   /** The line under the title, such as `Author · Publisher · Code`. */
-  meta: ReactNode;
+  meta?: ReactNode;
   /** The text at the end, such as `1993 · 12 items`. Phones hide it. */
   aside: ReactNode;
   /** Whether the drawer is open. */
@@ -75,6 +77,7 @@ type ExpandableRowProps = {
  * @returns the row button.
  */
 export function ExpandableRow({
+  layout = 'plated',
   plate,
   title,
   meta,
@@ -83,7 +86,7 @@ export function ExpandableRow({
   controls,
   onToggle,
 }: ExpandableRowProps) {
-  const classes = expandableRow({ layout: 'plated' });
+  const classes = expandableRow({ layout });
 
   return (
     <button
@@ -256,5 +259,32 @@ export function DatedRow({ month, day, dateTime, title, subtitle, aside }: Dated
       </div>
       <span className={classes.where}>{aside}</span>
     </li>
+  );
+}
+
+/** Props for {@link RowPanel}. */
+type RowPanelProps = {
+  /** The id the row's `aria-controls` points at. */
+  id: string;
+  /** Lines the panel up under the number of a `numbered` row instead of under a plate's title. */
+  numbered?: boolean;
+  /** What opens under the row. */
+  children: ReactNode;
+};
+
+/**
+ * The panel under an open expandable row for content that is not a list of items: the hover ground, a rule above, and
+ * the content lined up under the title. Slot recipe `rowDrawer`.
+ *
+ * @param props - the id, whether the row is numbered, and the content.
+ * @returns the panel.
+ */
+export function RowPanel({ id, numbered = false, children }: RowPanelProps) {
+  const classes = rowDrawer({ indent: numbered ? 'number' : 'plate' });
+
+  return (
+    <div id={id} className={classes.root}>
+      <div className={classes.head}>{children}</div>
+    </div>
   );
 }

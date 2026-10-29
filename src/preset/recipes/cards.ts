@@ -1,5 +1,6 @@
 import { defineSlotRecipe } from '@pandacss/dev';
 import { column, ringed, ruleBelowOf, toneRing } from '../fragments';
+import { hoverRow } from '../interaction';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
@@ -37,6 +38,10 @@ export const featureCard = (t: TypeSystem) => {
         color: 'accent',
         ...ruleBelowOf('accent'),
         ...textLine('body', 'md'),
+        transitionProperty: 'color',
+        transitionDuration: 'normal',
+        transitionTimingFunction: 'in-out',
+        _hover: { color: 'fg.default' },
       },
     },
     variants: {
@@ -54,14 +59,15 @@ export const featureCard = (t: TypeSystem) => {
 };
 
 /**
- * A count tile: a tinted button with a 4px top edge in the hue, the name over a small line at the top, and the
- * count in the display face at the bottom right. It reads its hue from `hue`.
+ * A count tile: a tinted button with a hairline ring in the hue, the name at the top, and the count in the display face
+ * over its unit (`626` over `releases`) at the bottom right. On hover the whole tile takes the accent fill and the text
+ * the secondary color, eased in and out. It reads its hue from `hue`.
  */
 export const tile = (t: TypeSystem) => {
   const textLine = t.textLine;
   return defineSlotRecipe({
     className: 'tile',
-    slots: ['root', 'name', 'note', 'figure'],
+    slots: ['root', 'name', 'figure', 'count', 'unit'],
     base: {
       root: {
         ...column,
@@ -73,11 +79,10 @@ export const tile = (t: TypeSystem) => {
         color: 'fg.default',
         textAlign: 'start',
         cursor: 'pointer',
-        ...toneRing(40, 'top'),
+        ...toneRing(40),
         toneFill: '10',
-        transitionProperty: 'background-color',
-        transitionDuration: 'fast',
-        _hover: { toneFill: '20' },
+        ...hoverRow,
+        '&:hover .tile__count': { color: 'secondary' },
       },
       name: {
         display: 'block',
@@ -85,19 +90,18 @@ export const tile = (t: TypeSystem) => {
         fontWeight: 'medium',
         ...textLine('display', 'xl'),
       },
-      note: {
-        display: 'block',
-        marginBlockStart: '1',
-        color: 'fg.muted',
-        ...textLine('body', 'sm'),
-      },
-      figure: {
-        alignSelf: 'flex-end',
+      // The count over its unit, such as `626` over `releases`, at the bottom end of the tile.
+      figure: { display: 'grid', justifyItems: 'end', alignSelf: 'flex-end' },
+      count: {
         color: 'var(--tone)',
         fontFamily: 'display',
         fontVariantNumeric: 'tabular-nums',
+        transitionProperty: 'color',
+        transitionDuration: 'normal',
+        transitionTimingFunction: 'in-out',
         ...textLine('display', '4xl'),
       },
+      unit: { color: 'fg.muted', fontFamily: 'body', ...textLine('body', 'sm') },
     },
   });
 };

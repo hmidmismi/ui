@@ -32,6 +32,8 @@ type SectionProps = {
   compact?: boolean;
   /** The block that opens the page under the jump bar: no rule and only a small gap before it. Defaults to `false`. */
   lead?: boolean;
+  /** Keeps the label pinned under the jump bar while the section scrolls past. Plain sections only. Defaults to `false`. */
+  pinned?: boolean;
   /** The section content. */
   children: ReactNode;
 };
@@ -56,27 +58,38 @@ export function Section({
   action,
   compact = false,
   lead = false,
+  pinned = false,
   children,
 }: SectionProps) {
   const inGroup = useContext(GroupContext);
 
   if (inGroup) {
+    const nested = section({ tone: declared(tone), nested: true });
     return (
-      <section id={id} className={section({ tone: declared(tone), nested: true }).root}>
-        <Title level="h3">{label}</Title>
+      <section id={id} className={nested.root}>
+        <div className={nested.header}>
+          <Title level="h3">{label}</Title>
+        </div>
         {children}
       </section>
     );
   }
 
-  const classes = section({ tone: declared(tone), space, full: fullWidth, compact, lead });
+  const classes = section({
+    tone: declared(tone),
+    space,
+    full: fullWidth,
+    compact,
+    lead,
+    pinned,
+  });
 
   return (
     <section id={id} className={classes.root} aria-label={hideLabel ? label : undefined}>
       {!hideLabel && (
         <div className={classes.header}>
           <h2 className={classes.label}>
-            {label}
+            <span>{label}</span>
             {count !== undefined && <Count>{count}</Count>}
           </h2>
           {action?.(classes.action)}

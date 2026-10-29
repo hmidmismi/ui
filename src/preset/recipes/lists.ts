@@ -1,5 +1,14 @@
 import { defineRecipe, defineSlotRecipe } from '@pandacss/dev';
-import { boxed, ruleAbove, ruleBelow, ruleBelowOf, ruleBoth, ruleNone } from '../fragments';
+import {
+  bleedRow,
+  boxed,
+  ruleAbove,
+  ruleBelow,
+  ruleBelowOf,
+  ruleBoth,
+  ruleNone,
+} from '../fragments';
+import { hoverRow } from '../interaction';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
@@ -16,20 +25,18 @@ export const countedList = (t: TypeSystem) => {
         display: 'flex',
         justifyContent: 'space-between',
         gap: '4',
-        width: 'full',
+        width: 'calc(100% + 2 * token(spacing.2))',
         paddingBlock: '3',
         background: 'transparent',
         color: 'fg.default',
         cursor: 'pointer',
         textAlign: 'start',
         ...textSize('body', 'md'),
-        ...ruleBelow,
-        transitionProperty: 'color',
-        transitionDuration: 'fast',
-        _hover: { color: 'accent' },
+        ...bleedRow,
+        ...hoverRow,
       },
       name: { ...textLine('body', 'md') },
-      count: { color: 'fg.muted', fontVariantNumeric: 'tabular-nums', ...textLine('body', 'md') },
+      count: { color: 'inherit', fontVariantNumeric: 'tabular-nums', ...textLine('body', 'md') },
     },
   });
 };
@@ -144,6 +151,14 @@ export const expandableRow = (t: TypeSystem) => {
           root: { gridTemplateColumns: { base: 'minmax(0, 1fr)', sm: 'minmax(0, 1fr) auto' } },
           chevron: { display: 'none' },
         },
+        numbered: {
+          root: {
+            gridTemplateColumns: {
+              base: 'token(spacing.6) minmax(0, 1fr) token(sizes.glyph)',
+              sm: 'token(spacing.8) minmax(0, 1fr) auto token(sizes.glyph)',
+            },
+          },
+        },
       },
     },
     defaultVariants: { layout: 'plated' },
@@ -157,6 +172,13 @@ export const expandableRow = (t: TypeSystem) => {
 export const rowDrawer = defineSlotRecipe({
   className: 'row-drawer',
   slots: ['root', 'head', 'link', 'list', 'row', 'number', 'title', 'time'],
+  variants: {
+    indent: {
+      plate: {},
+      number: { root: { paddingInlineStart: { base: '4', sm: '12' } } },
+    },
+  },
+  defaultVariants: { indent: 'plate' },
   base: {
     root: {
       marginInline: '-4',

@@ -41,8 +41,38 @@ export const hideScrollbar: SystemStyleObject = {
   '&::-webkit-scrollbar': { display: 'none' },
 };
 
-/** A row that scrolls sideways instead of wrapping, with the scrollbar hidden. Children set `flexShrink: 0`. */
+/**
+ * The mask of a scrolling row's clipped edge: one inset of the row fades out. Two one-hairline strips at the top and
+ * bottom stay fully visible, so a rule drawn on the row's own edge is never faded.
+ */
+const edgeMask = (from: string, to: string): SystemStyleObject => {
+  const solid = 'linear-gradient(black, black)';
+  const fade = `linear-gradient(to right, ${from}, black token(spacing.8), black calc(100% - token(spacing.8)), ${to})`;
+  const image = `${solid}, ${solid}, ${fade}`;
+  return {
+    maskImage: image,
+    WebkitMaskImage: image,
+    maskSize: '100% token(borderWidths.hairline), 100% token(borderWidths.hairline), 100% 100%',
+    WebkitMaskSize:
+      '100% token(borderWidths.hairline), 100% token(borderWidths.hairline), 100% 100%',
+    maskPosition: 'top, bottom, center',
+    WebkitMaskPosition: 'top, bottom, center',
+    maskRepeat: 'no-repeat',
+    WebkitMaskRepeat: 'no-repeat',
+    maskComposite: 'add',
+    WebkitMaskComposite: 'source-over',
+  };
+};
+
+/**
+ * A row that scrolls sideways instead of wrapping, with the scrollbar hidden, and a fade at each edge that has more
+ * content beyond it (`data-edges`, set by `useScrollEdges`). The fade is a mask, so the row must not be what gives its
+ * surroundings their background: put an opaque background on a parent. Children set `flexShrink: 0`.
+ */
 export const scrollRow: SystemStyleObject = {
+  '&[data-edges~="start"]': edgeMask('transparent', 'black'),
+  '&[data-edges~="end"]': edgeMask('black', 'transparent'),
+  '&[data-edges~="start"][data-edges~="end"]': edgeMask('transparent', 'transparent'),
   display: 'flex',
   flexWrap: 'nowrap',
   minWidth: '0',
@@ -81,4 +111,23 @@ export const anchorOffset: SystemStyleObject = {
 export const siteInset: SystemStyleObject = {
   '--inset': { base: 'token(spacing.4)', sm: 'token(spacing.6)', md: 'token(spacing.8)' },
   paddingInline: 'max(var(--inset), calc((100% - token(sizes.site)) / 2 + var(--inset)))',
+};
+
+/**
+ * A link row whose hover fill reaches one inset past the column on each side, so the text still lines up with the
+ * column's edge. The hairline under it is drawn at the column's own width, not the row's. Use with `hoverRow`; the row
+ * must not set `ruleBelow`.
+ */
+export const bleedRow: SystemStyleObject = {
+  position: 'relative',
+  marginInline: 'calc(-1 * token(spacing.2))',
+  paddingInline: 'token(spacing.2)',
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    insetInline: 'token(spacing.2)',
+    insetBlockEnd: '0',
+    height: 'token(borderWidths.hairline)',
+    background: 'border',
+  },
 };

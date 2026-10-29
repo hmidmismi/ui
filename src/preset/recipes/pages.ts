@@ -12,7 +12,8 @@ export const pageColumn = defineRecipe({
     paddingBlockStart: { base: '4', sm: '8' },
     paddingBlockEnd: { base: '4', sm: '24' },
     ...siteInset,
-    '& :where(a:not(.button))': linkStyles,
+    // Plain content links only: a link with a class is a component (a pill, a row, a tile) and sets its own states.
+    '& :where(a:not(.button, [class]))': linkStyles,
   },
   variants: {
     flushTop: { true: { paddingBlockStart: '0' } },
@@ -24,7 +25,7 @@ export const pageHeader = defineRecipe({
   className: 'page-header',
   base: {
     ...column,
-    gap: '2',
+    gap: '4',
     alignItems: 'center',
     textAlign: 'center',
     paddingBlock: '8',

@@ -56,6 +56,7 @@ export * from './tile';
 export { Toaster, toaster } from './toast';
 export * as ToggleGroup from './toggle-group';
 export * as Tooltip from './tooltip';
+export * from './record';
 export * from './typeahead';
 export {
   Label,

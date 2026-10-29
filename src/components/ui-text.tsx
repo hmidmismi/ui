@@ -25,7 +25,6 @@ export const defaultText = {
   jumpNav: 'On this page',
   sectionNav: 'In this section',
   sectionNavLead: 'In this section:',
-  adjacentNav: 'Previous and next letter',
   queue: 'Queue ({count})',
   permalink: 'Permalink',
   permalinkError: 'Could not create a permalink',

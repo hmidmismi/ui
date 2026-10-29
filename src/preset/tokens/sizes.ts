@@ -50,6 +50,8 @@ export const sizesFor = (d: Pick<Design, 'grid' | 'controls' | 'sizes'>) => {
     narrow: { value: '60ch' },
     /** The ideal column width of a column list. */
     column: { value: '22rem' },
+    /** The ideal column width of a stacked list of names. */
+    name: { value: '12rem' },
     /** The minimum width of the side column in the overview layout. */
     aside: { value: '16rem' },
     /** The minimum width of the label column in a term list. */

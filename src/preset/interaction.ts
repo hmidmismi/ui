@@ -26,6 +26,17 @@ export const hoverAccentUnderline: SystemStyleObject = {
   _hover: { color: 'accent', textDecoration: 'underline' },
 };
 
+/**
+ * Hover for a whole row, tile or pill that is a link: the accent's subtle fill under the secondary (gold) text, eased in
+ * and out. The element lights up as one piece; nothing is underlined.
+ */
+export const hoverRow: SystemStyleObject = {
+  transitionProperty: 'background-color, color',
+  transitionDuration: 'normal',
+  transitionTimingFunction: 'in-out',
+  _hover: { background: 'accent.3', color: 'secondary' },
+};
+
 /** Hover for a row or card surface: the palette's hover background. */
 export const hoverSurface: SystemStyleObject = {
   _hover: { background: 'gray.surface.bg.hover' },

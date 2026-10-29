@@ -4,7 +4,7 @@ import { accordion } from './accordion';
 import { adminBar, fieldStatus, pageBar, signInForm, viewSwitch } from './admin';
 import { badge } from './badge';
 import { codeBlock, disclosure, quote, timeline } from './blocks';
-import { browseNav, letterBar, listHeader, neighborNav, rangeColumns } from './browse';
+import { browseNav, letterBar, listHeader, rangeColumns, rangeNav, rangeSections } from './browse';
 import { button } from './button';
 import { featureCard, tile } from './cards';
 import { checkbox } from './checkbox';
@@ -19,6 +19,9 @@ import { hero } from './hero';
 import { icon } from './icon';
 import { input } from './input';
 import {
+  nameList,
+  columnCell,
+  columnGrid,
   columnList,
   fullRow,
   inset,
@@ -54,6 +57,7 @@ import { styleguide } from './styleguide';
 import { table } from './table';
 import { playableRow, scrollX, tableCell } from './table-parts';
 import { tabs } from './tabs';
+import { recordHeader } from './record';
 import { hue, plate, scrollList } from './tile';
 import { toast } from './toast';
 import { toggleGroup } from './toggle-group';
@@ -78,6 +82,9 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       playableRow,
       itemList,
       layoutStack,
+      columnGrid,
+      columnCell,
+      nameList: nameList(t),
       layoutWrap,
       measure,
       ruled,
@@ -130,6 +137,7 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       combobox,
       styleguide: styleguide(t),
       countedList: countedList(t),
+      recordHeader: recordHeader(t),
       expandableRow: expandableRow(t),
       rowDrawer,
       datedList: datedList(t),
@@ -151,8 +159,9 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       viewSwitch,
       browseNav: browseNav(t),
       rangeColumns: rangeColumns(t),
+      rangeNav: rangeNav(t),
+      rangeSections: rangeSections(t),
       letterBar: letterBar(t),
-      neighborNav,
       listHeader: listHeader(t),
       accordion,
       checkbox,

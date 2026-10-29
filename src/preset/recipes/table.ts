@@ -25,7 +25,7 @@ export const table = (t: TypeSystem) =>
         color: 'fg.muted',
         textAlign: 'start',
         textOverflow: 'ellipsis',
-        textStyle: 'sm',
+        textStyle: 'md',
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         boxShadow: 'inset 0 -1px 0 0 var(--shadow-color)',
@@ -110,9 +110,9 @@ export const table = (t: TypeSystem) =>
       },
       size: {
         md: {
-          root: { textStyle: 'sm' },
-          header: { px: '3', ...t.linePadded('body', 'xs', { block: 'token(spacing.3)' }) },
-          cell: { px: '3', ...t.linePadded('body', 'sm', { block: 'token(spacing.3)' }) },
+          root: { textStyle: 'md' },
+          header: { px: '3', ...t.linePadded('body', 'sm', { block: 'token(spacing.3)' }) },
+          cell: { px: '3', ...t.linePadded('body', 'md', { block: 'token(spacing.3)' }) },
         },
       },
     },

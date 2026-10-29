@@ -1,6 +1,15 @@
-import type { ReactNode } from 'react';
-import { browseNav, letterBar, neighborNav, rangeColumns } from '../../styled-system/recipes';
-import { useUiText } from './ui-text';
+import { type ReactNode, useEffect, useRef } from 'react';
+import {
+  browseNav,
+  letterBar,
+  rangeColumns,
+  rangeNav,
+  rangeSections,
+} from '../../styled-system/recipes';
+import { useActiveSection } from '../hooks/use-active-section';
+import { useMeasuredHeight } from '../hooks/use-measured-height';
+import { useScrollEdges } from '../hooks/use-scroll-edges';
+import { Count } from './text';
 
 /**
  * A row of links that choose a group of a browse list. Recipe `browseNav`.
@@ -117,9 +126,11 @@ type LetterBarProps = {
  */
 export function LetterBar({ label, children }: LetterBarProps) {
   const classes = letterBar();
+  const root = useRef<HTMLElement>(null);
+  useMeasuredHeight(root, '--lh');
 
   return (
-    <nav aria-label={label} className={classes.root}>
+    <nav ref={root} aria-label={label} className={classes.root}>
       <div className={classes.list}>{children}</div>
     </nav>
   );
@@ -168,37 +179,142 @@ export function LetterKeyLink({ letter, label, current, disabled, link }: Letter
   );
 }
 
-/** Props for {@link NeighborNav}. */
-type NeighborNavProps = {
-  /** The link to the previous letter, from the link builder, or `null` at the start. */
-  previous: ReactNode;
-  /** The link to the next letter, or `null` at the end. */
-  next: ReactNode;
+/** The CSS variables whose heights sit above a range's section: the header, the letter strip and the range nav. */
+const RANGE_OFFSETS = ['--bh', '--ut', '--lh', '--rh'] as const;
+
+/** Props for {@link RangeNav}. */
+type RangeNavProps = {
+  /** The accessible name of the navigation. */
+  label: string;
+  /** The tabs, from {@link RangeTab}. */
+  children: ReactNode;
 };
 
 /**
- * The previous and next links under a letter list. Slot recipe `neighborNav`.
+ * The sticky row of ranges of a letter, as tabs. It publishes its height as `--rh` so the sections clear it. Slot recipe
+ * `rangeNav`.
  *
- * @param props - the two links.
+ * @param props - the name and the tabs.
  * @returns the navigation.
  */
-export function NeighborNav({ previous, next }: NeighborNavProps) {
-  const t = useUiText();
-  const classes = neighborNav();
-
+export function RangeNav({ label, children }: RangeNavProps) {
+  const root = useRef<HTMLElement>(null);
+  const row = useRef<HTMLDivElement>(null);
+  useMeasuredHeight(root, '--rh');
+  useScrollEdges(row);
+  const classes = rangeNav();
   return (
-    <nav aria-label={t.adjacentNav} className={classes.root}>
-      <span>{previous}</span>
-      <span>{next}</span>
+    <nav ref={root} aria-label={label} className={classes.root}>
+      <div ref={row} className={classes.scroll}>
+        {children}
+      </div>
     </nav>
   );
 }
 
+/** The props a range tab's link must carry. */
+export type RangeLinkProps = {
+  className: string;
+  /** Marks the range the reader is in. A link also gets the router's own `aria-current` for its page, so this is its own. */
+  'data-current'?: 'true' | undefined;
+};
+
+/** Props for {@link RangeTab}. */
+type RangeTabProps = {
+  /** The range label, such as `Ai–Alk`. */
+  label: string;
+  /** How many names the range holds, shown after the label like the counts in the site header. */
+  count: number;
+  /** Whether this is the range being shown. */
+  current: boolean;
+  /** Builds the tab's link from the props it must carry and its content. */
+  link: (props: RangeLinkProps, content: ReactNode) => ReactNode;
+};
+
 /**
- * The class for a link inside a {@link NeighborNav}.
+ * One tab of a {@link RangeNav}: the label and its count.
  *
- * @returns the class name.
+ * @param props - the label, the count, the state and the link builder.
+ * @returns the tab.
  */
-export function neighborLinkClass() {
-  return neighborNav().link;
+export function RangeTab({ label, count, current, link }: RangeTabProps) {
+  return link(
+    { className: rangeNav().tab, 'data-current': current ? 'true' : undefined },
+    <>
+      {label}
+      <Count>{count.toLocaleString('en-US')}</Count>
+    </>
+  );
+}
+
+/** Props for {@link RangeSections}. */
+type RangeSectionsProps = {
+  /** The ids of the sections, in order. They name the ranges. */
+  ids: string[];
+  /** The id of the range the address asks for, if any: it is scrolled to when the address changes. */
+  jump: string | undefined;
+  /** The nav and the sections, given the id of the range the reader is in for the tabs to mark. */
+  children: (current: string | null) => ReactNode;
+};
+
+/**
+ * The nav and sections of a letter's ranges. It follows the scroll to say which range the reader is in, scrolls to the
+ * range the address names, and returns to the top when the address drops back to the whole letter. Slot recipe
+ * `rangeSections`.
+ *
+ * @param props - the ids, the requested range and the render function.
+ * @returns the wrapper.
+ */
+export function RangeSections({ ids, jump, children }: RangeSectionsProps) {
+  const current = useActiveSection(ids, RANGE_OFFSETS);
+  const key = ids.join('|');
+  const last = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    const before = last.current;
+    last.current = jump;
+    // An instant jump: a letter is thousands of pixels long, and a smooth scroll through it is a blur.
+    if (jump) {
+      const target = document.getElementById(jump);
+      if (target && target.offsetParent !== null) target.scrollIntoView({ block: 'start' });
+    } else if (before) {
+      // The address dropped back from a range to the whole letter.
+      window.scrollTo({ top: 0 });
+    }
+  }, [jump, key]);
+  return <div className={rangeSections().root}>{children(current)}</div>;
+}
+
+/** Props for {@link RangeSection}. */
+type RangeSectionProps = {
+  /** The section's id, the range's slug. */
+  id: string;
+  /** The range label; left out when the section is the whole letter and needs no heading. */
+  label?: string;
+  /** How many names the range holds. */
+  count: number;
+  /** Whether this is the range a phone shows: the one the address asks for, or the first. */
+  active: boolean;
+  /** The rows, from {@link RangeItem}. */
+  children: ReactNode;
+};
+
+/**
+ * One range of a letter: the label and the count over a rule, then the names in columns.
+ *
+ * @param props - the id, the label, the count, whether it is the requested range and the rows.
+ * @returns the section.
+ */
+export function RangeSection({ id, label, count, active, children }: RangeSectionProps) {
+  const classes = rangeSections();
+  return (
+    <section id={id} className={classes.section} data-active={active} aria-label={label}>
+      {label && (
+        <h2 className={classes.heading}>
+          {label}
+          <Count>{count.toLocaleString('en-US')}</Count>
+        </h2>
+      )}
+      <ul className={classes.list}>{children}</ul>
+    </section>
+  );
 }

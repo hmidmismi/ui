@@ -50,6 +50,7 @@ export const tabs = defineSlotRecipe({
 
       _horizontal: {
         width: '100%',
+        paddingBlockStart: 'rhythm.item',
       },
       _vertical: {
         height: '100%',

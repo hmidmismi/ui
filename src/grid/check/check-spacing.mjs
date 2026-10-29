@@ -55,7 +55,10 @@ let checked = 0;
 let bad = 0;
 for (const path of paths) {
   for (const width of widths) {
-    const page = await browser.newPage({ viewport: { width, height: 900 } });
+    const page = await browser.newPage({
+      viewport: { width, height: 900 },
+      reducedMotion: 'reduce',
+    });
     await page.goto(new URL(path, base).href, { waitUntil: 'load', timeout: 90000 });
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(1500);

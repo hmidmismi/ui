@@ -164,7 +164,7 @@ type ThemeBase = {
  * - `colors`: the project's own scales, which replace the generated ones. They are baked into the stylesheet, so a
  *   project with a designed palette (hand-picked steps, light and dark) plugs it in as is.
  *
-* With both, `colors` supplies the scales and `palette` still sets its variables (for the parts that read them). The
+ * With both, `colors` supplies the scales and `palette` still sets its variables (for the parts that read them). The
  * face stacks become CSS variables in either case; the face metrics are read when the preset is built.
  */
 export type Theme = ThemeBase &

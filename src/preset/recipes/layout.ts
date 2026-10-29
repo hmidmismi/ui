@@ -6,9 +6,15 @@ import type { TypeSystem } from '../type-scale';
 const gaps = {
   '1': { gap: '1' },
   '2': { gap: '2' },
+  '3': { gap: '3' },
   '4': { gap: '4' },
   '6': { gap: '6' },
   '8': { gap: '8' },
+  '10': { gap: '10' },
+  pair: { gap: 'rhythm.pair' },
+  item: { gap: 'rhythm.item' },
+  group: { gap: 'rhythm.group' },
+  section: { gap: 'rhythm.section' },
 } as const;
 
 /** A list without markers (preflight removes them). Markers, rules between items and a row layout are opt-in. */
@@ -24,7 +30,7 @@ export const itemList = defineRecipe({
     ruled: {
       true: {
         gap: '0',
-        '& > li': { paddingBlock: '4', ...ruleBelow },
+        '& > li': { paddingBlock: 'rhythm.item', ...ruleBelow },
         '& > li:first-child': { paddingBlockStart: '0' },
         '& > li:last-child': { ...ruleNone },
       },
@@ -102,6 +108,11 @@ export const layout = defineRecipe({
         alignItems: 'start',
       },
       credits: { gridTemplateColumns: { base: '1fr', md: 'repeat(3, 1fr)' }, gap: '6' },
+      beside: {
+        gridTemplateColumns: { base: 'minmax(0, 1fr)', xl: 'minmax(0, 3fr) minmax(0, 2fr)' },
+        columnGap: '12',
+        alignItems: 'start',
+      },
       cards: {
         gridTemplateColumns: { base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
         gap: '4',
@@ -113,6 +124,68 @@ export const layout = defineRecipe({
       pair: { gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' }, gap: '4' },
     },
   },
+});
+
+/**
+ * A list of names, one per line, in a single column. With `flow` a long list runs into columns of the `name` width, so a
+ * large ensemble stays compact.
+ */
+export const nameList = (t: TypeSystem) =>
+  defineRecipe({
+    className: 'name-list',
+    staticCss: ['*'],
+    base: {
+      '& > li': {
+        breakInside: 'avoid',
+        paddingBlockEnd: 'rhythm.pair',
+        ...t.textSize('body', 'lg'),
+        ...t.lineShift('body', 'lg'),
+      },
+      '& > li:last-child': { paddingBlockEnd: '0' },
+    },
+    variants: {
+      flow: {
+        true: { columnWidth: 'token(sizes.name)', columnGap: 'rhythm.item' },
+        false: {},
+      },
+    },
+    defaultVariants: { flow: false },
+  });
+
+/** The columns of the page grid. A column grid in the Swiss manner: twelve equal columns, a gutter between them. */
+export const COLUMNS = 12;
+
+/**
+ * The page's column grid: twelve equal columns with the `item` gap between them and between rows, so every gutter and row
+ * gap is a whole number of baselines. Content is placed with {@link columnCell}; a cell is the full width below `md` and
+ * takes its span from `md` up.
+ */
+export const columnGrid = defineRecipe({
+  className: 'column-grid',
+  staticCss: ['*'],
+  base: {
+    display: 'grid',
+    gridTemplateColumns: { base: 'minmax(0, 1fr)', md: `repeat(${COLUMNS}, minmax(0, 1fr))` },
+    columnGap: 'rhythm.item',
+    rowGap: 'rhythm.group',
+    alignItems: 'start',
+  },
+});
+
+/** One cell of the column grid: how many columns it spans from `md` up (it is the full width below). */
+export const columnCell = defineRecipe({
+  className: 'column-cell',
+  staticCss: ['*'],
+  base: { minWidth: '0' },
+  variants: {
+    span: Object.fromEntries(
+      Array.from({ length: COLUMNS }, (_, i) => [
+        String(i + 1),
+        { gridColumn: { base: 'auto', md: `span ${i + 1}` } },
+      ])
+    ),
+  },
+  defaultVariants: { span: String(COLUMNS) },
 });
 
 /** A layout item that spans the full width from the `md` breakpoint up. */
@@ -135,6 +208,22 @@ export const termList = (t: TypeSystem) => {
       '& dd': { marginBlockEnd: { base: '2', sm: '0' }, ...lineShift('body', 'md') },
       '& dt': { paddingBlockStart: { base: '0', sm: '1' } },
     },
+    variants: {
+      /** A hairline under every row and the row's own padding, as in the home page's lists of names and counts. */
+      ruled: {
+        true: {
+          rowGap: '0',
+          columnGap: '0',
+          ...ruleAbove,
+          '& dt, & dd': {
+            ...ruleBelow,
+            paddingBlock: 'rhythm.pair',
+            marginBlockEnd: '0',
+          },
+          '& dd': { paddingInlineStart: 'rhythm.item' },
+        },
+      },
+    },
   });
 };
 
@@ -153,10 +242,11 @@ export const columnList = (t: TypeSystem) => {
     base: {
       ...textSize('body', 'md'),
       columnGap: '8',
-      '& > div': { breakInside: 'avoid', marginBlockEnd: '4' },
+      '& > div': { breakInside: 'avoid', marginBlockEnd: 'rhythm.item' },
+      '& dt': { marginBlockEnd: 'rhythm.pair' },
       '& dd': { ...lineShift('body', 'md') },
     },
-    variants: { width: { wide: { columnWidth: 'column' }, single: {} } },
+    variants: { width: { wide: { columnWidth: 'token(sizes.column)' }, single: {} } },
   });
 };
 

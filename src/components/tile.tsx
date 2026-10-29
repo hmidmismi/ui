@@ -19,8 +19,8 @@ type TileProps = {
   hue: Hue;
   /** The large figure at the bottom right, such as a count. */
   figure: ReactNode;
-  /** The small line under the name, such as `Series A`. */
-  note?: ReactNode;
+  /** The small word under the figure that says what it counts, such as `releases`. */
+  unit?: ReactNode;
   /** Called when the tile is pressed. */
   onClick: () => void;
   /** The name at the top left. */
@@ -28,13 +28,13 @@ type TileProps = {
 };
 
 /**
- * A pressable tile in a hue: a tinted block with a colored top edge, the name and a small line at the top left and a
- * large figure at the bottom right. Recipes `hue` and `tile`.
+ * A pressable tile in a hue: a tinted block with the name at the top left and a large figure over its unit at the bottom
+ * right. The whole tile lights up on hover. Recipes `hue` and `tile`.
  *
- * @param props - the hue, the figure, the note, the press handler and the name.
+ * @param props - the hue, the figure, the unit, the press handler and the name.
  * @returns the tile button.
  */
-export function Tile({ hue: color, figure, note, onClick, children }: TileProps) {
+export function Tile({ hue: color, figure, unit, onClick, children }: TileProps) {
   const classes = tile();
 
   return (
@@ -43,11 +43,11 @@ export function Tile({ hue: color, figure, note, onClick, children }: TileProps)
       className={`${hue({ hue: declared(color) })} ${classes.root}`}
       onClick={onClick}
     >
-      <span>
-        <span className={classes.name}>{children}</span>
-        {note && <span className={classes.note}>{note}</span>}
+      <span className={classes.name}>{children}</span>
+      <span className={classes.figure}>
+        <span className={classes.count}>{figure}</span>
+        {unit && <span className={classes.unit}>{unit}</span>}
       </span>
-      <span className={classes.figure}>{figure}</span>
     </button>
   );
 }

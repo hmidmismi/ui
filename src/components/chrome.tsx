@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useHeaderReveal } from '../hooks/use-header-reveal';
 import { useMeasuredHeight } from '../hooks/use-measured-height';
 import { breadcrumbSlots, footerSlots, navSlots } from './slots';
+import { useScrollEdges } from '../hooks/use-scroll-edges';
 import { useUiText } from './ui-text';
 
 /**
@@ -130,18 +131,22 @@ export function SiteHeader({ utility, wordmark, tabs, account, actions }: SiteHe
   const root = useRef<HTMLElement>(null);
   useMeasuredHeight(root, '--bh', scrolledAway);
   useHeaderReveal(root, utilityHeight);
+  const linkList = useRef<HTMLUListElement>(null);
+  const tabRow = useRef<HTMLElement>(null);
+  useScrollEdges(linkList);
+  useScrollEdges(tabRow);
 
   return (
     <header ref={root} className={classes.root} data-no-print>
       <nav aria-label={t.utilityNav} className={classes.links}>
-        <ul className={classes.linkList}>
+        <ul ref={linkList} className={classes.linkList}>
           {utility.map((item) => (
             <li key={item.key}>{item.link(classes.link, item.label)}</li>
           ))}
         </ul>
       </nav>
       {wordmark.link(classes.wordmark, wordmark.text)}
-      <nav aria-label={t.browseNav} className={classes.tabs}>
+      <nav ref={tabRow} aria-label={t.browseNav} className={classes.tabs}>
         {tabs.map((item) => (
           <ChromeLink key={item.key} render={item.link} className={classes.tab}>
             {item.label}
@@ -258,9 +263,11 @@ type BreadcrumbTrailProps = {
 export function BreadcrumbTrail({ home, steps }: BreadcrumbTrailProps) {
   const t = useUiText();
   const classes = breadcrumbSlots();
+  const trail = useRef<HTMLElement>(null);
+  useScrollEdges(trail);
 
   return (
-    <nav aria-label={t.breadcrumbNav} className={classes.root} data-no-print>
+    <nav ref={trail} aria-label={t.breadcrumbNav} className={classes.root} data-no-print>
       <ol className={classes.list}>
         <li className={classes.item}>{home(classes.link, t.home)}</li>
         {steps.map((step) => (
