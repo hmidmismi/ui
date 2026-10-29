@@ -43,15 +43,24 @@ export const viewSwitch = defineSlotRecipe({
   },
 });
 
-/** The sign-in form: a narrow centered column of labelled fields. */
+/**
+ * The sign-in form: a narrow column of labelled fields, centered in the page (`center`, the admin look) or set at the
+ * start of the page's column under its heading (`start`). Fields fill the column; buttons keep their own width.
+ */
 export const signInForm = defineRecipe({
   className: 'sign-in-form',
   base: {
     display: 'grid',
     gap: '4',
     maxWidth: 'form',
-    marginBlock: '16',
-    marginInline: 'auto',
     '& input': { display: 'block', width: 'full' },
   },
+  variants: {
+    align: {
+      center: { marginBlock: '16', marginInline: 'auto' },
+      start: { marginBlockStart: '8', marginInline: '0', '& button': { justifySelf: 'start' } },
+    },
+  },
+  defaultVariants: { align: 'center' },
+  staticCss: ['*'],
 });

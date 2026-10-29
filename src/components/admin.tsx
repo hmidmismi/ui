@@ -54,10 +54,11 @@ export function viewLinkClass(current: boolean) {
 /**
  * The class for the sign-in form. Recipe `signInForm`.
  *
+ * @param align - `center` (default) or `start`, under the page's heading.
  * @returns the class name.
  */
-export function signInFormClass() {
-  return signInForm();
+export function signInFormClass(align?: 'center' | 'start') {
+  return signInForm({ align });
 }
 
 /**
