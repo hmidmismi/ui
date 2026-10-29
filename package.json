@@ -17,7 +17,7 @@
     "postinstall": "pnpm codegen",
     "dev": "concurrently -k \"panda codegen --watch\" \"panda cssgen --watch\"",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.components.json",
     "clean": "rm -rf styled-system .turbo node_modules",
     "playground": "vite --config playground/vite.config.ts",
     "playground:build": "vite build --config playground/vite.config.ts",

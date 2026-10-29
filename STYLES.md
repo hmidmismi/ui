@@ -106,3 +106,7 @@ pnpm check:baseline <url> --grid 5   # at the repo root, with a page running: fa
 ```
 
 The generated `styled-system/` is gitignored. A project builds its own stylesheet from the preset it declares; see its config package.
+
+## Typecheck: two projects
+
+`pnpm typecheck` runs `tsconfig.json` (`src/preset`, `theme`, `grid`, `design`, `text`; the build-time code) and then `tsconfig.components.json` (`components`, `hooks`, `rich-text`, `index.ts`). They are separate because Panda's generated `styled-system/types/global.d.ts` redefines `defineRecipe` and `defineSlotRecipe` against the token-aware style type, and Panda gives no option to turn that off. In one program every recipe was checked against it (272s cold); split, it takes about 18s cold and 2s warm. Rule: nothing in `src/preset`, `theme`, `grid`, `design` or `text` imports `styled-system`, and nothing in `src/components` imports `preset`. `incremental` is on for every package through `@hmidmismi/tsconfig`.
