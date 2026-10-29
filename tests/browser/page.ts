@@ -16,7 +16,7 @@ export const hasStyles = existsSync(stylesPath);
 /** The generated stylesheet text. */
 export const styles = () => readFileSync(stylesPath, 'utf8');
 
-export async function launch(): Promise<Browser> {
+export function launch(): Promise<Browser> {
   return chromium.launch({ executablePath: CHROME, headless: true });
 }
 

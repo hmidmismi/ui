@@ -3,7 +3,7 @@ import type { Browser } from 'playwright-core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { design } from '../../src/design';
 import { stepLineHeight, stepSize } from '../../src/preset/type-scale';
-import { neutral, neutral, type Role, type Theme, toCss, xHeightAdjust } from '../../src/theme';
+import { neutral, type Role, type Theme, toCss, xHeightAdjust } from '../../src/theme';
 import { label, numeral, text, title } from '../../styled-system/recipes';
 import { hasChrome, hasStyles, launch, open } from './page';
 
