@@ -74,6 +74,18 @@ A slot that holds text is one of: a block that is its own box (`textLine`, `labe
 3. Register it in `recipes/index.ts`.
 4. Run `pnpm codegen`, then wrap it in a component. Type the variant prop with `VariantOf<typeof recipe, 'variant'>`. A variant whose names come from the project (hues, tones) is built from the theme in `createRecipes` and typed `string`; pass it through `declared()`.
 
+```tsx
+// src/components/layout.tsx
+import { measure } from '../../styled-system/recipes';
+import type { VariantOf } from './variants';
+
+type MeasureProps = { size?: VariantOf<typeof measure, 'size'>; children: ReactNode };
+
+export function Measure({ size = 'prose', children }: MeasureProps) {
+  return <div className={measure({ size })}>{children}</div>;
+}
+```
+
 ## Extraction
 
 Panda emits a recipe variant only when it sees a literal use or `staticCss` lists it. A missing variant in the browser almost always means a prop-driven variant without `staticCss: ['*']`.
@@ -100,7 +112,7 @@ Both read the spacing tokens, so they follow whatever grid the design declares.
 ```sh
 pnpm codegen        # Panda codegen and styles.css; after editing the library
 pnpm test           # tokens, recipes, rhythm, design inputs, CSS validity, wording, render, browser type and color
-pnpm typecheck      # slow (minutes); tests are the quick feedback
+pnpm typecheck      # two projects, about 18s cold and 2s warm (see "Typecheck: two projects")
 pnpm playground
 pnpm check:baseline <url> --grid 5   # at the repo root, with a page running: fails when text is off a grid line
 ```
