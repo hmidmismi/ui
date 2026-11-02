@@ -25,7 +25,7 @@
     "check:baseline": "node src/grid/check/check-baseline.mjs",
     "check:spacing": "node src/grid/check/check-spacing.mjs",
     "check:baseline:firefox": "node src/grid/check/check-baseline-firefox.mjs",
-    "lint": "oxlint -c ../../.oxlintrc.json -A no-console ."
+    "lint": "oxlint -c ../../.oxlintrc.json -A no-console --ignore-pattern styled-system ."
   },
   "dependencies": {
     "@ark-ui/react": "^5.38.2",
