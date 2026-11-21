@@ -39,7 +39,7 @@ import {
 } from './layout';
 import { link } from './link';
 import { countedList, datedList, expandableRow, listFilter, rowDrawer } from './lists';
-import { figure, picture, videoFrame } from './media';
+import { embedFrame, figure, picture, videoFrame } from './media';
 import { createPageRoles } from './page-roles';
 import { pageLayout, pageText } from './page-text';
 import { cardItem, centeredLines, pageColumn, pageHeader, skipLink } from './pages';
@@ -104,7 +104,8 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       disclosure: disclosure(t),
       picture,
       figure,
-      videoFrame,
+      embedFrame,
+  videoFrame,
       sectionGroup,
       hue: hue(names.hues),
       scrollList,
