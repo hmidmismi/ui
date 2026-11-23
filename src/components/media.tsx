@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { figure, picture, videoFrame } from '../../styled-system/recipes';
+import { embedFrame, figure, picture, videoFrame } from '../../styled-system/recipes';
 import { Caption } from './text';
 
 /** The picture shapes. */
@@ -92,6 +92,35 @@ export function VideoFrame({ children }: { children: ReactNode }) {
   return (
     <div className={classes.frame}>
       <div className={classes.root}>{children}</div>
+    </div>
+  );
+}
+
+/** Props for {@link EmbedFrame}. */
+type EmbedFrameProps = {
+  /** The address of the form to show. */
+  src: string;
+  /** The accessible name of the frame. */
+  title: string;
+  /** The `sandbox` permissions the framed page needs. */
+  sandbox?: string;
+};
+
+/**
+ * A tall frame holding an embedded form from another site, such as a registration form. It loads lazily, takes the
+ * frame's width, and scrolls inside when the form is longer. Recipe `embedFrame`.
+ *
+ * @param props - the address, the accessible name and the sandbox permissions.
+ * @returns the frame.
+ */
+export function EmbedFrame({ src, title, sandbox }: EmbedFrameProps) {
+  const classes = embedFrame();
+
+  return (
+    <div className={classes.frame}>
+      <div className={classes.root}>
+        <iframe src={src} title={title} sandbox={sandbox} loading="lazy" />
+      </div>
     </div>
   );
 }

@@ -58,6 +58,24 @@ export const figure = defineRecipe({
   base: { ...column, gap: '2' },
 });
 
+/** A tall frame for an embedded form: an `iframe` that fills it, a whole number of baselines high, scrolling inside when the form is longer. */
+export const embedFrame = defineSlotRecipe({
+  className: 'embed-frame',
+  slots: ['frame', 'root'],
+  base: {
+    frame: { display: 'block', width: 'full', containerType: 'inline-size' },
+    root: {
+      position: 'relative',
+      width: 'full',
+      height: rowsHigh('5 / 4'),
+      borderRadius: 'l2',
+      overflow: 'hidden',
+      background: 'gray.3',
+      '& iframe': { position: 'absolute', inset: '0', width: 'full', height: 'full', border: '0' },
+    },
+  },
+});
+
 /** A 16:9 frame that fills with an `iframe` or a play `button`, a whole number of baselines tall. */
 export const videoFrame = defineSlotRecipe({
   className: 'video-frame',
