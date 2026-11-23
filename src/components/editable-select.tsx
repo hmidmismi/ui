@@ -1,11 +1,14 @@
 // packages/ui/src/components/fields/EditableSelect.tsx
 'use client';
 import { createListCollection } from '@ark-ui/react/select';
+import { visuallyHidden } from '../../styled-system/patterns';
 import * as Select from './select';
 import { useUiText } from './ui-text';
 
 export function EditableSelect<T extends string>({
   label,
+  hideLabel,
+  size,
   value,
   options,
   onChange,
@@ -13,6 +16,10 @@ export function EditableSelect<T extends string>({
   disabled,
 }: {
   label?: string;
+  /** Keeps the label for screen readers and leaves it off the page, for a select that sits in a bar of controls. */
+  hideLabel?: boolean;
+  /** The control's height; `sm` fits inside a header bar. */
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   value: T | '';
   options: { id: T; name: string }[];
   onChange: (value: T | undefined) => void;
@@ -32,9 +39,10 @@ export function EditableSelect<T extends string>({
       collection={collection}
       value={value ? [value] : []}
       disabled={disabled}
+      size={size}
       onValueChange={(details) => onChange(details.value[0] as T | undefined)}
     >
-      {label && <Select.Label>{label}</Select.Label>}
+      {label && <Select.Label className={hideLabel ? visuallyHidden() : undefined}>{label}</Select.Label>}
       <Select.Control>
         <Select.Trigger>
           <Select.ValueText placeholder={t.nonePlaceholder} />
