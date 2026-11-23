@@ -104,7 +104,6 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       disclosure: disclosure(t),
       picture,
       figure,
-      embedFrame,
   videoFrame,
       sectionGroup,
       hue: hue(names.hues),
@@ -135,6 +134,7 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       title,
     },
     slotRecipes: {
+      embedFrame,
       combobox,
       styleguide: styleguide(t),
       countedList: countedList(t),
