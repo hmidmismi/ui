@@ -2,8 +2,9 @@ import { Building2, Moon, Sun } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useHeaderReveal } from '../hooks/use-header-reveal';
 import { useMeasuredHeight } from '../hooks/use-measured-height';
-import { breadcrumbSlots, footerSlots, navSlots } from './slots';
 import { useScrollEdges } from '../hooks/use-scroll-edges';
+import { IconButton } from './icon-button';
+import { breadcrumbSlots, footerSlots, navSlots } from './slots';
 import { useUiText } from './ui-text';
 
 /**
@@ -38,9 +39,10 @@ const SWITCH_MS = 260;
  * dark mode, the moon in light mode. The choice is saved in localStorage and applied by adding or removing the `dark`
  * class on `<html>`; {@link THEME_INIT_SCRIPT} in the head applies it before first paint. Slot recipe `siteNav`.
  *
+ * @param props - `inUtility` renders the button as the design system's icon button, for the header's utility row; without it the button is the bar's own control.
  * @returns the theme button.
  */
-export function ThemeToggle() {
+export function ThemeToggle({ inUtility = false }: { inUtility?: boolean }) {
   const t = useUiText();
   const [dark, setDark] = useState(false);
 
@@ -62,15 +64,20 @@ export function ThemeToggle() {
     setDark(next);
   };
 
+  const icon = dark ? <Sun size={18} aria-hidden /> : <Moon size={18} aria-hidden />;
+  const label = dark ? t.switchToLight : t.switchToDark;
+
+  // In the utility row the toggle is the design system's own icon button; in the bar it keeps the bar's bordered control.
+  if (inUtility) {
+    return (
+      <IconButton variant="plain" size="xs" onClick={toggle} aria-pressed={dark} aria-label={label}>
+        {icon}
+      </IconButton>
+    );
+  }
   return (
-    <button
-      type="button"
-      className={navSlots().themeButton}
-      onClick={toggle}
-      aria-pressed={dark}
-      aria-label={dark ? t.switchToLight : t.switchToDark}
-    >
-      {dark ? <Sun size={18} aria-hidden /> : <Moon size={18} aria-hidden />}
+    <button type="button" className={navSlots().themeButton} onClick={toggle} aria-pressed={dark} aria-label={label}>
+      {icon}
     </button>
   );
 }
@@ -103,8 +110,8 @@ export type SiteHeaderAccount = {
 
 /** Props for {@link SiteHeader}. */
 type SiteHeaderProps = {
-  /** The utility links above the bar. */
-  utility: NavLink[];
+  /** The row above the bar: anything the app puts there, such as a status or controls. The row is empty without it. */
+  utility?: ReactNode;
   /** The wordmark's text and how it links home. */
   wordmark: { text: ReactNode; link: LinkRender };
   /** The primary tabs. */
@@ -116,13 +123,13 @@ type SiteHeaderProps = {
 };
 
 /**
- * The site header, one grid: the utility links, the wordmark, the primary tabs (each may carry a badge), the signed-in
+ * The site header, one grid: the utility row, the wordmark, the primary tabs (each may carry a badge), the signed-in
  * block and the controls. Each is a single element that the recipe places by grid area: the signed-in block sits in the
  * bar from 640px and at the start of the utility row below, and the tabs drop to their own row on phones. The whole
  * header is sticky and hides its utility row as it scrolls, so the bar stays; its bar height is published as `--bh` for
  * the sticky bars under it. Slot recipe `siteNav`.
  *
- * @param props - the links, wordmark, account and controls.
+ * @param props - the utility row, wordmark, tabs, account and controls.
  * @returns the header.
  */
 export function SiteHeader({ utility, wordmark, tabs, account, actions }: SiteHeaderProps) {
@@ -131,20 +138,12 @@ export function SiteHeader({ utility, wordmark, tabs, account, actions }: SiteHe
   const root = useRef<HTMLElement>(null);
   useMeasuredHeight(root, '--bh', scrolledAway);
   useHeaderReveal(root, utilityHeight);
-  const linkList = useRef<HTMLUListElement>(null);
   const tabRow = useRef<HTMLElement>(null);
-  useScrollEdges(linkList);
   useScrollEdges(tabRow);
 
   return (
     <header ref={root} className={classes.root} data-no-print>
-      <nav aria-label={t.utilityNav} className={classes.links}>
-        <ul ref={linkList} className={classes.linkList}>
-          {utility.map((item) => (
-            <li key={item.key}>{item.link(classes.link, item.label)}</li>
-          ))}
-        </ul>
-      </nav>
+      {utility && <div className={classes.utility}>{utility}</div>}
       {wordmark.link(classes.wordmark, wordmark.text)}
       <nav ref={tabRow} aria-label={t.browseNav} className={classes.tabs}>
         {tabs.map((item) => (
@@ -187,52 +186,63 @@ function ChromeLink({
 
 /** Props for {@link SiteFooter}. */
 type SiteFooterProps = {
-  /** The links in the footer's nav. */
-  links: NavLink[];
+  /** The links in the footer's nav; the nav is left out without any. */
+  links?: NavLink[];
   /** The copyright line. */
-  copyright: ReactNode;
-  /** The status link, shown with a green dot. */
-  status: { label: ReactNode; link: LinkRender };
-  /** The line under the status link. */
-  note: ReactNode;
+  copyright?: ReactNode;
+  /** A status link, shown with a green dot. */
+  status?: { label: ReactNode; link: LinkRender };
+  /** Lines at the end of the footer, such as legal details and credits. */
+  notes?: ReactNode[];
 };
 
 /**
- * The site footer: the links over the copyright line at the start, and the status link with its green dot over a note at
- * the end (below the links on phones). Slot recipe `siteFooter`.
+ * The site footer: the links over the copyright line at the start, and at the end the status link with its green dot and
+ * the notes (below the links on phones). Every part is optional and a part with nothing to show is left out. Slot recipe
+ * `siteFooter`.
  *
- * @param props - the links, copyright, status and note.
+ * @param props - the links, copyright, status and notes.
  * @returns the footer.
  */
-export function SiteFooter({ links, copyright, status, note }: SiteFooterProps) {
+export function SiteFooter({ links = [], copyright, status, notes = [] }: SiteFooterProps) {
   const t = useUiText();
   const classes = footerSlots();
 
   return (
     <footer className={classes.root} data-no-print>
       <div className={classes.start}>
-        <nav aria-label={t.footerNav} className={classes.links}>
-          {links.map((item) => (
-            <ChromeLink key={item.key} render={item.link} className={classes.link}>
-              {item.label}
-            </ChromeLink>
-          ))}
-        </nav>
-        <p className={classes.note}>{copyright}</p>
-      </div>
-      <div className={classes.end}>
-        {status.link(
-          classes.status,
-          <>
-            <span className={classes.dot} aria-hidden />
-            <span className={classes.statusText}>{status.label}</span>
-          </>
+        {links.length > 0 && (
+          <nav aria-label={t.footerNav} className={classes.links}>
+            {links.map((item) => (
+              <ChromeLink key={item.key} render={item.link} className={classes.link}>
+                {item.label}
+              </ChromeLink>
+            ))}
+          </nav>
         )}
-        <p className={classes.note}>{note}</p>
+        {copyright && <p className={classes.note}>{copyright}</p>}
       </div>
+      {(status || notes.length > 0) && (
+        <div className={classes.end}>
+          {status?.link(
+            classes.status,
+            <>
+              <span className={classes.dot} aria-hidden />
+              <span className={classes.statusText}>{status.label}</span>
+            </>
+          )}
+          {notes.map((note, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: the notes are a fixed list of lines that never reorder
+            <p key={index} className={classes.note}>
+              {note}
+            </p>
+          ))}
+        </div>
+      )}
     </footer>
   );
 }
+
 
 /** One step of a {@link BreadcrumbTrail}. */
 export type BreadcrumbStep = {

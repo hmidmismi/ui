@@ -136,9 +136,7 @@ export const siteNav = (t: TypeSystem) => {
     staticCss: ['*'],
     slots: [
       'root',
-      'links',
-      'linkList',
-      'link',
+      'utility',
       'wordmark',
       'tabs',
       'tab',
@@ -168,33 +166,18 @@ export const siteNav = (t: TypeSystem) => {
         ...siteInset,
         ...ruleBelow,
       },
-      links: {
+      // The utility row holds whatever the app puts in it (a status, a language select, a button), in a line.
+      utility: {
         gridArea: 'links',
         alignSelf: 'stretch',
         minWidth: '0',
-        justifySelf: { base: 'stretch', sm: 'end' },
-        marginInline: 'calc(-1 * token(spacing.3))',
-      },
-      linkList: { ...scrollRow, height: '100%', alignItems: 'stretch' },
-      link: {
         display: 'flex',
         alignItems: 'center',
-        flexShrink: 0,
-        height: 'utility',
-        paddingInline: '3',
-        // The marker under the current link is a shadow, so it takes no height and the text stays centered.
-        boxShadow: 'inset 0 calc(-1 * token(borderWidths.rail)) 0 0 transparent',
+        justifyContent: 'flex-end',
+        gap: '4',
         color: 'fg.muted',
         ...textSize('body', 'md'),
         whiteSpace: 'nowrap',
-        transitionProperty: 'color, background-color, box-shadow',
-        transitionDuration: 'fast',
-        _hover: { color: 'fg.default', background: 'gray.plain.bg.hover' },
-        _active: { background: 'gray.plain.bg.active' },
-        '&[aria-current="page"]': {
-          color: 'fg.default',
-          boxShadow: 'inset 0 calc(-1 * token(borderWidths.rail)) 0 0 token(colors.accent)',
-        },
       },
       wordmark: {
         gridArea: 'mark',
@@ -357,8 +340,7 @@ export const siteFooter = (t: TypeSystem) => {
   const { textSize, textLine } = t;
   return defineSlotRecipe({
     className: 'site-footer',
-    slots: ['root', 'start', 'end', 'links', 'link', 'note', 'status', 'statusText', 'dot'],
-    base: {
+    slots: ['root', 'start', 'end', 'links', 'link', 'note', 'status', 'statusText', 'dot'],    base: {
       root: {
         flex: 'none',
         display: 'grid',

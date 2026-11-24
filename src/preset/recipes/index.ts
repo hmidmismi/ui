@@ -2,6 +2,7 @@ import type { TypeSystem } from '../type-scale';
 import { absoluteCenter } from './absolute-center';
 import { accordion } from './accordion';
 import { adminBar, fieldStatus, pageBar, signInForm, viewSwitch } from './admin';
+import { alert } from './alert';
 import { badge } from './badge';
 import { codeBlock, disclosure, quote, timeline } from './blocks';
 import { browseNav, letterBar, listHeader, rangeColumns, rangeNav, rangeSections } from './browse';
@@ -152,6 +153,7 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       breadcrumbs: breadcrumbs(t),
       siteNav: siteNav(t),
       siteFooter: siteFooter(t),
+      alert,
       player: player(t),
       searchField: searchField(t),
       filterRow: filterRow(t),

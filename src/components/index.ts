@@ -1,6 +1,7 @@
 export { AbsoluteCenter, type AbsoluteCenterProps } from './absolute-center';
 export * as Accordion from './accordion';
 export * from './admin';
+export * as Alert from './alert';
 export { Badge, type BadgeProps } from './badge';
 export * from './blocks';
 export * from './browse';
