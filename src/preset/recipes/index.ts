@@ -93,9 +93,7 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       codeBlock: codeBlock(t),
       timeline: timeline(t),
       disclosure: disclosure(t),
-      picture,
       figure,
-  videoFrame,
       sectionGroup,
       hue: hue(names.hues),
       surface: surface(names.tones),
@@ -124,6 +122,8 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
     },
     slotRecipes: {
       embedFrame,
+      picture,
+      videoFrame,
       combobox,
       styleguide: styleguide(t),
       recordHeader: recordHeader(t),

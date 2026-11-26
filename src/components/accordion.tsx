@@ -3,10 +3,10 @@ import { Accordion } from '@ark-ui/react/accordion';
 import { ark } from '@ark-ui/react/factory';
 import { ChevronDownIcon } from 'lucide-react';
 import type { ComponentProps } from 'react';
-import { createStyleContext } from '../../styled-system/jsx';
+import { createSlotRecipeContext } from '../../styled-system/jsx';
 import { accordion } from '../../styled-system/recipes';
 
-const { withProvider, withContext } = createStyleContext(accordion);
+const { withProvider, withContext } = createSlotRecipeContext(accordion);
 
 export type RootProps = ComponentProps<typeof Root>;
 export const Root = withProvider(Accordion.Root, 'root', {

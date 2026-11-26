@@ -26,7 +26,7 @@ Styling names say how something looks or lays out, never what content it holds. 
 - **No content names.** A component or recipe is named for what it does, never for what it holds (see Principle). Domain meaning enters through props, variants and the call-site mapping.
 - **Never reset browser defaults in a recipe.** Preflight already zeroes margin, padding, list markers and heading size.
 - **State comes from one place.** Hover, active and current states are in `src/preset/interaction.ts` and `conditions.ts`. Hover is gated on `(hover: hover)`. Focus is the global `:focus-visible` ring in `global-css.ts`.
-- **Components that call `createStyleContext` start with `'use client'`,** or server pages cannot import them. A typecheck will not catch it; `next build` will. Components import the generated system by relative path (`../../styled-system/...`), so any bundler resolves it.
+- **Components that call `createSlotRecipeContext` start with `'use client'`,** or server pages cannot import them. A typecheck will not catch it; `next build` will. Components import the generated system by relative path (`../../styled-system/...`), so any bundler resolves it.
 - **Repeated logic goes in a helper file;** repeated styling goes in a variant, recipe or primitive.
 
 ## What a project declares

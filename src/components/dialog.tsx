@@ -2,10 +2,10 @@
 import { Dialog, useDialogContext } from '@ark-ui/react/dialog';
 import { ark } from '@ark-ui/react/factory';
 import { type ComponentProps, forwardRef } from 'react';
-import { createStyleContext, styled } from '../../styled-system/jsx';
+import { createSlotRecipeContext, styled } from '../../styled-system/jsx';
 import { dialog } from '../../styled-system/recipes';
 
-const { withRootProvider, withContext } = createStyleContext(dialog);
+const { withRootProvider, withContext } = createSlotRecipeContext(dialog);
 
 export type RootProps = ComponentProps<typeof Root>;
 export const Root = withRootProvider(Dialog.Root, {

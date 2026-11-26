@@ -55,7 +55,7 @@ describe('design', () => {
 
   it('builds a preset from a design', () => {
     const preset = createPreset(other);
-    const tokens = (preset.theme?.tokens ?? {}) as Record<
+    const tokens = (preset.theme?.tokens ?? {}) as unknown as Record<
       string,
       Record<string, { value: string }>
     >;
@@ -142,7 +142,7 @@ describe('controls', () => {
 
   it("take the design's own sizes, in baselines", () => {
     const design = { ...other, controls: { md: { height: 10, padX: 3.5, icon: 5 } } };
-    const tokens = createPreset(design, neutral).theme?.tokens as {
+    const tokens = createPreset(design, neutral).theme?.tokens as unknown as {
       sizes: { control: { md: { value: string } } };
     };
     // a 4px baseline: ten baselines is 40px, 2.5rem
