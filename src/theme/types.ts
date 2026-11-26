@@ -12,7 +12,8 @@ export type FaceMetrics = {
 export type FontFile = {
   /** The file name, such as `univers-regular.woff2`. The app decides where it is served from (see `fontFaces`). */
   file: string;
-  weight: number;
+  /** A weight, or for a variable font the range it covers, such as `'100 900'`. */
+  weight: number | `${number} ${number}`;
   style?: 'normal' | 'italic';
 };
 

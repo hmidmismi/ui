@@ -16,44 +16,6 @@ export type TypeStep =
   | '6xl'
   | '7xl';
 
-/** The text roles a page sets, other than headings. */
-export type RoleName =
-  | 'eyebrow'
-  | 'name'
-  | 'term'
-  | 'entry'
-  | 'prose'
-  | 'value'
-  | 'caption'
-  | 'count'
-  | 'tagline'
-  | 'fieldLabel'
-  | 'notice';
-
-/** How one text role looks. Opinionated, so it is the project's to say. */
-export type RoleStyle = {
-  /** The face: `display`, `body` or `mono`. Defaults to `body`. */
-  face?: 'display' | 'body' | 'mono';
-  /** A font family token to use instead of the face's, such as a serif for running text. */
-  family?: string;
-  /** The size step on phones, and from the `md` breakpoint when `wide` is not given. */
-  step: TypeStep;
-  /** The size step from the `md` breakpoint. */
-  wide?: TypeStep;
-  /** The weight. */
-  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
-  /** A tracking token (`letterSpacings`). */
-  tracking?: string;
-  /** Sets the text in capitals. */
-  uppercase?: boolean;
-  /** A color token. */
-  color?: string;
-  /** Always trims the space above the capitals and below the baseline (for block text that has no trim variant). */
-  trim?: boolean;
-  /** More style properties this role sets (padding, a measure, tabular figures). */
-  extra?: Record<string, unknown>;
-};
-
 /** A shadow: one CSS value for both modes, or one for each. Token references such as `{colors.shadow}` work. */
 export type ShadowValue = string | { light: string; dark: string };
 
@@ -100,8 +62,6 @@ export type Design = {
     };
     /** How each heading level looks. Left out, the system's own (`defaultHeadings`). */
     headings?: Partial<Record<HeadingLevel, HeadingStyle>>;
-    /** How each text role looks. Left out, the system's own (`defaultRoles`). */
-    roles?: Partial<Record<RoleName, RoleStyle>>;
   };
   /**
    * Values for the named sizes the components read (`site`, `prose`, `plate`, `hero`, ...), as CSS lengths. Left out, the

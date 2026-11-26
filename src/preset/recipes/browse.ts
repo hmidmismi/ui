@@ -155,34 +155,6 @@ export const letterBar = (t: TypeSystem) => {
   });
 };
 
-/** The title row of a list page: the page title at the start and the number of entries, muted, at the end. */
-export const listHeader = (t: TypeSystem) => {
-  const textRole = t.textRole;
-  return defineSlotRecipe({
-    className: 'list-header',
-    slots: ['root', 'title', 'count'],
-    base: {
-      root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-        columnGap: '6',
-        rowGap: '2',
-        marginBlockEnd: '6',
-      },
-      title: {
-        color: 'fg.default',
-        fontFamily: 'display',
-        fontWeight: 'medium',
-        letterSpacing: 'display',
-        ...responsive(textRole('display', '4xl'), textRole('display', '6xl'), 'sm'),
-      },
-      count: { color: 'fg.muted', ...textRole('body', 'md') },
-    },
-  });
-};
-
 /**
  * The sticky row of at most five ranges of a letter, laid out like the site header's tabs: the label in the body face,
  * muted until it is the current range, with its count right after it. It sticks under the header and, from the small

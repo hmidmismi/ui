@@ -40,6 +40,8 @@ export const picture = defineSlotRecipe({
         image: { height: 'avatar.lg', objectFit: 'cover', borderRadius: 'full', boxShadow: 'lg' },
       },
       photo: { image: { height: rowsHigh('2 / 3'), objectFit: 'cover' } },
+      // Fills the box it is in, whatever its height.
+      fill: { frame: { height: 'full' }, image: { height: 'full', objectFit: 'cover' } },
       map: { image: { height: rowsHigh('1 / 3'), objectFit: 'cover', borderRadius: 'l2' } },
       score: {
         image: {

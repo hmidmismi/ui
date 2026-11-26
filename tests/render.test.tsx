@@ -2,28 +2,24 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
   Button,
-  Caption,
-  ColumnList,
-  Eyebrow,
-  FieldLabel,
   Hero,
   Inset,
   ItemList,
+  Label,
   Layout,
   Measure,
-  Plate,
   Section,
   SectionGroup,
   SkipLink,
   SplitGrid,
   Stack,
   StatusBadge,
-  TermList,
-  TermRow,
-  Tile,
+  Pair,
+  Row,
+  Text,
+  Card,
   UiTextProvider,
   CloseButton,
-  TileGrid,
   Title,
   Wrap,
 } from '../src/components';
@@ -81,19 +77,23 @@ describe('components render with the classes of their recipes', () => {
     expect(html(<Inset>x</Inset>)).toContain('inset');
     expect(html(<Layout kind="overview">x</Layout>)).toContain('layout--kind_overview');
     expect(html(<SplitGrid gap="lg">x</SplitGrid>)).toContain('split-grid--gap_lg');
-    expect(
-      html(
-        <TileGrid>
-          <li>x</li>
-        </TileGrid>
-      )
-    ).toContain('label-grid');
+    expect(html(<Stack as="header" align="center" ruled after="6">x</Stack>)).toContain('layout-stack--align_center');
+    expect(html(<Stack ruled>x</Stack>)).toContain('layout-stack--ruled_true');
+    expect(html(<Wrap justify="between" align="end" after="6">x</Wrap>)).toContain('layout-wrap--justify_between');
   });
 
-  it('text roles render with their recipes', () => {
-    expect(html(<Eyebrow>Label</Eyebrow>)).toContain('eyebrow');
-    expect(html(<Caption>Note</Caption>)).toContain('caption');
-    expect(html(<FieldLabel>Name</FieldLabel>)).toContain('field-label--spaced_true');
+  it('text takes its look from variants, not from a role name', () => {
+    const out = html(
+      <Text size="lg" face="display" tone="accent" weight="medium">
+        x
+      </Text>
+    );
+    expect(out).toContain('text--scale_display-lg');
+    expect(out).toContain('text--tone_accent');
+    expect(out).toContain('text--weight_medium');
+    expect(html(<Text variant="caption">x</Text>)).toContain('text--tone_muted');
+    expect(html(<Text as="span" size="sm" figures>1</Text>)).toContain('text--scale_body-sm-inline');
+    expect(html(<Label tone="accent">x</Label>)).toContain('label--tone_accent');
   });
 
   it('a section names itself and carries its tone', () => {
@@ -114,33 +114,54 @@ describe('components render with the classes of their recipes', () => {
     ).toContain('Group');
   });
 
-  it('a tile and a plate take their hue', () => {
-    const tile = html(
-      <Tile hue="3" figure="12" onClick={() => {}}>
-        Label
-      </Tile>
-    );
-    expect(tile).toContain('hue--hue_3');
-    expect(tile).toContain('tile');
-    expect(html(<Plate hue="5" name="NW" number="12" />)).toContain('hue--hue_5');
+  it('a card can be a link',()=>{
+    expect(html(<Card hue="2" interactive link={(className, content) => <a className={className} href="/x">{content}</a>}>Name</Card>)).toContain('<a class="hue');
   });
 
-  it('term lists keep their term and value', () => {
+  it('a card takes its hue, tint, layout and control state from props', () => {
+    const control = html(
+      <Card as="button" layout="corners" hue="3" tint="soft" interactive end="12" onClick={() => {}}>
+        Label
+      </Card>
+    );
+    expect(control).toContain('hue--hue_3');
+    expect(control).toContain('card__root--layout_corners');
+    expect(control).toContain('card__root--tint_soft');
+    expect(control).toContain('card__root--interactive_true');
+    expect(control).toContain('type="button"');
+    expect(control).toContain('card__end');
+    const plate = html(<Card layout="plate" hue="5" end="12">NW</Card>);
+    expect(plate).toContain('hue--hue_5');
+    expect(plate).toContain('card__root--layout_plate');
+    expect(html(<Card>x</Card>)).toContain('card__root--layout_stack');
+  });
+
+  it('a list of pairs keeps each label and value', () => {
     const out = html(
-      <TermList>
-        <TermRow term="Label">NWCRI</TermRow>
-      </TermList>
+      <ItemList as="dl" layout="pairs" ruled>
+        <Pair label="Label">NWCRI</Pair>
+      </ItemList>
     );
     expect(out).toContain('Label');
     expect(out).toContain('NWCRI');
-    expect(out).toContain('term-list');
-    expect(
-      html(
-        <ColumnList width="single">
-          <li>x</li>
-        </ColumnList>
-      )
-    ).toContain('column-list--width_single');
+    expect(out).toContain('item-list--layout_pairs');
+    expect(out).toContain('item-list--ruled_true');
+    expect(html(<ItemList layout="flow" size="lg"><li>x</li></ItemList>)).toContain('item-list--layout_flow');
+  });
+
+  it('a row is a link, a button or neither, and keeps its parts', () => {
+    const link = html(
+      <Row layout="dated" lead="Oct" title="Show" meta="Hall" aside="Here" link={(className, content) => <a className={className} href="/x">{content}</a>} />
+    );
+    expect(link).toContain('<a class="row__root');
+    expect(link).toContain('row__root--layout_dated');
+    expect(link).toContain('row__root--interactive_true');
+    expect(link).toContain('Show');
+    expect(link).toContain('Here');
+    const button = html(<Row layout="plated" title="Tracks" open controls="drawer-1" onToggle={() => {}} />);
+    expect(button).toContain('aria-expanded="true"');
+    expect(button).toContain('aria-controls="drawer-1"');
+    expect(html(<Row title="Plain" />)).toContain('<div class="row__root');
   });
 
   it('a hero renders the four text slots and its link', () => {

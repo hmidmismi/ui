@@ -15,12 +15,9 @@ import type { SystemStyleObject } from '@pandacss/dev';
 import {
   type Design,
   defaultHeadings,
-  defaultRoles,
   design,
   type HeadingLevel,
   type HeadingStyle,
-  type RoleName,
-  type RoleStyle,
 } from '../design';
 import { neutral, type Role, type Theme, xHeightAdjust } from '../theme';
 import { createScale, round } from '../grid';
@@ -202,34 +199,21 @@ export function createTypeSystem(
   const textRole = (role: Role, step: StepName): Styles =>
     ({ ...(textSize(role, step) as Loose), ...(textTrim(role, step) as Loose) }) as Styles;
 
-  /** The design's text roles: the system's own, with the design's on top. */
-  const roles = { ...defaultRoles, ...d.type.roles } as Record<RoleName, RoleStyle>;
+  /** The uppercase, tracked label: extra-small, medium weight, in capitals. It has no color; a tone gives it one. */
+  const labelCaps: Styles = {
+    fontFamily: 'body',
+    fontWeight: 'medium',
+    letterSpacing: 'caps',
+    textTransform: 'uppercase',
+    ...textSize('body', 'xs'),
+  };
 
-  /** A role's face, weight, tracking, case and size as styles; its color only when asked. */
-  const roleStyle = (role: RoleStyle, color: boolean): Styles => ({
-    fontFamily: role.family ?? role.face ?? 'body',
-    ...(role.weight ? { fontWeight: role.weight } : {}),
-    ...(role.tracking ? { letterSpacing: role.tracking } : {}),
-    ...(role.uppercase ? { textTransform: 'uppercase' } : {}),
-    ...(color && role.color ? { color: role.color } : {}),
-    ...textSize(role.face ?? 'body', role.step),
-  });
+  /** The same label in the muted color, for a field, a filter group or a section. */
+  const microLabel: Styles = { ...(labelCaps as Loose), color: 'fg.muted' } as Styles;
 
-  /** The uppercase, tracked label of the nav, the jump bar and footer headings: the `eyebrow` role, without its color. */
-  const labelCaps: Styles = roleStyle(roles.eyebrow, false);
-
-  /** The small label that opens a field, a filter group or a section: the `fieldLabel` role. */
-  const microLabel: Styles = roleStyle(roles.fieldLabel, true);
-
-  /** The `eyebrow` and `fieldLabel` roles with their first baseline on the grid, for blocks whose text is their own. */
-  const labelCapsLine: Styles = {
-    ...(labelCaps as Loose),
-    ...(lineShift(roles.eyebrow.face ?? 'body', roles.eyebrow.step) as Loose),
-  } as Styles;
-  const microLabelLine: Styles = {
-    ...(microLabel as Loose),
-    ...(lineShift(roles.fieldLabel.face ?? 'body', roles.fieldLabel.step) as Loose),
-  } as Styles;
+  /** Both labels with their first baseline on the grid, for blocks whose text is their own. */
+  const labelCapsLine: Styles = { ...(labelCaps as Loose), ...(lineShift('body', 'xs') as Loose) } as Styles;
+  const microLabelLine: Styles = { ...(microLabel as Loose), ...(lineShift('body', 'xs') as Loose) } as Styles;
 
   /**
    * Long-form body text: the body face at the `lg` step with a roomier line than the step has elsewhere. Phones set it
@@ -269,7 +253,6 @@ export function createTypeSystem(
     longForm,
     longFormLine: { ...(longForm as Loose), ...(longFormShift as Loose) } as Styles,
     headings: { ...defaultHeadings, ...d.type.headings } as Record<HeadingLevel, HeadingStyle>,
-    roles,
   };
 }
 

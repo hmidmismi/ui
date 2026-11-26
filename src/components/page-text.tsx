@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react';
-import { hue, pageLayout, pageText } from '../../styled-system/recipes';
-import type { Hue } from './tile';
-import { declared } from './variants';
+import { pageLayout, pageText } from '../../styled-system/recipes';
 import { useUiText } from './ui-text';
 
 /**
@@ -122,50 +120,6 @@ export function PageTd({ num = false, children }: { num?: boolean; children: Rea
 /** A block of preformatted text. */
 export function PageCode({ children }: { children: string }) {
   return <pre className={pageText().code}>{children}</pre>;
-}
-
-/** The grid of record label tiles. */
-export function CountTileGrid({ children }: { children: ReactNode }) {
-  return <ul className={pageText().tileGrid}>{children}</ul>;
-}
-
-/** Props for {@link CountTile}. */
-type CountTileProps = {
-  /** The tile's hue. */
-  hue: Hue;
-  /** The name. */
-  name: ReactNode;
-  /** The count shown at the end, formatted. */
-  count: ReactNode;
-  /** The small word under the count that says what it counts, such as `releases`. */
-  unit?: ReactNode;
-  /** Builds the tile's link from the slot class and its content. */
-  link: (className: string, content: ReactNode) => ReactNode;
-};
-
-/**
- * One tile: the name at the start and a count over its unit at the end, in the hue's color. The whole tile lights up on hover.
- *
- * @param props - the hue, name, count and link builder.
- * @returns the list item.
- */
-export function CountTile({ hue: color, name, count, unit, link }: CountTileProps) {
-  const classes = pageText();
-
-  return (
-    <li className={hue({ hue: declared(color) })}>
-      {link(
-        classes.tile,
-        <>
-          <span className={classes.tileName}>{name}</span>
-          <span className={classes.tileFigure}>
-            <span className={classes.tileCount}>{count}</span>
-            {unit && <span className={classes.tileUnit}>{unit}</span>}
-          </span>
-        </>
-      )}
-    </li>
-  );
 }
 
 /** Props for {@link PageLayout}. */

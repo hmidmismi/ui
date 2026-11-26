@@ -75,8 +75,7 @@ export const alert = defineSlotRecipe({
       surface: {
         root: {
           bg: 'colorPalette.surface.bg',
-          borderWidth: '1px',
-          borderColor: 'colorPalette.surface.border',
+          boxShadow: 'inset 0 0 0 {borderWidths.hairline} {colors.colorPalette.surface.border}',
           color: 'colorPalette.surface.fg',
         },
       },
@@ -88,8 +87,7 @@ export const alert = defineSlotRecipe({
       },
       outline: {
         root: {
-          borderWidth: '1px',
-          borderColor: 'colorPalette.outline.border',
+          boxShadow: 'inset 0 0 0 {borderWidths.hairline} {colors.colorPalette.outline.border}',
           color: 'colorPalette.outline.fg',
         },
       },

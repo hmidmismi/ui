@@ -50,7 +50,6 @@ export { Spinner, type SpinnerProps } from './spinner';
 export * from './status';
 export * as Table from './table';
 export * as Tabs from './tabs';
-export * from './terms';
 export * from './text';
 export * from './text-field';
 export * from './tile';

@@ -9,7 +9,7 @@ import {
 import { useActiveSection } from '../hooks/use-active-section';
 import { useMeasuredHeight } from '../hooks/use-measured-height';
 import { useScrollEdges } from '../hooks/use-scroll-edges';
-import { Count } from './text';
+import { Text } from './typography';
 
 /**
  * A row of links that choose a group of a browse list. Recipe `browseNav`.
@@ -242,7 +242,7 @@ export function RangeTab({ label, count, current, link }: RangeTabProps) {
     { className: rangeNav().tab, 'data-current': current ? 'true' : undefined },
     <>
       {label}
-      <Count>{count.toLocaleString('en-US')}</Count>
+      <Text as="span" size="sm" tone="muted" figures>{count.toLocaleString('en-US')}</Text>
     </>
   );
 }
@@ -311,7 +311,7 @@ export function RangeSection({ id, label, count, active, children }: RangeSectio
       {label && (
         <h2 className={classes.heading}>
           {label}
-          <Count>{count.toLocaleString('en-US')}</Count>
+          <Text as="span" size="sm" tone="muted" figures>{count.toLocaleString('en-US')}</Text>
         </h2>
       )}
       <ul className={classes.list}>{children}</ul>

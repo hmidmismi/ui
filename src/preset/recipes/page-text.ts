@@ -1,6 +1,5 @@
 import { defineSlotRecipe } from '@pandacss/dev';
-import { ringed, ruleAbove, ruleBelow, ruleBelowOf, toneRing } from '../fragments';
-import { hoverRow } from '../interaction';
+import { ringed, ruleAbove, ruleBelow, ruleBelowOf } from '../fragments';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
@@ -38,12 +37,6 @@ export const pageText = (t: TypeSystem) => {
       'th',
       'td',
       'code',
-      'tileGrid',
-      'tile',
-      'tileName',
-      'tileFigure',
-      'tileCount',
-      'tileUnit',
     ],
     base: {
       root: {
@@ -116,7 +109,7 @@ export const pageText = (t: TypeSystem) => {
         paddingInlineEnd: '4',
         textAlign: 'start',
         ...microLabel,
-        ...linePadded(t.roles.fieldLabel.face ?? 'body', t.roles.fieldLabel.step, {
+        ...linePadded('body', 'xs', {
           block: 'token(spacing.2)',
         }),
         fontWeight: 'semibold',
@@ -150,38 +143,6 @@ export const pageText = (t: TypeSystem) => {
         ...textSize('mono', 'md'),
         whiteSpace: 'pre',
       },
-      tileGrid: {
-        display: 'grid',
-        gridTemplateColumns: { base: 'minmax(0, 1fr)', sm: 'repeat(2, minmax(0, 1fr))' },
-        gap: '4',
-        marginBlockStart: '4',
-      },
-      tile: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'baseline',
-        gap: '4',
-        paddingBlock: '3',
-        paddingInline: '4',
-        color: 'fg.default',
-        ...toneRing(40),
-        toneFill: '10',
-        ...hoverRow,
-        '&:hover .page-text__tileCount': { color: 'secondary' },
-      },
-      tileName: { fontFamily: 'display', fontWeight: 'medium', ...textLine('display', 'xl') },
-      // The count over its unit at the end of the tile.
-      tileFigure: { display: 'grid', justifyItems: 'end', flexShrink: 0 },
-      tileCount: {
-        color: 'var(--tone)',
-        fontFamily: 'display',
-        fontVariantNumeric: 'tabular-nums',
-        transitionProperty: 'color',
-        transitionDuration: 'normal',
-        transitionTimingFunction: 'in-out',
-        ...textLine('display', '2xl'),
-      },
-      tileUnit: { color: 'fg.muted', fontFamily: 'body', ...textLine('body', 'sm') },
     },
     variants: {
       columns: {

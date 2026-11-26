@@ -10,6 +10,10 @@ import { responsive, type TypeSystem } from '../type-scale';
  * when a role renders an inline element, because the trim needs a block box.
  */
 
+/** The faces and steps a `Text` can be set in. */
+export const TEXT_FACES = ['body', 'display'] as const;
+export const TEXT_STEPS = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl'] as const;
+
 /** The heading levels, in order. */
 const LEVELS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
 
@@ -38,6 +42,7 @@ export function createRoles({
     base: { fontFamily: 'display', textWrap: 'balance', color: 'fg.default' },
     defaultVariants: { level: 'h1' },
     variants: {
+      tone: { inherit: { color: 'inherit' } },
       level: Object.fromEntries(
         LEVELS.map((level) => {
           const { step, wide, weight, tracking, uppercase, color } = headings[level];
@@ -58,38 +63,57 @@ export function createRoles({
   });
 
   /**
-   * Running text and interface copy in the body face. Each size comes trimmed (a block of its own) or, as `...Inline`,
-   * with its baseline moved by margins (a span in a flex row, where a trim cannot apply). They are separate variants, not a
-   * trim flag, because Panda does not generate the style of a compound variant that is never used literally.
+   * Running text and interface copy. A look is a few independent variants: `scale` (a face and a step, trimmed, or
+   * `-inline` with its baseline moved by margins for a span in a flex row; they are separate variants, not a trim flag,
+   * because Panda does not generate the style of a compound variant that is never used literally), `tone`, `weight` and
+   * `figures`. `tone` and `weight` have no default, so a variant that sets its own color (the caption) keeps it.
    */
   const text = defineRecipe({
     className: 'text',
     staticCss: ['*'],
-    base: { fontFamily: 'body', color: 'fg.default' },
-    defaultVariants: { variant: 'body' },
+    base: { color: 'fg.default' },
+    defaultVariants: { scale: 'body-md' },
     variants: {
-      variant: {
-        body: { ...textSize('body', 'md'), ...textTrim('body', 'md') },
-        small: { ...textSize('body', 'sm'), ...textTrim('body', 'sm') },
-        caption: { ...textSize('body', 'xs'), color: 'fg.muted', ...textTrim('body', 'xs') },
-        bodyInline: { ...textSize('body', 'md'), ...lineMargins('body', 'md') },
-        smallInline: { ...textSize('body', 'sm'), ...lineMargins('body', 'sm') },
-        captionInline: {
-          ...textSize('body', 'xs'),
-          color: 'fg.muted',
-          ...lineMargins('body', 'xs'),
-        },
+      scale: Object.fromEntries(
+        TEXT_FACES.flatMap((face) =>
+          TEXT_STEPS.flatMap((step) => [
+            [`${face}-${step}`, { fontFamily: face, ...textSize(face, step), ...textTrim(face, step) }],
+            [`${face}-${step}-inline`, { fontFamily: face, ...textSize(face, step), ...lineMargins(face, step) }],
+          ])
+        )
+      ),
+      tone: {
+        default: { color: 'fg.default' },
+        muted: { color: 'fg.muted' },
+        accent: { color: 'accent' },
+        hue: { color: 'var(--tone)' },
+        inherit: { color: 'inherit' },
       },
+      weight: {
+        normal: { fontWeight: 'normal' },
+        medium: { fontWeight: 'medium' },
+        semibold: { fontWeight: 'semibold' },
+      },
+      figures: { true: { fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' } },
     } as never,
   });
 
-  /** The small uppercase tracked label that opens a section or names a field. */
+  /** The small uppercase tracked label. `tone` is `muted` unless set. */
   const label = defineRecipe({
     className: 'label',
     staticCss: ['*'],
     base: { color: 'fg.muted', ...labelCaps },
     defaultVariants: { trim: true },
-    variants: { trim: { true: textTrim('body', 'xs'), false: lineMargins('body', 'xs') } },
+    variants: {
+      trim: { true: textTrim('body', 'xs'), false: lineMargins('body', 'xs') },
+      tone: {
+        default: { color: 'fg.default' },
+        muted: { color: 'fg.muted' },
+        accent: { color: 'accent' },
+        hue: { color: 'var(--tone)' },
+        inherit: { color: 'inherit' },
+      },
+    },
   });
 
   /** An index numeral, such as a Roman numeral: display face, tracked, muted. */

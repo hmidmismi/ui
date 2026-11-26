@@ -5,9 +5,9 @@ import { adminBar, fieldStatus, pageBar, signInForm, viewSwitch } from './admin'
 import { alert } from './alert';
 import { badge } from './badge';
 import { codeBlock, disclosure, quote, timeline } from './blocks';
-import { browseNav, letterBar, listHeader, rangeColumns, rangeNav, rangeSections } from './browse';
+import { browseNav, letterBar, rangeColumns, rangeNav, rangeSections } from './browse';
 import { button } from './button';
-import { featureCard, tile } from './cards';
+import { card } from './card';
 import { checkbox } from './checkbox';
 import { breadcrumbs, jumpNav, siteFooter, siteNav } from './chrome';
 import { combobox } from './combobox';
@@ -20,10 +20,8 @@ import { hero } from './hero';
 import { icon } from './icon';
 import { input } from './input';
 import {
-  nameList,
   columnCell,
   columnGrid,
-  columnList,
   fullRow,
   inset,
   itemList,
@@ -34,16 +32,13 @@ import {
   mediaRow,
   ruled,
   splitGrid,
-  termList,
-  termRow,
-  tileGrid,
 } from './layout';
 import { link } from './link';
-import { countedList, datedList, expandableRow, listFilter, rowDrawer } from './lists';
+import { listFilter, rowDrawer } from './lists';
+import { row } from './row';
 import { embedFrame, figure, picture, videoFrame } from './media';
-import { createPageRoles } from './page-roles';
 import { pageLayout, pageText } from './page-text';
-import { cardItem, centeredLines, pageColumn, pageHeader, skipLink } from './pages';
+import { pageColumn, skipLink } from './pages';
 import { pagination } from './pagination';
 import { player } from './player';
 import { popover } from './popover';
@@ -51,6 +46,7 @@ import { radioGroup } from './radio-group';
 import { createRoles } from './roles';
 import { chip, filterRow, searchField, typeahead } from './search';
 import { section, sectionGroup } from './section';
+import { surface } from './surface';
 import { select } from './select';
 import { spinner } from './spinner';
 import { statusBadge } from './status';
@@ -59,7 +55,7 @@ import { table } from './table';
 import { playableRow, scrollX, tableCell } from './table-parts';
 import { tabs } from './tabs';
 import { recordHeader } from './record';
-import { hue, plate, scrollList } from './tile';
+import { hue, scrollList } from './tile';
 import { toast } from './toast';
 import { toggleGroup } from './toggle-group';
 import { tooltip } from './tooltip';
@@ -77,15 +73,13 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
   const { label, numeral, text, title } = createRoles(t);
   return {
     recipes: {
-      ...createPageRoles(t),
       scrollX,
       tableCell: tableCell(t),
       playableRow,
-      itemList,
+      itemList: itemList(t),
       layoutStack,
       columnGrid,
       columnCell,
-      nameList: nameList(t),
       layoutWrap,
       measure,
       ruled,
@@ -93,12 +87,8 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       inset,
       layout,
       fullRow,
-      termList: termList(t),
-      termRow,
-      columnList: columnList(t),
       splitGrid,
-      tileGrid,
-      listFilter: listFilter(t),
+          listFilter: listFilter(t),
       quote,
       codeBlock: codeBlock(t),
       timeline: timeline(t),
@@ -108,12 +98,10 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
   videoFrame,
       sectionGroup,
       hue: hue(names.hues),
+      surface: surface(names.tones),
       scrollList,
       chip: chip(t),
       pageColumn,
-      pageHeader,
-      cardItem,
-      centeredLines,
       skipLink: skipLink(t),
       pageBar,
       adminBar,
@@ -138,15 +126,11 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       embedFrame,
       combobox,
       styleguide: styleguide(t),
-      countedList: countedList(t),
       recordHeader: recordHeader(t),
-      expandableRow: expandableRow(t),
+      row: row(t),
       rowDrawer,
-      datedList: datedList(t),
       section: section(t, names.tones),
-      plate: plate(t),
-      featureCard: featureCard(t),
-      tile: tile(t),
+      card: card(t),
       pageText: pageText(t),
       pageLayout: pageLayout(t),
       jumpNav: jumpNav(t),
@@ -165,7 +149,6 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       rangeNav: rangeNav(t),
       rangeSections: rangeSections(t),
       letterBar: letterBar(t),
-      listHeader: listHeader(t),
       accordion,
       checkbox,
       dialog,
