@@ -8,6 +8,8 @@ import { codeBlock, disclosure, quote, timeline } from './blocks';
 import { browseNav, letterBar, rangeColumns, rangeNav, rangeSections } from './browse';
 import { button } from './button';
 import { card } from './card';
+import { cover, layers, pinned } from './cover';
+import { siteMasthead } from './masthead';
 import { checkbox } from './checkbox';
 import { breadcrumbs, jumpNav, siteFooter, siteNav } from './chrome';
 import { combobox } from './combobox';
@@ -97,6 +99,7 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       sectionGroup,
       hue: hue(names.hues),
       surface: surface(names.tones),
+      layers,
       scrollList,
       chip: chip(t),
       pageColumn,
@@ -131,6 +134,9 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       rowDrawer,
       section: section(t, names.tones),
       card: card(t),
+      siteMasthead: siteMasthead(t),
+      cover: cover(names.tones),
+      pinned,
       pageText: pageText(t),
       pageLayout: pageLayout(t),
       jumpNav: jumpNav(t),

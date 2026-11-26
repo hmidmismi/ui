@@ -8,6 +8,7 @@ export * from './browse';
 export { Button, ButtonGroup, type ButtonGroupProps, type ButtonProps } from './button';
 export * as Checkbox from './checkbox';
 export * from './chrome';
+export * from './cover';
 export { CloseButton, type CloseButtonProps } from './close-button';
 export * from './combo-select';
 export * as Combobox from './combobox';

@@ -4,7 +4,7 @@ import { useHeaderReveal } from '../hooks/use-header-reveal';
 import { useMeasuredHeight } from '../hooks/use-measured-height';
 import { useScrollEdges } from '../hooks/use-scroll-edges';
 import { IconButton } from './icon-button';
-import { breadcrumbSlots, footerSlots, navSlots } from './slots';
+import { breadcrumbSlots, footerSlots, mastheadSlots, navSlots } from './slots';
 import { useUiText } from './ui-text';
 
 /**
@@ -295,5 +295,58 @@ export function BreadcrumbTrail({ home, steps }: BreadcrumbTrailProps) {
         ))}
       </ol>
     </nav>
+  );
+}
+
+/** Props for {@link SiteMasthead}. */
+type SiteMastheadProps = {
+  /** The links at the start of the utility row, from `md`. */
+  start: ReactNode;
+  /** The controls at the end of the utility row, from `md`. */
+  end: ReactNode;
+  /** The wordmark: the full name from `md`, the short one below, and how it links home. */
+  wordmark: { text: ReactNode; short: ReactNode; link: LinkRender };
+  /** The primary tabs, centered under the wordmark from `md`. */
+  tabs: NavLink[];
+  /** Below `md`: the menu button's text, what the menu panel holds, and the one control at the end of the bar. */
+  menu: { label: string; panel: ReactNode; control: ReactNode };
+};
+
+/**
+ * The masthead over the first screen of a page: light text over its media, the wordmark centered with the tabs under it,
+ * and a utility row. Below `md` a menu button, the short wordmark and one control. Slot recipe `siteMasthead`.
+ *
+ * @param props - the utility row, wordmark, tabs and the phone menu.
+ * @returns the masthead.
+ */
+export function SiteMasthead({ start, end, wordmark, tabs, menu }: SiteMastheadProps) {
+  const t = useUiText();
+  const classes = mastheadSlots();
+  return (
+    <header className={classes.root} data-no-print>
+      <div className={classes.start}>{start}</div>
+      <div className={classes.end}>{end}</div>
+      <details className={classes.menu}>
+        <summary className={classes.summary}>{menu.label}</summary>
+        <div className={classes.panel}>{menu.panel}</div>
+      </details>
+      {wordmark.link(
+        classes.wordmark,
+        <>
+          <span className={classes.full}>{wordmark.text}</span>
+          <span className={classes.short} aria-hidden>
+            {wordmark.short}
+          </span>
+        </>
+      )}
+      <nav aria-label={t.browseNav} className={classes.nav}>
+        {tabs.map((item) => (
+          <ChromeLink key={item.key} render={item.link} className={classes.tab}>
+            {item.label}
+          </ChromeLink>
+        ))}
+      </nav>
+      <div className={classes.language}>{menu.control}</div>
+    </header>
   );
 }

@@ -13,7 +13,7 @@
     "./text": "./src/text/index.ts"
   },
   "scripts": {
-    "codegen": "panda codegen && panda cssgen",
+    "codegen": "panda codegen --clean && panda cssgen",
     "postinstall": "pnpm codegen",
     "dev": "concurrently -k \"panda codegen --watch\" \"panda cssgen --watch\"",
     "test": "vitest run",

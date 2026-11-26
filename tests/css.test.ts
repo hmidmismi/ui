@@ -8,7 +8,7 @@ const css = existsSync(FILE) ? readFileSync(FILE, 'utf8') : '';
 
 /** Variables a recipe, Ark UI or the app sets itself at runtime, so they are never declared as tokens. */
 const RUNTIME =
-  /^--(ui-|tone|inset|bh|jh|lh|rh|ut|shadow-color|input-height|spinner-size|transition|global-|animate-|available-|focus-ring-|font-(body|display|mono)$|height$|layer-index|opacity$|reference-|scale$|table-sticky-offset|transform-origin|width$|x$|y$|z-index$)/;
+  /^--(ui-|tone|inset|len|bh|jh|lh|rh|ut|shadow-color|input-height|spinner-size|transition|global-|animate-|available-|focus-ring-|font-(body|display|mono)$|height$|layer-index|opacity$|reference-|scale$|table-sticky-offset|transform-origin|width$|x$|y$|z-index$)/;
 
 describe.skipIf(css === '')('generated css', () => {
   it('holds no token reference Panda left unresolved', () => {

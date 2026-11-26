@@ -144,6 +144,10 @@ The variants today:
 | `Card` | `as` (`div`, `article`, `button`), `layout` (`stack`, `corners`, `plate`), `hue`, `tint` (`soft`, `full`), `interactive`, `end`, `link`; `Text` and `Label` take `tone="hue"` inside it |
 | `Stack` | `gap`, `padBlock`, `padInline`, `align` (`start`, `center`, `end`), `ruled`, `after`, `as` |
 | `Wrap` | `gap`, `align` (`center`, `baseline`, `end`), `justify` (`between`), `after` |
+| `Surface` | `as`, `tone` (a named wash), `pad` (`none`, `normal`, `loose`), `min` (`third`, `screen`), `place` (`center`), `label`; a full-width block with the content in the page column |
+| `Cover` | `as`, `media`, `min`, `place`, `scrim` (`top`), `tone`; media behind content |
+| `Layers` | `place` (`center`), `blend` (`difference`); children over one another in one place |
+| `Pinned` | `length` (screens), `rise`, `short`, `label`, `ref`; a scroll track with a pinned stage |
 | `Pair` | `label`; one label and value inside an `ItemList` with `as="dl"` |
 
 An eyebrow is `<Label tone="accent">`, a count is `<Text as="span" size="sm" tone="muted" figures>`, a tagline is `<Text face="display" size="2xl" weight="medium">`. Keep such names in the call-site mapping below.
@@ -256,7 +260,7 @@ export function Measure({ size = 'prose', children }: MeasureProps) {
 
 ## Site chrome
 
-The site header, footer and navigation (`siteNav`, `siteFooter`, `jumpNav`, `breadcrumbs` and the `SiteHeader` and `SiteFooter` components) are slot recipes by nature. Apps pass labels and links; they never style the shell. Chrome is the one place a content-shaped recipe is allowed. It uses primitives and tokens and adds no new looks.
+The site header, footer and navigation (`siteNav`, `siteFooter`, `siteMasthead`, `jumpNav`, `breadcrumbs` and the `SiteHeader`, `SiteMasthead` and `SiteFooter` components) are slot recipes by nature. `SiteMasthead` is the centered wordmark and tabs over a page's first screen, with a menu on phones. Apps pass labels and links; they never style the shell. Chrome is the one place a content-shaped recipe is allowed. It uses primitives and tokens and adds no new looks.
 
 ## Open items
 
@@ -312,3 +316,8 @@ The generated `styled-system/` is gitignored. A project builds its own styleshee
 ## Typecheck: two projects
 
 `pnpm typecheck` runs `tsconfig.json` (`src/preset`, `theme`, `grid`, `design`, `text`; the build-time code) and then `tsconfig.components.json` (`components`, `hooks`, `rich-text`, `index.ts`). They are separate because Panda's generated `styled-system/types/global.d.ts` redefines `defineRecipe` and `defineSlotRecipe` against the token-aware style type, and Panda gives no option to turn that off. In one program every recipe was checked against it (272s cold); split, it takes about 18s cold and 2s warm. Rule: nothing in `src/preset`, `theme`, `grid`, `design` or `text` imports `styled-system`, and nothing in `src/components` imports `preset`. `incremental` is on for every package through `@hmidmismi/tsconfig`.
+
+## Notes
+
+- A slot recipe's CSS sits in a lower layer than a plain recipe's, so a slot recipe cannot override the color of a `Button` or `IconButton` placed inside it. Use the control that is itself a slot recipe (`ThemeToggle` without `inUtility`) or set the color through the component.
+- After a structural change, `pnpm codegen` cleans `styled-system/` first (`--clean`); stale files from an earlier generation break imports.
