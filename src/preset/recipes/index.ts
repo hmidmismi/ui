@@ -39,7 +39,7 @@ import { link } from './link';
 import { listFilter, rowDrawer } from './lists';
 import { row } from './row';
 import { embedFrame, figure, picture, videoFrame } from './media';
-import { pageLayout, pageText } from './page-text';
+import { sidebar } from './sidebar';
 import { pageColumn, skipLink } from './pages';
 import { pagination } from './pagination';
 import { player } from './player';
@@ -137,8 +137,7 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       siteMasthead: siteMasthead(t),
       cover: cover(names.tones),
       pinned,
-      pageText: pageText(t),
-      pageLayout: pageLayout(t),
+          sidebar: sidebar(t),
       jumpNav: jumpNav(t),
       breadcrumbs: breadcrumbs(t),
       siteNav: siteNav(t),

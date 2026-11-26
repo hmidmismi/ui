@@ -34,7 +34,7 @@ export * from './lists';
 export { Loader, type LoaderProps } from './loader';
 export * from './media';
 export * from './page';
-export * from './page-text';
+export * from './sidebar';
 export * as Pagination from './pagination';
 export { PaginationControl } from './pagination-control';
 export * from './player';
