@@ -1,0 +1,111 @@
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import type { Browser } from 'playwright-core';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { hasChrome, hasStyles, launch, type Mode, open } from '../browser/page';
+import { fixture } from './fixture';
+
+const run = hasChrome && hasStyles ? describe : describe.skip;
+
+const MODES: Mode[] = ['baseline', 'scaled', 'free'];
+const WIDTHS = [320, 390, 600, 768, 900, 1024, 1100, 1279, 1280, 1440, 1600];
+const SHOTS = [390, 1440];
+const DIR = join(import.meta.dirname, '__screenshots__');
+
+let browser: Browser;
+beforeAll(async () => {
+  browser = await launch();
+});
+afterAll(async () => {
+  await browser?.close();
+});
+
+/** The root font size in px of the page. */
+const rootSize = (page: Awaited<ReturnType<typeof open>>) =>
+  page.evaluate(() => Number.parseFloat(getComputedStyle(document.documentElement).fontSize));
+
+run('the layout in every grid mode', () => {
+  for (const mode of MODES) {
+    describe(mode, () => {
+      it('sets the root size the mode promises at every width', async () => {
+        const sizes: number[] = [];
+        for (const width of WIDTHS) {
+          const page = await open(browser, fixture, '', '', mode, width);
+          sizes.push(await rootSize(page));
+          await page.close();
+        }
+        if (mode === 'baseline') expect(new Set(sizes)).toEqual(new Set([16]));
+        else {
+          // Never under the reader's 16px, never over the scale (18px), and never shrinking as the window grows.
+          for (const size of sizes) {
+            expect(size).toBeGreaterThanOrEqual(16);
+            expect(size).toBeLessThanOrEqual(19.2 + 0.001);
+          }
+          expect([...sizes].sort((a, b) => a - b)).toEqual(sizes);
+          if (mode === 'free') expect(sizes.at(-1)).toBeCloseTo(18, 1);
+          // `scaled` moves in whole-pixel baselines: 16px or 19.2px.
+          if (mode === 'scaled') for (const size of sizes) expect([16, 19.2]).toContain(Math.round(size * 10) / 10);
+        }
+      });
+
+      for (const width of WIDTHS) {
+        it(`has no horizontal overflow and a masthead that never collides at ${width}px`, async () => {
+          const page = await open(browser, fixture, '', '', mode, width);
+          const result = await page.evaluate((viewport) => {
+            const masthead = document.querySelector('[data-fixture="masthead"] header') as HTMLElement;
+            const shown = (element: Element | null): element is HTMLElement =>
+              element instanceof HTMLElement && getComputedStyle(element).display !== 'none';
+            /** The box that holds what an element shows: the union of its visible children, or the element itself. */
+            const content = (element: HTMLElement) => {
+              const kids = [...element.children].filter(shown).filter((kid) => kid.getBoundingClientRect().width > 0);
+              const boxes = (kids.length ? kids : [element]).map((kid) => kid.getBoundingClientRect());
+              return { left: Math.min(...boxes.map((b) => b.left)), right: Math.max(...boxes.map((b) => b.right)) };
+            };
+            const parts = [
+              ['menu', masthead.querySelector('details')],
+              ['start', masthead.querySelector('[class*="start"]')],
+              ['wordmark', masthead.querySelector('a[class*="wordmark"]')],
+              ['end', masthead.querySelector('[class*="end"]')],
+            ] as const;
+            const boxes = parts
+              .filter(([, element]) => shown(element))
+              .map(([name, element]) => ({ name, ...content(element as HTMLElement) }))
+              .sort((a, b) => a.left - b.left);
+            const collisions = boxes.flatMap((box, index) => {
+              const before = boxes[index - 1];
+              return before && before.right > box.left ? [`${before.name} runs into ${box.name}`] : [];
+            });
+            const outside = boxes.filter((box) => box.left < -0.5 || box.right > viewport + 0.5).map((box) => `${box.name} leaves the screen`);
+            const nav = masthead.querySelector('nav');
+            const navBox = shown(nav) ? content(nav) : null;
+            if (navBox && (navBox.left < -0.5 || navBox.right > viewport + 0.5)) outside.push('tabs leave the screen');
+            return {
+              overflow: document.documentElement.scrollWidth - viewport,
+              problems: [...collisions, ...outside],
+              wordmark: masthead.querySelector('a[class*="wordmark"]')?.textContent,
+            };
+          }, width);
+          await page.close();
+          expect(result.problems, `${result.wordmark}`).toEqual([]);
+          expect(result.overflow).toBeLessThanOrEqual(0);
+        });
+      }
+
+      for (const width of SHOTS) {
+        it(`draws the same page at ${width}px as the saved screenshot`, async () => {
+          const page = await open(browser, fixture, '', '', mode, width);
+          await page.waitForTimeout(300);
+          const shot = await page.screenshot({ fullPage: true, animations: 'disabled' });
+          await page.close();
+          const file = join(DIR, `${mode}-${width}.png`);
+          if (process.env.UPDATE_VISUAL || !existsSync(file)) {
+            mkdirSync(DIR, { recursive: true });
+            writeFileSync(file, shot);
+            return;
+          }
+          expect(shot.equals(readFileSync(file)), `${file} differs; run UPDATE_VISUAL=1 pnpm test:visual if the change is meant`).toBe(true);
+        });
+      }
+    });
+  }
+});

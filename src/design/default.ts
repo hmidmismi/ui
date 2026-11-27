@@ -20,7 +20,7 @@ export const design = {
     base: 16,
     ratio: 1.2,
     leading: { body: 1.5, falloff: 0.05, floor: 1.3 },
-    fluid: { from: 360, to: 1440, scale: 1.2 },
+    fluid: { from: 360, to: 1440, scale: 1.125 },
   },
   motion: {
     durations: {

@@ -16,29 +16,34 @@ export const siteMasthead = (t: TypeSystem) => {
   return defineSlotRecipe({
     className: 'site-masthead',
     staticCss: ['*'],
-    slots: ['root', 'start', 'end', 'wordmark', 'full', 'short', 'nav', 'tab', 'menu', 'summary', 'panel', 'language'],
+    slots: ['root', 'bar', 'start', 'end', 'wordmark', 'full', 'short', 'nav', 'tab', 'menu', 'summary', 'panel', 'language'],
     base: {
+      // The masthead is a container: it collapses by its own width in `rem` (the page's root size, so it follows the fluid
+      // root), not by the window's, which a media query would read against the browser's default size.
       root: {
         position: 'absolute',
         insetInline: '0',
         insetBlockStart: '0',
         zIndex: 'docked',
+        containerType: 'inline-size',
+        color: 'white',
+      },
+      bar: {
         display: 'grid',
-        gridTemplateColumns: '1fr auto 1fr',
+        gridTemplateColumns: { base: 'auto minmax(0, 1fr) auto', _mastLg: '1fr auto 1fr' },
         gridTemplateAreas: {
           base: '"menu wordmark end"',
-          lg: '"start wordmark end" "nav nav nav"',
+          _mastLg: '"start wordmark end" "nav nav nav"',
         },
         alignItems: 'center',
-        columnGap: '6',
+        columnGap: { base: '2', _mastLg: '6' },
         paddingBlockStart: '2',
-        paddingBlockEnd: { base: '2', lg: '10' },
-        color: 'white',
+        paddingBlockEnd: { base: '2', _mastLg: '10' },
         ...siteInset,
       },
       start: {
         gridArea: 'start',
-        display: { base: 'none', lg: 'flex' },
+        display: { base: 'none', _mastLg: 'flex' },
         alignItems: 'center',
         gap: '6',
         ...textSize('body', 'md'),
@@ -58,13 +63,13 @@ export const siteMasthead = (t: TypeSystem) => {
         color: 'inherit',
         whiteSpace: 'nowrap',
         fontFamily: 'display',
-        ...responsive(textSize('display', '3xl'), textSize('display', '7xl'), 'lg'),
+        ...responsive(textSize('display', '2xl'), textSize('display', '7xl'), '_mastLg'),
       },
-      full: { display: { base: 'none', xl: 'inline' } },
-      short: { display: { base: 'inline', xl: 'none' } },
+      full: { display: { base: 'none', _mastXl: 'inline' } },
+      short: { display: { base: 'inline', _mastXl: 'none' } },
       nav: {
         gridArea: 'nav',
-        display: { base: 'none', lg: 'flex' },
+        display: { base: 'none', _mastLg: 'flex' },
         justifyContent: 'center',
         gap: '8',
       },
@@ -77,7 +82,7 @@ export const siteMasthead = (t: TypeSystem) => {
         ...textSize('body', 'lg'),
         _hover: { textDecoration: 'underline' },
       },
-      menu: { gridArea: 'menu', justifySelf: 'start', display: { base: 'block', lg: 'none' } },
+      menu: { gridArea: 'menu', justifySelf: 'start', display: { base: 'block', _mastLg: 'none' } },
       summary: {
         display: 'inline-flex',
         alignItems: 'center',
@@ -98,7 +103,7 @@ export const siteMasthead = (t: TypeSystem) => {
         color: 'fg.default',
         ...siteInset,
       },
-      language: { gridArea: 'end', justifySelf: 'end', display: { base: 'inline-flex', lg: 'none' } },
+      language: { gridArea: 'end', justifySelf: 'end', display: { base: 'inline-flex', _mastLg: 'none' } },
     },
   });
 };

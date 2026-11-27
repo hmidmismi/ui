@@ -24,6 +24,7 @@
     "clean": "rm -rf styled-system .turbo node_modules",
     "playground": "vite --config playground/vite.config.ts",
     "playground:build": "vite build --config playground/vite.config.ts",
+    "test:visual": "pnpm codegen && vitest run --config vitest.visual.config.ts",
     "test:browser": "pnpm codegen && vitest run --config vitest.browser.config.ts",
     "check:baseline": "node src/grid/check/check-baseline.mjs",
     "check:spacing": "node src/grid/check/check-spacing.mjs",

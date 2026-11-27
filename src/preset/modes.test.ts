@@ -55,8 +55,8 @@ describe('the free mode', () => {
   });
 
   it('grows the root size with the viewport, from the reader size to the scale', () => {
-    // 1em at 360px wide, 1.2em at 1440px wide: (1.2 - 1) * 16 / (1440 - 360) px of root per px of viewport.
-    expect(t.rootSize()).toBe('clamp(1em, calc(1em + (100vw - 360px) * 0.002963), 1.2em)');
+    // 1em at 360px wide, 1.125em (18px) at 1440px wide: (1.125 - 1) * 16 / (1440 - 360) px of root per px of viewport.
+    expect(t.rootSize()).toBe('clamp(1em, calc(1em + (100vw - 360px) * 0.001852), 1.125em)');
   });
 
   it('sizes a picture by its aspect ratio and a cover by the viewport, unrounded', () => {
@@ -88,7 +88,7 @@ describe('the scaled mode', () => {
 
   it('moves the root in steps that keep the baseline a whole number of pixels', () => {
     // 16px root / 5px baseline: the root moves 3.2px at a time, so the baseline moves 1px at a time.
-    expect(t.rootSize()).toBe('round(clamp(1em, calc(1em + (100vw - 360px) * 0.002963), 1.2em), 3.2px)');
+    expect(t.rootSize()).toBe('round(clamp(1em, calc(1em + (100vw - 360px) * 0.001852), 1.125em), 3.2px)');
   });
 
   it('rounds the viewport height to a baseline, so what sits under a full-screen block stays on the grid', () => {

@@ -9,5 +9,8 @@ export const conditions = {
       '&:is(:checked, [data-checked], [data-state=checked], [aria-checked=true], [data-state=indeterminate])',
     on: '&:is([data-state=on])',
     pinned: '&:is([data-pinned])',
+    // The masthead's own width, in `rem` of the page's root size: from here the utility links sit at the start, then the full name.
+    mastLg: '@container (min-width: 64rem)',
+    mastXl: '@container (min-width: 80rem)',
   },
 };

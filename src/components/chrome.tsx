@@ -377,6 +377,7 @@ export function SiteMasthead({ start, end, wordmark, tabs, menu, id }: SiteMasth
   const classes = mastheadSlots();
   return (
     <header id={id} className={classes.root} data-no-print>
+      <div className={classes.bar}>
       <div className={classes.start}>{start}</div>
       <div className={classes.end}>{end}</div>
       <details className={classes.menu}>
@@ -400,6 +401,7 @@ export function SiteMasthead({ start, end, wordmark, tabs, menu, id }: SiteMasth
         ))}
       </nav>
       {menu.control && <div className={classes.language}>{menu.control}</div>}
+      </div>
     </header>
   );
 }

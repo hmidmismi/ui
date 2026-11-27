@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import '../styled-system/styles.css';
 import fraunces from '@capsizecss/metrics/fraunces';
 import karla from '@capsizecss/metrics/karla';
-import { Badge, Button, Input, Label, Section as RuledSection, Stack, Text, Title } from '../src';
+import { Button, Section as RuledSection, StyleBook, Stack, Text, Title } from '../src';
 import { neutral, type Theme, toCss } from '../src/theme';
 
 /** A second theme, to show that a theme is only variables: nothing is rebuilt when it is applied. */
@@ -26,7 +26,6 @@ const warm: Theme = {
 };
 
 const themes: Record<string, Theme> = { neutral, warm };
-const SPACING = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24] as const;
 
 function Swatches({ palette }: { palette: string }) {
   return (
@@ -109,44 +108,7 @@ function App() {
         </div>
       </Stack>
 
-      <Section title="Type scale">
-        {(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const).map((level) => (
-          <Stack key={level} gap="2">
-            <Text variant="caption">{level}</Text>
-            <Title level={level}>Aikido is a martial way</Title>
-          </Stack>
-        ))}
-        <Stack gap="2">
-          <Text variant="caption">body</Text>
-          <Text>
-            Body text sits on the baseline, with the space above the capitals and below the baseline
-            trimmed.
-          </Text>
-        </Stack>
-        <Stack gap="2">
-          <Text variant="caption">small</Text>
-          <Text variant="small">Small text.</Text>
-        </Stack>
-        <Stack gap="2">
-          <Text variant="caption">caption</Text>
-          <Text variant="caption">Caption text.</Text>
-        </Stack>
-      </Section>
-
-      <Section title="Spacing">
-        {SPACING.map((n) => (
-          <div key={n} style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-            <Label>{n}</Label>
-            <div
-              style={{
-                height: 10,
-                width: `var(--spacing-${n})`,
-                background: 'var(--colors-accent-9)',
-              }}
-            />
-          </div>
-        ))}
-      </Section>
+      <StyleBook />
 
       <Section title="Color scales">
         {['gray', 'accent', 'red'].map((p) => (
@@ -157,23 +119,6 @@ function App() {
         ))}
       </Section>
 
-      <Section title="Components">
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <Button variant="solid">Solid</Button>
-          <Button variant="surface">Surface</Button>
-          <Button variant="subtle">Subtle</Button>
-          <Button variant="outline">Outline</Button>
-          <Button variant="solid" disabled>
-            Disabled
-          </Button>
-        </div>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <Badge variant="solid">Solid</Badge>
-          <Badge variant="subtle">Subtle</Badge>
-          <Badge variant="outline">Outline</Badge>
-        </div>
-        <Input placeholder="Input" />
-      </Section>
     </main>
   );
 }

@@ -284,7 +284,6 @@ export function Pair({ label, children }: PairProps) {
       <Text as="dt" size="sm" weight="semibold" tone="muted">
         {label}
       </Text>
-      dic
       <dd>{children}</dd>
     </div>
   );
