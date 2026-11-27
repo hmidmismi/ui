@@ -214,6 +214,8 @@ export type WrapProps = BoxProps & {
   align?: VariantOf<typeof layoutWrap, 'align'>;
   /** Spreads the children to the two ends of the row. */
   justify?: VariantOf<typeof layoutWrap, 'justify'>;
+  /** Keeps the children on one line, shrinking them, for a field beside its button. */
+  nowrap?: boolean;
   /** The space under the row. */
   after?: VariantOf<typeof layoutWrap, 'after'>;
   children?: ReactNode;
@@ -225,9 +227,9 @@ export type WrapProps = BoxProps & {
  * @param props - the gap, alignment, attributes and children.
  * @returns the row.
  */
-export function Wrap({ gap, align, justify, after, children, ...rest }: WrapProps) {
+export function Wrap({ gap, align, justify, nowrap, after, children, ...rest }: WrapProps) {
   return (
-    <div {...rest} className={layoutWrap({ gap, align, justify, after })}>
+    <div {...rest} className={layoutWrap({ gap, align, justify, nowrap, after })}>
       {children}
     </div>
   );

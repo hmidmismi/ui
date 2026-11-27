@@ -143,7 +143,7 @@ The variants today:
 | `Row` | `layout` (`plain`, `plated`, `numbered`, `dated`), `lead`, `title`, `meta`, `aside`, and `link` (a builder), or `onToggle` with `open` and `controls` (a button with a chevron) |
 | `Card` | `as` (`div`, `article`, `button`), `layout` (`stack`, `corners`, `plate`), `hue`, `tint` (`soft`, `full`), `interactive`, `end`, `link`; `Text` and `Label` take `tone="hue"` inside it |
 | `Stack` | `gap`, `padBlock`, `padInline`, `align` (`start`, `center`, `end`), `ruled`, `after`, `as` |
-| `Wrap` | `gap`, `align` (`center`, `baseline`, `end`), `justify` (`between`), `after` |
+| `Wrap` | `gap`, `align` (`center`, `baseline`, `end`), `justify` (`between`), `nowrap`, `after` |
 | `Surface` | `as`, `tone` (a named wash), `pad` (`none`, `normal`, `loose`), `min` (`third`, `screen`), `place` (`center`), `label`; a full-width block with the content in the page column |
 | `Cover` | `as`, `media`, `min`, `place`, `scrim` (`top`), `tone`; media behind content |
 | `Layers` | `place` (`center`), `blend` (`difference`); children over one another in one place |

@@ -104,6 +104,7 @@ export const layoutWrap = defineRecipe({
     gap: gaps,
     align: { center: { alignItems: 'center' }, baseline: { alignItems: 'baseline' }, end: { alignItems: 'flex-end' } },
     justify: { between: { justifyContent: 'space-between' } },
+    nowrap: { true: { flexWrap: 'nowrap' } },
     after: { '4': { marginBlockEnd: '4' }, '6': { marginBlockEnd: '6' }, '8': { marginBlockEnd: '8' } },
   },
 });
