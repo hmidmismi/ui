@@ -93,6 +93,21 @@ export const row = (t: TypeSystem) => {
           },
           chevron: { display: 'none' },
         },
+        // A picture at the start, large, with the title over its lines: the row of a list of things to look at.
+        card: {
+          root: {
+            gridTemplateColumns: {
+              base: 'token(sizes.cardPlateCompact) minmax(0, 1fr)',
+              sm: 'token(sizes.cardPlate) minmax(0, 1fr)',
+            },
+            alignItems: 'start',
+            columnGap: { base: '4', sm: '6' },
+            paddingBlock: '4',
+          },
+          text: { alignSelf: 'start', display: 'grid', rowGap: '1' },
+          aside: { display: 'none' },
+          chevron: { display: 'none' },
+        },
         numbered: {
           root: {
             gridTemplateColumns: {
@@ -134,6 +149,18 @@ export const row = (t: TypeSystem) => {
         },
       },
     },
+    compoundVariants: [
+      {
+        layout: 'card',
+        interactive: true,
+        css: {
+          root: {
+            _hover: { background: 'gray.surface.bg.active' },
+            '&:hover [data-part="title"]': { textDecoration: 'underline', textUnderlineOffset: '0.2em' },
+          },
+        },
+      },
+    ],
     defaultVariants: { layout: 'plain' },
   });
 };

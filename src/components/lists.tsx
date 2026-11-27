@@ -3,14 +3,14 @@ import { rowDrawer, row } from '../../styled-system/recipes';
 
 /** What every {@link Row} has. */
 type RowBase = {
-  /** The columns: `plain` (title and aside), `plated` or `numbered` (a lead at the start and a chevron), `thumb` (a lead at the start, no chevron), `dated` (a lead on the text's baseline). Defaults to `plain`. */
-  layout?: 'plain' | 'plated' | 'numbered' | 'dated' | 'thumb';
+  /** The columns: `plain` (title and aside), `plated` or `numbered` (a lead at the start and a chevron), `thumb` (a lead at the start, no chevron), `card` (a large picture at the start, the title over each line of the meta on its own line, a stronger hover), `dated` (a lead on the text's baseline). Defaults to `plain`. */
+  layout?: 'plain' | 'plated' | 'numbered' | 'dated' | 'thumb' | 'card';
   /** What leads the row: a picture, a number or a date. */
   lead?: ReactNode;
   /** The title. */
   title: ReactNode;
-  /** The line under the title. */
-  meta?: ReactNode;
+  /** The line under the title; a list is one line for each item. */
+  meta?: ReactNode | ReactNode[];
   /** The text at the end. Phones hide it, except in a `dated` row. */
   aside?: ReactNode;
 };
@@ -48,8 +48,17 @@ export function Row(props: RowProps) {
     <>
       {lead}
       <span className={classes.text}>
-        <span className={classes.title}>{title}</span>
-        {meta && <span className={classes.meta}>{meta}</span>}
+        <span className={classes.title} data-part="title">
+          {title}
+        </span>
+        {Array.isArray(meta)
+          ? meta.filter(Boolean).map((line, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: the lines are a fixed list that never reorders
+              <span key={index} className={classes.meta}>
+                {line}
+              </span>
+            ))
+          : meta && <span className={classes.meta}>{meta}</span>}
       </span>
       {asideColumn && <span className={classes.aside}>{aside}</span>}
       {button && <span className={classes.chevron} aria-hidden />}

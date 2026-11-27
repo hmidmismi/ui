@@ -94,6 +94,9 @@ export const sizesFor = (d: Pick<Design, 'grid' | 'controls' | 'sizes'>) => {
     tileCompact: { value: '7rem' },
     /** The cover plate's side on phones. */
     plateCompact: { value: '3.5rem' },
+  /** The picture at the start of a `card` row, and on phones. */
+  cardPlate: { value: '12rem' },
+  cardPlateCompact: { value: '6.5rem' },
     /** The date column of an event row, and on phones. */
     dateColumn: { value: '6rem' },
     dateColumnCompact: { value: '4rem' },
