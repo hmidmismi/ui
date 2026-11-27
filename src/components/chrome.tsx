@@ -5,7 +5,7 @@ import { useMeasuredHeight } from '../hooks/use-measured-height';
 import { useScrollEdges } from '../hooks/use-scroll-edges';
 import { useScrolledPast } from '../hooks/use-scrolled-past';
 import { IconButton } from './icon-button';
-import { breadcrumbSlots, footerSlots, mastheadSlots, navSlots } from './slots';
+import { barSlots, breadcrumbSlots, footerSlots, mastheadSlots, navSlots } from './slots';
 import { useUiText } from './ui-text';
 
 /**
@@ -178,6 +178,46 @@ export function SiteHeader({ utility, wordmark, tabs, account, actions, after, h
           </>
         )}
       {actions}
+    </header>
+  );
+}
+
+/** Props for {@link SiteBar}. */
+type SiteBarProps = {
+  /** The id of the masthead the page opens with. The bar is not drawn until that has scrolled away. */
+  after: string;
+  /** The wordmark's text and how it links home. */
+  wordmark: { text: ReactNode; link: LinkRender };
+  /** What sits at the start of the bar. */
+  start?: ReactNode;
+  /** What sits at the end of the bar. */
+  end?: ReactNode;
+};
+
+/** The height of a bar with no utility row: nothing of it scrolls away on its own. */
+const noUtility = () => 0;
+
+/**
+ * The compact bar of a page that opens with a masthead: the wordmark centered, `start` and `end` on either side, on the
+ * canvas with a drop shadow. It stays out of sight until the masthead has scrolled away, then slides in as the reader
+ * scrolls up and out as they scroll down; its height is published as `--bh` for the sticky bars under it. Slot recipe
+ * `siteBar`.
+ *
+ * @param props - the masthead's id, the wordmark and what goes at each end.
+ * @returns the bar.
+ */
+export function SiteBar({ after, wordmark, start, end }: SiteBarProps) {
+  const past = useScrolledPast(after);
+  const classes = barSlots({ away: !past });
+  const root = useRef<HTMLElement>(null);
+  useMeasuredHeight(root, '--bh');
+  useHeaderReveal(root, noUtility, true, false);
+
+  return (
+    <header ref={root} className={classes.root} data-no-print>
+      <div className={classes.start}>{start}</div>
+      {wordmark.link(classes.wordmark, wordmark.text)}
+      <div className={classes.end}>{end}</div>
     </header>
   );
 }

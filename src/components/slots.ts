@@ -3,6 +3,7 @@ import {
   link,
   player,
   siteFooter,
+  siteBar,
   siteMasthead,
   siteNav,
   typeahead,
@@ -37,6 +38,9 @@ export const navSlots = (
     signedIn: false,
   }
 ) => siteNav({ signedIn, floating, away, headroom });
+
+/** Slot classes for the compact bar under a masthead. Slot recipe `siteBar`; `away` hides it. */
+export const barSlots = ({ away = false }: { away?: boolean } = {}) => siteBar({ away });
 
 /** Slot classes for the label type-ahead. Slot recipe `typeahead`. */
 export const typeaheadSlots = () => typeahead();

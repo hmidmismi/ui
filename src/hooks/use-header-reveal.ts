@@ -12,11 +12,13 @@ const THRESHOLD = 8;
  * @param ref - the header element.
  * @param measure - reads the utility row's height in px from the header.
  * @param headroom - also hides the whole header on the way down, and shows it on the way up. Defaults to `false`.
+ * @param utility - whether the header has a utility row to reveal (`data-utility`). A bar without one passes `false`. Defaults to `true`.
  */
 export function useHeaderReveal(
   ref: { current: HTMLElement | null },
   measure: (element: HTMLElement) => number,
-  headroom = false
+  headroom = false,
+  utility = true
 ): void {
   useEffect(() => {
     const element = ref.current;
@@ -26,6 +28,7 @@ export function useHeaderReveal(
     let frame = 0;
 
     const show = (shown: boolean) => {
+      if (!utility) return;
       if (shown) root.setAttribute('data-utility', 'shown');
       else root.removeAttribute('data-utility');
     };
@@ -62,5 +65,5 @@ export function useHeaderReveal(
       show(false);
       hide(false);
     };
-  }, [ref, measure, headroom]);
+  }, [ref, measure, headroom, utility]);
 }

@@ -12,7 +12,7 @@ import { card } from './card';
 import { cover, layers, pinned } from './cover';
 import { siteMasthead } from './masthead';
 import { checkbox } from './checkbox';
-import { breadcrumbs, jumpNav, siteFooter, siteNav } from './chrome';
+import { breadcrumbs, jumpNav, siteBar, siteFooter, siteNav } from './chrome';
 import { combobox } from './combobox';
 import { dialog } from './dialog';
 import { field } from './field';
@@ -142,7 +142,8 @@ function buildRecipes(t: TypeSystem, names: ColorNames) {
           sidebar: sidebar(t),
       jumpNav: jumpNav(t),
       breadcrumbs: breadcrumbs(t),
-      siteNav: siteNav(t),
+      siteBar: siteBar(t),
+  siteNav: siteNav(t),
       siteFooter: siteFooter(t),
       alert,
       player: player(t),

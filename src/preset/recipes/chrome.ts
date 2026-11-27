@@ -353,6 +353,74 @@ export const siteNav = (t: TypeSystem) => {
 };
 
 /**
+ * The compact bar of a page that opens with a masthead: one row on the canvas with a soft drop shadow, the wordmark
+ * centered, links at the start and controls at the end. It is out of the page flow and not drawn (`away`) until the
+ * masthead has scrolled off, and then slides in as the reader scrolls up and out as they scroll down (`data-header` on
+ * `<html>`, the same signal the sticky bars under it follow through `--bh`).
+ */
+export const siteBar = (t: TypeSystem) => {
+  const { textSize, textLine } = t;
+  return defineSlotRecipe({
+    className: 'site-bar',
+    staticCss: ['*'],
+    slots: ['root', 'start', 'wordmark', 'end'],
+    base: {
+      root: {
+        position: 'fixed',
+        top: '0',
+        insetInline: '0',
+        zIndex: 'sticky',
+        display: 'grid',
+        gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
+        alignItems: 'center',
+        columnGap: '4',
+        height: { base: 'barCompact', sm: 'bar' },
+        background: 'canvas',
+        boxShadow: 'sm',
+        transitionProperty: 'transform, visibility',
+        transitionDuration: 'slower',
+        transitionTimingFunction: 'ease-in-out',
+        ...siteInset,
+        '[data-header="hidden"] &': { transform: 'translateY(-100%)', visibility: 'hidden' },
+      },
+      start: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        gap: '4',
+        minWidth: '0',
+        color: 'fg.muted',
+        ...textSize('body', 'md'),
+        whiteSpace: 'nowrap',
+        // On a phone there is room for the first item only; the rest is in the masthead's menu.
+        '& > :not(:first-child)': { display: { base: 'none', sm: 'revert' } },
+      },
+      end: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        gap: '4',
+        minWidth: '0',
+        color: 'fg.muted',
+        ...textSize('body', 'md'),
+        whiteSpace: 'nowrap',
+      },
+      wordmark: {
+        color: 'fg.default',
+        fontFamily: 'display',
+        ...textLine('display', '2xl'),
+        fontWeight: 'semibold',
+        letterSpacing: 'wordmark',
+        textTransform: 'uppercase',
+      },
+    },
+    variants: {
+      away: { true: { root: { visibility: 'hidden', transform: 'translateY(-100%)' } } },
+    },
+  });
+};
+
+/**
  * The site footer (Rev 19 §4.3): a hairline above and two columns on one grid (`minmax(0, 1fr) auto`), stacked on
  * phones. The left holds the footer links and the copyright line; the right holds the status link with its green dot and
  * the made-in line, right-aligned (start-aligned on phones). There are no rules between the rows.
