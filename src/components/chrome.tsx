@@ -351,16 +351,16 @@ export function BreadcrumbTrail({ home, steps }: BreadcrumbTrailProps) {
 
 /** Props for {@link SiteMasthead}. */
 type SiteMastheadProps = {
-  /** The links at the start of the utility row, from `md`. */
+  /** The links at the start of the utility row, from `lg`. */
   start: ReactNode;
-  /** The controls at the end of the utility row, from `md`. */
+  /** The controls at the end of the masthead, at every width. */
   end: ReactNode;
-  /** The wordmark: the full name from `md`, the short one below, and how it links home. */
+  /** The wordmark: the full name from `xl`, the short one below, and how it links home. */
   wordmark: { text: ReactNode; short: ReactNode; link: LinkRender };
-  /** The primary tabs, centered under the wordmark from `md`. */
+  /** The primary tabs, centered under the wordmark from `lg`. */
   tabs: NavLink[];
-  /** Below `md`: the menu button's text, what the menu panel holds, and the one control at the end of the bar. */
-  menu: { label: string; panel: ReactNode; control: ReactNode };
+  /** Below `lg`: the menu button's text and what the menu panel holds. `control` is one control at the end below `lg`, in place of `end`'s; leave it out to keep `end` there. */
+  menu: { label: string; panel: ReactNode; control?: ReactNode };
   /** The masthead's id, so a {@link SiteHeader} with `after` can wait for the masthead itself to scroll away. */
   id?: string;
 };
@@ -399,7 +399,7 @@ export function SiteMasthead({ start, end, wordmark, tabs, menu, id }: SiteMasth
           </ChromeLink>
         ))}
       </nav>
-      <div className={classes.language}>{menu.control}</div>
+      {menu.control && <div className={classes.language}>{menu.control}</div>}
     </header>
   );
 }
