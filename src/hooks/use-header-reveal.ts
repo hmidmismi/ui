@@ -11,10 +11,12 @@ const THRESHOLD = 8;
  *
  * @param ref - the header element.
  * @param measure - reads the utility row's height in px from the header.
+ * @param headroom - also hides the whole header on the way down, and shows it on the way up. Defaults to `false`.
  */
 export function useHeaderReveal(
   ref: { current: HTMLElement | null },
-  measure: (element: HTMLElement) => number
+  measure: (element: HTMLElement) => number,
+  headroom = false
 ): void {
   useEffect(() => {
     const element = ref.current;
@@ -27,6 +29,12 @@ export function useHeaderReveal(
       if (shown) root.setAttribute('data-utility', 'shown');
       else root.removeAttribute('data-utility');
     };
+    // With `headroom` the whole header goes: `data-header="hidden"` is on `<html>` while the reader scrolls down past the header.
+    const hide = (hidden: boolean) => {
+      if (!headroom) return;
+      if (hidden) root.setAttribute('data-header', 'hidden');
+      else root.removeAttribute('data-header');
+    };
     const update = () => {
       frame = 0;
       const height = measure(element);
@@ -34,9 +42,11 @@ export function useHeaderReveal(
       const delta = y - last;
       if (y <= height || element.contains(document.activeElement)) {
         show(false);
+        hide(false);
         last = y;
       } else if (Math.abs(delta) >= THRESHOLD) {
         show(delta < 0);
+        hide(delta > 0);
         last = y;
       }
     };
@@ -49,6 +59,7 @@ export function useHeaderReveal(
       window.removeEventListener('scroll', onScroll);
       if (frame) cancelAnimationFrame(frame);
       show(false);
+      hide(false);
     };
-  }, [ref, measure]);
+  }, [ref, measure, headroom]);
 }

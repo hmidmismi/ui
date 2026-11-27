@@ -123,6 +123,8 @@ type SiteHeaderProps = {
   actions?: ReactNode;
   /** The id of the cover the page opens with. The header is then out of the page flow and appears once that cover has scrolled away. */
   after?: string;
+  /** Slides the whole header away as the reader scrolls down and back as they scroll up, not just the utility row. Defaults to `false`. */
+  headroom?: boolean;
 };
 
 /**
@@ -135,13 +137,18 @@ type SiteHeaderProps = {
  * @param props - the utility row, wordmark, tabs, account and controls.
  * @returns the header.
  */
-export function SiteHeader({ utility, wordmark, tabs, account, actions, after }: SiteHeaderProps) {
+export function SiteHeader({ utility, wordmark, tabs, account, actions, after, headroom = false }: SiteHeaderProps) {
   const t = useUiText();
   const past = useScrolledPast(after);
-  const classes = navSlots({ signedIn: Boolean(account), floating: Boolean(after), away: Boolean(after) && !past });
+  const classes = navSlots({
+    signedIn: Boolean(account),
+    floating: Boolean(after),
+    away: Boolean(after) && !past,
+    headroom,
+  });
   const root = useRef<HTMLElement>(null);
   useMeasuredHeight(root, '--bh', scrolledAway);
-  useHeaderReveal(root, utilityHeight);
+  useHeaderReveal(root, utilityHeight, headroom);
   const tabRow = useRef<HTMLElement>(null);
   useScrollEdges(tabRow);
 

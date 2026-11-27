@@ -306,6 +306,15 @@ export const siteNav = (t: TypeSystem) => {
       away: {
         true: { root: { visibility: 'hidden', transform: 'translateY(-100%)' } },
       },
+      // The whole header slides away as the reader scrolls down and back as they scroll up (`data-header` on `<html>`).
+      headroom: {
+        true: {
+          root: {
+            transitionProperty: 'top, transform, visibility',
+            '[data-header="hidden"] &': { transform: 'translateY(-100%)', visibility: 'hidden' },
+          },
+        },
+      },
       signedIn: {
         true: {
           root: {

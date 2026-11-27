@@ -33,8 +33,10 @@ export const footerSlots = () => siteFooter();
 
 /** Slot classes for the site header. Slot recipe `siteNav`; `signedIn` is on when the institution block shows; `floating` takes it out of the page flow and `away` hides it. */
 export const navSlots = (
-  { signedIn, floating, away }: { signedIn: boolean; floating?: boolean; away?: boolean } = { signedIn: false }
-) => siteNav({ signedIn, floating, away });
+  { signedIn, floating, away, headroom }: { signedIn: boolean; floating?: boolean; away?: boolean; headroom?: boolean } = {
+    signedIn: false,
+  }
+) => siteNav({ signedIn, floating, away, headroom });
 
 /** Slot classes for the label type-ahead. Slot recipe `typeahead`. */
 export const typeaheadSlots = () => typeahead();
