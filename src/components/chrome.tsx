@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useHeaderReveal } from '../hooks/use-header-reveal';
 import { useMeasuredHeight } from '../hooks/use-measured-height';
 import { useScrollEdges } from '../hooks/use-scroll-edges';
+import { useScrolledPast } from '../hooks/use-scrolled-past';
 import { IconButton } from './icon-button';
 import { breadcrumbSlots, footerSlots, mastheadSlots, navSlots } from './slots';
 import { useUiText } from './ui-text';
@@ -120,6 +121,8 @@ type SiteHeaderProps = {
   account?: SiteHeaderAccount | null;
   /** Controls at the end of the bar, such as {@link ThemeToggle}. */
   actions?: ReactNode;
+  /** The id of the cover the page opens with. The header is then out of the page flow and appears once that cover has scrolled away. */
+  after?: string;
 };
 
 /**
@@ -132,9 +135,10 @@ type SiteHeaderProps = {
  * @param props - the utility row, wordmark, tabs, account and controls.
  * @returns the header.
  */
-export function SiteHeader({ utility, wordmark, tabs, account, actions }: SiteHeaderProps) {
+export function SiteHeader({ utility, wordmark, tabs, account, actions, after }: SiteHeaderProps) {
   const t = useUiText();
-  const classes = navSlots({ signedIn: Boolean(account) });
+  const past = useScrolledPast(after);
+  const classes = navSlots({ signedIn: Boolean(account), floating: Boolean(after), away: Boolean(after) && !past });
   const root = useRef<HTMLElement>(null);
   useMeasuredHeight(root, '--bh', scrolledAway);
   useHeaderReveal(root, utilityHeight);
