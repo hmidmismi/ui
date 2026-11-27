@@ -47,7 +47,7 @@ function useMetrics() {
       setMetrics({
         viewport: window.innerWidth,
         root: tenth(Number.parseFloat(getComputedStyle(document.documentElement).fontSize)),
-        baseline: tenth(probeRef.current?.offsetHeight ?? 0),
+        baseline: tenth(probeRef.current?.getBoundingClientRect().height ?? 0),
       });
     read();
     window.addEventListener('resize', read);
