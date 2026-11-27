@@ -2,11 +2,15 @@ import type { TypeSystem } from '../type-scale';
 import { absoluteCenter } from './absolute-center';
 import { accordion } from './accordion';
 import { adminBar, fieldStatus, pageBar, signInForm, viewSwitch } from './admin';
+import { alert } from './alert';
 import { badge } from './badge';
 import { codeBlock, disclosure, quote, timeline } from './blocks';
-import { browseNav, letterBar, listHeader, rangeColumns, rangeNav, rangeSections } from './browse';
+import { letterBar, rangeColumns, rangeNav, rangeSections } from './browse';
+import { linkNav } from './link-nav';
 import { button } from './button';
-import { featureCard, tile } from './cards';
+import { card } from './card';
+import { cover, layers, pinned } from './cover';
+import { siteMasthead } from './masthead';
 import { checkbox } from './checkbox';
 import { breadcrumbs, jumpNav, siteFooter, siteNav } from './chrome';
 import { combobox } from './combobox';
@@ -19,10 +23,8 @@ import { hero } from './hero';
 import { icon } from './icon';
 import { input } from './input';
 import {
-  nameList,
   columnCell,
   columnGrid,
-  columnList,
   fullRow,
   inset,
   itemList,
@@ -33,16 +35,13 @@ import {
   mediaRow,
   ruled,
   splitGrid,
-  termList,
-  termRow,
-  tileGrid,
 } from './layout';
 import { link } from './link';
-import { countedList, datedList, expandableRow, listFilter, rowDrawer } from './lists';
+import { listFilter, rowDrawer } from './lists';
+import { row } from './row';
 import { embedFrame, figure, picture, videoFrame } from './media';
-import { createPageRoles } from './page-roles';
-import { pageLayout, pageText } from './page-text';
-import { cardItem, centeredLines, pageColumn, pageHeader, skipLink } from './pages';
+import { sidebar } from './sidebar';
+import { pageColumn, skipLink } from './pages';
 import { pagination } from './pagination';
 import { player } from './player';
 import { popover } from './popover';
@@ -50,6 +49,7 @@ import { radioGroup } from './radio-group';
 import { createRoles } from './roles';
 import { chip, filterRow, searchField, typeahead } from './search';
 import { section, sectionGroup } from './section';
+import { surface } from './surface';
 import { select } from './select';
 import { spinner } from './spinner';
 import { statusBadge } from './status';
@@ -58,7 +58,8 @@ import { table } from './table';
 import { playableRow, scrollX, tableCell } from './table-parts';
 import { tabs } from './tabs';
 import { recordHeader } from './record';
-import { hue, plate, scrollList } from './tile';
+import { ALL_MODULES, type ModuleName, onlyModules } from './modules';
+import { hue, scrollList } from './tile';
 import { toast } from './toast';
 import { toggleGroup } from './toggle-group';
 import { tooltip } from './tooltip';
@@ -72,19 +73,17 @@ import { tooltip } from './tooltip';
 /** The names a project gave its colors: the label hues (`categorical`) and the section tones (`wash`). */
 export type ColorNames = { hues: readonly string[]; tones: readonly string[] };
 
-export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], tones: [] }) {
+function buildRecipes(t: TypeSystem, names: ColorNames) {
   const { label, numeral, text, title } = createRoles(t);
   return {
     recipes: {
-      ...createPageRoles(t),
       scrollX,
       tableCell: tableCell(t),
       playableRow,
-      itemList,
+      itemList: itemList(t),
       layoutStack,
       columnGrid,
       columnCell,
-      nameList: nameList(t),
       layoutWrap,
       measure,
       ruled,
@@ -92,27 +91,20 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
       inset,
       layout,
       fullRow,
-      termList: termList(t),
-      termRow,
-      columnList: columnList(t),
       splitGrid,
-      tileGrid,
-      listFilter: listFilter(t),
+          listFilter: listFilter(t),
       quote,
       codeBlock: codeBlock(t),
       timeline: timeline(t),
       disclosure: disclosure(t),
-      picture,
       figure,
-  videoFrame,
       sectionGroup,
       hue: hue(names.hues),
+      surface: surface(names.tones),
+      layers,
       scrollList,
       chip: chip(t),
       pageColumn,
-      pageHeader,
-      cardItem,
-      centeredLines,
       skipLink: skipLink(t),
       pageBar,
       adminBar,
@@ -135,35 +127,35 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
     },
     slotRecipes: {
       embedFrame,
+      picture,
+      videoFrame,
       combobox,
       styleguide: styleguide(t),
-      countedList: countedList(t),
       recordHeader: recordHeader(t),
-      expandableRow: expandableRow(t),
+      row: row(t),
       rowDrawer,
-      datedList: datedList(t),
       section: section(t, names.tones),
-      plate: plate(t),
-      featureCard: featureCard(t),
-      tile: tile(t),
-      pageText: pageText(t),
-      pageLayout: pageLayout(t),
+      card: card(t),
+      siteMasthead: siteMasthead(t),
+      cover: cover(names.tones),
+      pinned,
+          sidebar: sidebar(t),
       jumpNav: jumpNav(t),
       breadcrumbs: breadcrumbs(t),
       siteNav: siteNav(t),
       siteFooter: siteFooter(t),
+      alert,
       player: player(t),
       searchField: searchField(t),
       filterRow: filterRow(t),
       typeahead: typeahead(t),
       hero: hero(t),
       viewSwitch,
-      browseNav: browseNav(t),
+      linkNav: linkNav(t),
       rangeColumns: rangeColumns(t),
       rangeNav: rangeNav(t),
       rangeSections: rangeSections(t),
       letterBar: letterBar(t),
-      listHeader: listHeader(t),
       accordion,
       checkbox,
       dialog,
@@ -181,3 +173,21 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
     },
   };
 }
+
+/**
+ * Every recipe the project asked for: the core and the modules it lists (see `MODULES`), built for a type system.
+ *
+ * @param t - the type system of a design.
+ * @param names - the project's hue and tone names.
+ * @param modules - the opt-in modules to include. All of them when left out.
+ * @returns the recipes and slot recipes.
+ */
+export function createRecipes(
+  t: TypeSystem,
+  names: ColorNames = { hues: [], tones: [] },
+  modules: readonly ModuleName[] = ALL_MODULES
+) {
+  return onlyModules(buildRecipes(t, names), modules);
+}
+
+export { ALL_MODULES, MODULES, type ModuleName } from './modules';

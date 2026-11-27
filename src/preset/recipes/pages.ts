@@ -1,6 +1,6 @@
 import type { TypeSystem } from '../type-scale';
 import { defineRecipe } from '@pandacss/dev';
-import { column, ruleBelow, siteInset } from '../fragments';
+import { column, siteInset } from '../fragments';
 import { linkStyles } from '../interaction';
 
 /** The page: full width with one gutter at each side and no gap between blocks. Links in page content use `linkStyles` (see `interaction.ts`). */
@@ -18,31 +18,6 @@ export const pageColumn = defineRecipe({
   variants: {
     flushTop: { true: { paddingBlockStart: '0' } },
   },
-});
-
-/** The centered title block at the top of a page, closed by a hairline rule. */
-export const pageHeader = defineRecipe({
-  className: 'page-header',
-  base: {
-    ...column,
-    gap: '4',
-    alignItems: 'center',
-    textAlign: 'center',
-    paddingBlock: '8',
-    ...ruleBelow,
-  },
-});
-
-/** One item in a grid of cards: a picture over one or two lines of text. */
-export const cardItem = defineRecipe({
-  className: 'card-item',
-  base: { ...column, gap: '1' },
-});
-
-/** Lines of text centered under a title, one per line. */
-export const centeredLines = defineRecipe({
-  className: 'centered-lines',
-  base: { ...column, alignItems: 'center', gap: '1' },
 });
 
 /** The skip-to-content link: off screen until it receives keyboard focus. */

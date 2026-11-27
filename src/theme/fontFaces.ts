@@ -3,7 +3,7 @@ import type { Theme } from './types';
 /** One `@font-face` rule as Panda's `globalFontface` takes it. */
 type FaceRule = {
   src: string;
-  fontWeight: number;
+  fontWeight: number | string;
   fontStyle: 'normal' | 'italic';
   fontDisplay: 'swap';
 };

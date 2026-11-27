@@ -3,5 +3,5 @@
   "compilerOptions": {
     "tsBuildInfoFile": "${configDir}/node_modules/.cache/tsc-components.tsbuildinfo"
   },
-  "include": ["src/components", "src/hooks", "src/rich-text", "src/index.ts"]
+  "include": ["src/components", "src/hooks", "src/modules", "src/rich-text", "src/index.ts"]
 }

@@ -18,9 +18,10 @@ const cases: Case[] = [
     role: 'display' as const,
     step: (['5xl', '4xl', '3xl', '2xl', 'xl', 'lg'] as const)[i] as Case['step'],
   })),
-  { name: 'text body', cls: text({ variant: 'body' }), role: 'body', step: 'md' },
-  { name: 'text small', cls: text({ variant: 'small' }), role: 'body', step: 'sm' },
-  { name: 'text caption', cls: text({ variant: 'caption' }), role: 'body', step: 'xs' },
+  { name: 'text body', cls: text({ scale: 'body-md' }), role: 'body', step: 'md' },
+  { name: 'text small', cls: text({ scale: 'body-sm' }), role: 'body', step: 'sm' },
+  { name: 'text display lg', cls: text({ scale: 'display-lg' }), role: 'display', step: 'lg' },
+  { name: 'text caption', cls: text({ scale: 'body-xs' }), role: 'body', step: 'xs' },
   { name: 'label', cls: label(), role: 'body', step: 'xs' },
   { name: 'numeral', cls: numeral(), role: 'display', step: 'sm' },
 ];

@@ -1,7 +1,6 @@
 import { createContext, type ReactNode, useContext } from 'react';
 import { section, sectionGroup } from '../../styled-system/recipes';
-import { Count } from './text';
-import { Title } from './typography';
+import { Text, Title } from './typography';
 import { declared } from './variants';
 
 /** The fill of a {@link Section}: `plain` has no fill, any other is a tint block named in the theme's `wash`. */
@@ -90,7 +89,11 @@ export function Section({
         <div className={classes.header}>
           <h2 className={classes.label}>
             <span>{label}</span>
-            {count !== undefined && <Count>{count}</Count>}
+            {count !== undefined && (
+              <Text as="span" size="sm" tone="muted" figures>
+                {count}
+              </Text>
+            )}
           </h2>
           {action?.(classes.action)}
         </div>

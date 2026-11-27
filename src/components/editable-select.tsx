@@ -4,6 +4,7 @@ import { createListCollection } from '@ark-ui/react/select';
 import { visuallyHidden } from '../../styled-system/patterns';
 import * as Select from './select';
 import { useUiText } from './ui-text';
+import { requireModule } from '../hooks/require-module';
 
 export function EditableSelect<T extends string>({
   label,
@@ -26,6 +27,7 @@ export function EditableSelect<T extends string>({
   onClear?: () => void;
   disabled?: boolean;
 }) {
+  requireModule('admin');
   const t = useUiText();
   const sorted = [...options].sort((a, b) => a.name.localeCompare(b.name));
   const collection = createListCollection({

@@ -4,11 +4,11 @@ import { ark } from '@ark-ui/react/factory';
 import { Select, useSelectItemContext } from '@ark-ui/react/select';
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
 import { forwardRef, type RefAttributes } from 'react';
-import { createStyleContext } from '../../styled-system/jsx';
+import { createSlotRecipeContext } from '../../styled-system/jsx';
 import { type SelectVariantProps, select } from '../../styled-system/recipes';
 import type { HTMLStyledProps } from '../../styled-system/types';
 
-const { withProvider, withContext } = createStyleContext(select);
+const { withProvider, withContext } = createSlotRecipeContext(select);
 
 type StyleProps = SelectVariantProps & HTMLStyledProps<'div'>;
 

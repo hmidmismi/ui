@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { embedFrame, figure, picture, videoFrame } from '../../styled-system/recipes';
-import { Caption } from './text';
+import { Text } from './typography';
 
 /** The picture shapes. */
 export type PictureShape =
@@ -10,6 +10,7 @@ export type PictureShape =
   | 'portraitLg'
   | 'photo'
   | 'map'
+  | 'fill'
   | 'score';
 
 /** Props for {@link Picture}. */
@@ -73,8 +74,8 @@ export function Figure({ caption, credit, children }: FigureProps) {
     <figure className={figure()}>
       {children}
       <figcaption>
-        <Caption as="span">{caption}</Caption>
-        {credit && <Caption as="div">{credit}</Caption>}
+        <Text variant="caption" as="span">{caption}</Text>
+        {credit && <Text variant="caption" as="div">{credit}</Text>}
       </figcaption>
     </figure>
   );

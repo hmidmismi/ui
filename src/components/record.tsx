@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { recordHeader } from '../../styled-system/recipes';
+import { requireModule } from '../hooks/require-module';
 
 /** One fact in the row under the title: a small label over its value. */
 export type RecordFact = {
@@ -33,6 +34,7 @@ type RecordHeaderProps = {
  * @returns the header.
  */
 export function RecordHeader({ id, kicker, title, byline, facts, children }: RecordHeaderProps) {
+  requireModule('catalog');
   const classes = recordHeader();
 
   return (

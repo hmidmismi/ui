@@ -1,30 +1,5 @@
 import { defaultControls, defaultGrid } from '../grid';
-import type { Design, HeadingLevel, HeadingStyle, RoleName, RoleStyle } from './types';
-
-/** The text roles of the default design: plain sizes and weights, no capitals. */
-export const defaultRoles = {
-  eyebrow: { step: 'xs', weight: 'medium', tracking: 'caps', uppercase: true, color: 'accent' },
-  name: { step: 'sm', weight: 'semibold' },
-  term: { step: 'sm', weight: 'semibold', color: 'fg.muted' },
-  entry: { face: 'display', step: 'lg' },
-  prose: { step: 'md' },
-  value: { step: 'md' },
-  caption: { step: 'sm', color: 'fg.muted' },
-  count: {
-    step: 'sm',
-    color: 'fg.muted',
-    extra: { fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' },
-  },
-  tagline: { face: 'display', step: '2xl', weight: 'medium' },
-  fieldLabel: {
-    step: 'xs',
-    weight: 'medium',
-    tracking: 'caps',
-    uppercase: true,
-    color: 'fg.muted',
-  },
-  notice: { step: 'lg', color: 'fg.muted' },
-} as const satisfies Record<RoleName, RoleStyle>;
+import type { Design, HeadingLevel, HeadingStyle } from './types';
 
 /** The headings of the default design: six levels, each a step smaller, in medium weight. */
 export const defaultHeadings = {

@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import * as Field from './field';
 import { Input } from './input';
+import { requireModule } from '../hooks/require-module';
 
 export function EditableField({
   label,
@@ -17,6 +18,7 @@ export function EditableField({
   onClear?: () => void;
   disabled?: boolean;
 }) {
+  requireModule('admin');
   const ref = useRef<HTMLInputElement>(null);
 
   function handleBlur() {

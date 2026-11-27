@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { visuallyHidden } from '../../styled-system/patterns';
 import { playableRow, scrollX, tableCell } from '../../styled-system/recipes';
 import * as Table from './table';
+import { requireModule } from '../hooks/require-module';
 
 /**
  * Lets a wide table scroll sideways on narrow screens instead of overflowing the page.
@@ -68,5 +69,6 @@ type PlayableRowProps = {
  * @returns the row.
  */
 export function PlayableRow({ playing, children }: PlayableRowProps) {
+  requireModule('catalog');
   return <Table.Row className={playableRow({ playing })}>{children}</Table.Row>;
 }

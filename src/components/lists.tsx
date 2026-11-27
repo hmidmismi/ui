@@ -1,148 +1,75 @@
 import type { ReactNode } from 'react';
-import { countedList, datedList, expandableRow, rowDrawer } from '../../styled-system/recipes';
+import { rowDrawer, row } from '../../styled-system/recipes';
 
-/** Props for {@link CountedList}. */
-type CountedListProps = {
-  /** The rows, from {@link CountedItem}. */
-  children: ReactNode;
-};
-
-/**
- * A list of names with their counts, one hairline between rows. Slot recipe `countedList`.
- *
- * @param props - the rows.
- * @returns the list.
- */
-export function CountedList({ children }: CountedListProps) {
-  return <ul className={countedList().root}>{children}</ul>;
-}
-
-/** Props for {@link CountedItem}. */
-type CountedItemProps = {
-  /** The formatted count. */
-  count: ReactNode;
-  /** Builds the row's link from the slot class and the row content. */
-  link: (className: string, content: ReactNode) => ReactNode;
-  /** The name. */
-  children: ReactNode;
-};
-
-/**
- * One row of a {@link CountedList}: the name at the start, its count at the end, as a link.
- *
- * @param props - the count, the link builder and the name.
- * @returns the row.
- */
-export function CountedItem({ count, link, children }: CountedItemProps) {
-  const classes = countedList();
-
-  return (
-    <li className={classes.item}>
-      {link(
-        classes.link,
-        <>
-          <span className={classes.name}>{children}</span>
-          <span className={classes.count}>{count}</span>
-        </>
-      )}
-    </li>
-  );
-}
-
-/** Props for {@link ExpandableRow}. */
-type ExpandableRowProps = {
-  /** `plated` (the default) has a cover plate at the start; `numbered` has a small number, for the tracks of a release. */
-  layout?: 'plated' | 'numbered';
-  /** The cover plate, or the number in a `numbered` row. */
-  plate: ReactNode;
-  /** The title. */
-  title: ReactNode;
-  /** The line under the title, such as `Author · Publisher · Code`. */
-  meta?: ReactNode;
-  /** The text at the end, such as `1993 · 12 items`. Phones hide it. */
-  aside: ReactNode;
-  /** Whether the drawer is open. */
-  open: boolean;
-  /** The id of the drawer this row controls. */
-  controls: string;
-  /** Called when the row is pressed. */
-  onToggle: () => void;
-};
-
-/**
- * An expandable row: a button with the plate, the title over its meta line, an aside, and a chevron that
- * turns when it is open. Slot recipe `expandableRow`.
- *
- * @param props - the parts, the open state and the toggle.
- * @returns the row button.
- */
-export function ExpandableRow({
-  layout = 'plated',
-  plate,
-  title,
-  meta,
-  aside,
-  open,
-  controls,
-  onToggle,
-}: ExpandableRowProps) {
-  const classes = expandableRow({ layout });
-
-  return (
-    <button
-      type="button"
-      className={classes.root}
-      aria-expanded={open}
-      aria-controls={controls}
-      onClick={onToggle}
-    >
-      {plate}
-      <span className={classes.text}>
-        <span className={classes.title}>{title}</span>
-        <span className={classes.meta}>{meta}</span>
-      </span>
-      <span className={classes.aside}>{aside}</span>
-      <span className={classes.chevron} aria-hidden />
-    </button>
-  );
-}
-
-/** Props for {@link LinkRow}. */
-type LinkRowProps = {
+/** What every {@link Row} has. */
+type RowBase = {
+  /** The columns: `plain` (title and aside), `plated` or `numbered` (a lead at the start and a chevron), `thumb` (a lead at the start, no chevron), `dated` (a lead on the text's baseline). Defaults to `plain`. */
+  layout?: 'plain' | 'plated' | 'numbered' | 'dated' | 'thumb';
+  /** What leads the row: a picture, a number or a date. */
+  lead?: ReactNode;
   /** The title. */
   title: ReactNode;
   /** The line under the title. */
   meta?: ReactNode;
-  /** The text at the end. */
+  /** The text at the end. Phones hide it, except in a `dated` row. */
   aside?: ReactNode;
-  /** Builds the row's link from the slot class and the row content. */
-  link: (className: string, content: ReactNode) => ReactNode;
 };
 
+/** What makes a row a link (`link`), or a button that opens something (`onToggle`, with `open` and `controls`), or neither. */
+type RowAction = {
+  /** Builds the row's link from the slot class and the row content. */
+  link?: (className: string, content: ReactNode) => ReactNode;
+  /** Whether what the row opens is open. */
+  open?: boolean;
+  /** The id of what the row opens. */
+  controls?: string;
+  /** Called when the row is pressed. Makes the row a button. */
+  onToggle?: () => void;
+};
+
+/** Props for {@link Row}. */
+export type RowProps = RowBase & RowAction;
+
 /**
- * A plain row for a search result that is a link: the title over its meta line and a note at the end. Slot recipe
- * `expandableRow`, `plain`.
+ * A row of a list: a lead, the title over its meta line, an aside and, for a button, a chevron that turns when it is
+ * open. With `link` the whole row is the link; with `onToggle` it is a button. Put each row in an `li` of an `ItemList`
+ * (`gap="0"`, `closed`), which draws the rule under the last. Slot recipe `row`.
  *
- * @param props - the parts and the link builder.
+ * @param props - the layout, the parts and the link or the toggle.
  * @returns the row.
  */
-export function LinkRow({ title, meta, aside, link }: LinkRowProps) {
-  const classes = expandableRow({ layout: 'plain' });
-
-  return (
-    <li>
-      {link(
-        classes.root,
-        <>
-          <span>
-            <span className={classes.title}>{title}</span>
-            {meta && <span className={classes.meta}>{meta}</span>}
-          </span>
-          {aside && <span className={classes.aside}>{aside}</span>}
-        </>
-      )}
-    </li>
+export function Row(props: RowProps) {
+  const { layout = 'plain', lead, title, meta, aside } = props;
+  const button = props.onToggle !== undefined;
+  const classes = row({ layout, interactive: props.link !== undefined || button });
+  // A lead layout keeps its aside column, so the chevron stays in its own.
+  const asideColumn = aside !== undefined || layout === 'plated' || layout === 'numbered';
+  const content = (
+    <>
+      {lead}
+      <span className={classes.text}>
+        <span className={classes.title}>{title}</span>
+        {meta && <span className={classes.meta}>{meta}</span>}
+      </span>
+      {asideColumn && <span className={classes.aside}>{aside}</span>}
+      {button && <span className={classes.chevron} aria-hidden />}
+    </>
   );
+  if (props.link) return <>{props.link(classes.root, content)}</>;
+  if (button) {
+    return (
+      <button
+        type="button"
+        className={classes.root}
+        aria-expanded={props.open}
+        aria-controls={props.controls}
+        onClick={props.onToggle}
+      >
+        {content}
+      </button>
+    );
+  }
+  return <div className={classes.root}>{content}</div>;
 }
 
 /** Props for {@link RowDrawer}. */
@@ -208,56 +135,6 @@ export function DrawerItem({ number, title, time }: DrawerItemProps) {
         {title}
       </span>
       <span className={classes.time}>{time}</span>
-    </li>
-  );
-}
-
-/**
- * The upcoming events list. Slot recipe `datedList`.
- *
- * @param props - the rows.
- * @returns the list.
- */
-export function DatedList({ children }: { children: ReactNode }) {
-  return <ul className={datedList().root}>{children}</ul>;
-}
-
-/** Props for {@link DatedRow}. */
-type DatedRowProps = {
-  /** The month abbreviation, such as `Oct`. */
-  month: string;
-  /** The day, such as `14`. */
-  day: string;
-  /** The machine-readable date. */
-  dateTime: string;
-  /** The event title. */
-  title: ReactNode;
-  /** The line under the title. */
-  subtitle: ReactNode;
-  /** What is at the end of the row. */
-  aside: ReactNode;
-};
-
-/**
- * One event: the date block (month over day), the title over its subtitle, and an aside at the end.
- *
- * @param props - the date, title, subtitle and aside.
- * @returns the row.
- */
-export function DatedRow({ month, day, dateTime, title, subtitle, aside }: DatedRowProps) {
-  const classes = datedList();
-
-  return (
-    <li className={classes.row}>
-      <time dateTime={dateTime} className={classes.date}>
-        <span className={classes.month}>{month}</span>
-        <span className={classes.day}>{day}</span>
-      </time>
-      <div>
-        <strong className={classes.title}>{title}</strong>
-        <span className={classes.with}>{subtitle}</span>
-      </div>
-      <span className={classes.where}>{aside}</span>
     </li>
   );
 }

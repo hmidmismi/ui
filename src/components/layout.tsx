@@ -1,7 +1,6 @@
 import type { VariantOf } from '@hmidmismi/ui';
 import type { ComponentProps, ReactNode } from 'react';
 import {
-  nameList,
   columnCell,
   columnGrid,
   fullRow,
@@ -13,21 +12,30 @@ import {
   measure,
   mediaRow,
   ruled,
+  surface,
 } from '../../styled-system/recipes';
+import { Text } from './typography';
+import { declared } from './variants';
 
 /** The spacing names a {@link ItemList} may use. Read from the `itemList` recipe. */
 export type StackGap = VariantOf<typeof itemList, 'gap'>;
 
 /** Props for {@link ItemList}. */
 type ListProps = {
-  /** An unordered or ordered list. */
-  as?: 'ul' | 'ol';
+  /** An unordered, ordered or description list. A description list holds {@link Pair} items. */
+  as?: 'ul' | 'ol' | 'dl';
+  /** How the items sit: a column (`stack`), label and value `pairs` in two columns, or `flow` into columns. Defaults to `stack`. */
+  layout?: 'stack' | 'pairs' | 'flow';
+  /** The text size of the items. */
+  size?: 'lg';
   /** The space between items. Defaults to `tight`. */
   gap?: StackGap;
   /** Shows the list markers, indented. */
   marker?: boolean;
   /** Draws a rule between items instead of a gap. */
   ruled?: boolean;
+  /** Draws a rule under the last item too, for a list of rows that each have a rule above. */
+  closed?: boolean;
   /** Lays the items out in a row that wraps. */
   inline?: boolean;
   /** The `li` items. */
@@ -35,20 +43,24 @@ type ListProps = {
 };
 
 /**
- * A list without markers. Markers, rules between items and a wrapping row layout are opt-in. Recipe `list`.
+ * A list without markers. Markers, rules between items, a wrapping row, label and value pairs and columns are opt-in.
+ * Recipe `itemList`.
  *
  * @param props - the element, gap, marker, rule and inline options, and the items.
  * @returns the list.
  */
 export function ItemList({
   as: Tag = 'ul',
+  layout = 'stack',
+  size,
   gap = '2',
   marker = false,
   ruled: rules = false,
+  closed = false,
   inline = false,
   children,
 }: ListProps) {
-  return <Tag className={itemList({ gap, marker, ruled: rules, inline })}>{children}</Tag>;
+  return <Tag className={itemList({ gap, layout, size, marker, ruled: rules, closed, inline })}>{children}</Tag>;
 }
 
 /** Props for {@link Measure}. */
@@ -161,6 +173,12 @@ export type StackProps = BoxProps & {
   padBlock?: VariantOf<typeof layoutStack, 'padBlock'>;
   /** The padding at the sides. */
   padInline?: VariantOf<typeof layoutStack, 'padInline'>;
+  /** How the children sit across the column; `center` also centers their text. */
+  align?: VariantOf<typeof layoutStack, 'align'>;
+  /** Draws a hairline rule under the column. */
+  ruled?: boolean;
+  /** The space under the column. */
+  after?: VariantOf<typeof layoutStack, 'after'>;
   children?: ReactNode;
 };
 
@@ -175,11 +193,14 @@ export function Stack({
   gap,
   padBlock,
   padInline,
+  align,
+  ruled,
+  after,
   children,
   ...rest
 }: StackProps) {
   return (
-    <Tag {...rest} className={layoutStack({ gap, padBlock, padInline })}>
+    <Tag {...rest} className={layoutStack({ gap, padBlock, padInline, align, ruled, after })}>
       {children}
     </Tag>
   );
@@ -189,8 +210,14 @@ export function Stack({
 export type WrapProps = BoxProps & {
   /** The gap between the children. */
   gap?: StackGap;
-  /** Centers the children across the row. */
+  /** How the children sit across the row. */
   align?: VariantOf<typeof layoutWrap, 'align'>;
+  /** Spreads the children to the two ends of the row. */
+  justify?: VariantOf<typeof layoutWrap, 'justify'>;
+  /** Keeps the children on one line, shrinking them, for a field beside its button. */
+  nowrap?: boolean;
+  /** The space under the row. */
+  after?: VariantOf<typeof layoutWrap, 'after'>;
   children?: ReactNode;
 };
 
@@ -200,9 +227,9 @@ export type WrapProps = BoxProps & {
  * @param props - the gap, alignment, attributes and children.
  * @returns the row.
  */
-export function Wrap({ gap, align, children, ...rest }: WrapProps) {
+export function Wrap({ gap, align, justify, nowrap, after, children, ...rest }: WrapProps) {
   return (
-    <div {...rest} className={layoutWrap({ gap, align })}>
+    <div {...rest} className={layoutWrap({ gap, align, justify, nowrap, after })}>
       {children}
     </div>
   );
@@ -233,13 +260,59 @@ export function Cell({ span, children }: { span: CellSpan; children: ReactNode }
   return <div className={columnCell({ span })}>{children}</div>;
 }
 
+/** Props for {@link Pair}. */
+type PairProps = {
+  /** The label. */
+  label: string;
+  /** The value. */
+  children: ReactNode;
+};
+
 /**
- * A list of names, one per line, in a single column; `flow` lets a long list run into columns. Use it for the people
- * credited on something. Recipe `nameList`.
+ * One label and its value in an `ItemList` with `as="dl"`: the label small, semibold and muted, then the value.
  *
- * @param props - whether to flow into columns, and the `li` items.
- * @returns the list.
+ * @param props - the label and the value.
+ * @returns the pair.
  */
-export function NameList({ flow = false, children }: { flow?: boolean; children: ReactNode }) {
-  return <ul className={nameList({ flow })}>{children}</ul>;
+export function Pair({ label, children }: PairProps) {
+  return (
+    <div>
+      <Text as="dt" size="sm" weight="semibold" tone="muted">
+        {label}
+      </Text>
+      <dd>{children}</dd>
+    </div>
+  );
+}
+
+/** Props for {@link Surface}. */
+type SurfaceProps = {
+  /** The element. Defaults to `div`. */
+  as?: 'div' | 'section' | 'aside';
+  /** A named wash from the theme behind the content, or `plain` for the page's own background. */
+  tone?: string;
+  /** The space above and below the content. Defaults to `normal`. */
+  pad?: 'none' | 'normal' | 'loose';
+  /** A minimum height: a third of the screen, or all of it. */
+  min?: 'third' | 'screen';
+  /** Centers the content in the block. */
+  place?: 'center';
+  /** The accessible name, for a section. */
+  label?: string;
+  /** The content. */
+  children: ReactNode;
+};
+
+/**
+ * A block that runs the full width of the page, with a tone behind its content, which sits in the page column. Recipe `surface`.
+ *
+ * @param props - the element, tone, padding, minimum height, placement and content.
+ * @returns the block.
+ */
+export function Surface({ as: Tag = 'div', tone = 'plain', pad, min, place, label, children }: SurfaceProps) {
+  return (
+    <Tag className={surface({ tone: declared(tone), pad, min, place })} aria-label={label}>
+      {children}
+    </Tag>
+  );
 }

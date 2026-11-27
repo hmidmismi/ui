@@ -61,29 +61,6 @@ describe('what the design and the project can change', () => {
     expect(() => preset({ fontWeights: { heavy: '900' } })).toThrow(/Design\.fontWeights/);
   });
 
-  it('builds the label styles from the eyebrow and field label roles', () => {
-    const p = preset({
-      type: {
-        ...base.type,
-        roles: {
-          eyebrow: {
-            step: 'sm',
-            weight: 'bold',
-            tracking: 'caps',
-            uppercase: true,
-            color: 'accent',
-          },
-          fieldLabel: { step: 'xs', weight: 'normal', color: 'fg.muted' },
-        },
-      },
-    });
-    const recipes = (p.theme?.extend as { recipes: Record<string, any> }).recipes;
-    expect(recipes.eyebrow.base.fontWeight).toBe('bold');
-    const slots = (p.theme?.extend as { slotRecipes: Record<string, any> }).slotRecipes;
-    expect(slots.filterRow.base.label.fontWeight).toBe('normal');
-    expect(slots.filterRow.base.label.color).toBe('fg.muted');
-  });
-
   it('lets a project replace one recipe by name and add its own', () => {
     const p = createPreset(base, neutral, {
       recipes: () => ({
@@ -100,7 +77,7 @@ describe('what the design and the project can change', () => {
   });
 });
 
-describe('headings and text roles read the design', () => {
+describe('headings and text read the design', () => {
   it('set a heading level from the design', () => {
     const p = preset({
       type: { ...base.type, headings: { h1: { step: '2xl', uppercase: true, tracking: 'title' } } },
@@ -112,13 +89,17 @@ describe('headings and text roles read the design', () => {
     expect(Object.keys(title.variants.level)).toEqual(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
   });
 
-  it('set a role from the design', () => {
-    const p = preset({
-      type: { ...base.type, roles: { eyebrow: { step: 'sm', uppercase: true, color: 'accent' } } },
-    });
-    const eyebrow = (p.theme?.extend as { recipes: Record<string, any> }).recipes.eyebrow;
-    expect(eyebrow.base.color).toBe('accent');
-    expect(eyebrow.base.textTransform).toBe('uppercase');
+  it('set a text look by variants, not by a content-named role', () => {
+    const recipes = (preset({}).theme?.extend as { recipes: Record<string, any> }).recipes;
+    const text = recipes.text;
+    expect(Object.keys(text.variants.scale)).toContain('display-2xl');
+    expect(Object.keys(text.variants.scale)).toContain('body-sm-inline');
+    expect(text.variants.tone.muted.color).toBe('fg.muted');
+    expect(text.variants.figures.true.fontVariantNumeric).toBe('tabular-nums');
+    expect(recipes.label.variants.tone.accent.color).toBe('accent');
+    for (const name of ['eyebrow', 'name', 'term', 'entry', 'prose', 'value', 'caption', 'count', 'tagline', 'fieldLabel', 'notice']) {
+      expect(recipes[name], name).toBeUndefined();
+    }
   });
 });
 

@@ -3,13 +3,13 @@ import { Portal } from '@ark-ui/react/portal';
 import { Toaster as ArkToaster, createToaster, Toast, useToastContext } from '@ark-ui/react/toast';
 import { CheckCircleIcon, CircleAlertIcon, CircleXIcon } from 'lucide-react';
 import { forwardRef } from 'react';
-import { createStyleContext, Stack, styled } from '../../styled-system/jsx';
+import { createSlotRecipeContext, Stack, styled } from '../../styled-system/jsx';
 import { toast } from '../../styled-system/recipes';
 import { CloseButton } from './close-button';
 import { Icon, type IconProps } from './icon';
 import { Spinner } from './spinner';
 
-const { withProvider, withContext } = createStyleContext(toast);
+const { withProvider, withContext } = createSlotRecipeContext(toast);
 
 const Root = withProvider(Toast.Root, 'root');
 const Title = withContext(Toast.Title, 'title');

@@ -3,10 +3,10 @@ import { Combobox, useComboboxItemContext } from '@ark-ui/react/combobox';
 import { ark } from '@ark-ui/react/factory';
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
 import { forwardRef } from 'react';
-import { createStyleContext, type HTMLStyledProps } from '../../styled-system/jsx';
+import { createSlotRecipeContext, type HTMLStyledProps } from '../../styled-system/jsx';
 import { type ComboboxVariantProps, combobox } from '../../styled-system/recipes';
 
-const { withProvider, withContext } = createStyleContext(combobox);
+const { withProvider, withContext } = createSlotRecipeContext(combobox);
 
 export type RootProps = HTMLStyledProps<'div'> & ComboboxVariantProps;
 

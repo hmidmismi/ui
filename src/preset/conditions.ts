@@ -3,7 +3,7 @@ export const conditions = {
     light: ':root &, .light &',
     dark: '&.dark, .dark &',
     invalid: '&:is(:user-invalid, [data-invalid], [aria-invalid=true])',
-    hover: ['@media (hover: hover)', '&:not(:disabled):hover'],
+    hover: { '@media (hover: hover)': { '&:not(:disabled):hover': '@slot' as const } },
     active: '&:not(:disabled):active',
     checked:
       '&:is(:checked, [data-checked], [data-state=checked], [aria-checked=true], [data-state=indeterminate])',

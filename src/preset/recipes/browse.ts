@@ -8,35 +8,9 @@ import {
   scrollRow,
   stickBelowHeader,
 } from '../fragments';
-import { currentMark, hoverAccent, hoverRow } from '../interaction';
+import { hoverRow } from '../interaction';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
-
-/** A row of links that choose a group of a browse list: a letter, a decade or a view. The current one is marked. */
-export const browseNav = (t: TypeSystem) => {
-  const labelCapsLine = t.labelCapsLine;
-  return defineSlotRecipe({
-    className: 'browse-nav',
-    staticCss: ['*'],
-    slots: ['root', 'link'],
-    base: {
-      root: { display: 'flex', flexWrap: 'wrap', gap: '1', paddingBlock: '2', ...ruleBelow },
-      link: {
-        paddingBlock: '1',
-        paddingInline: '2',
-        color: 'fg.muted',
-        ...labelCapsLine,
-        ...hoverAccent,
-      },
-    },
-    variants: {
-      current: {
-        true: { link: currentMark },
-        false: {},
-      },
-    },
-  });
-};
 
 /**
  * The columns of a browse list. Each column is a range of names under its label, such as `Ad–At`, with the number of
@@ -151,34 +125,6 @@ export const letterBar = (t: TypeSystem) => {
           pointerEvents: 'none',
         },
       },
-    },
-  });
-};
-
-/** The title row of a list page: the page title at the start and the number of entries, muted, at the end. */
-export const listHeader = (t: TypeSystem) => {
-  const textRole = t.textRole;
-  return defineSlotRecipe({
-    className: 'list-header',
-    slots: ['root', 'title', 'count'],
-    base: {
-      root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-        columnGap: '6',
-        rowGap: '2',
-        marginBlockEnd: '6',
-      },
-      title: {
-        color: 'fg.default',
-        fontFamily: 'display',
-        fontWeight: 'medium',
-        letterSpacing: 'display',
-        ...responsive(textRole('display', '4xl'), textRole('display', '6xl'), 'sm'),
-      },
-      count: { color: 'fg.muted', ...textRole('body', 'md') },
     },
   });
 };

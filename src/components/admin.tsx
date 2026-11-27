@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { requireModule } from '../hooks/require-module';
 import {
   adminBar,
   fieldStatus,
@@ -22,6 +23,7 @@ type FieldStatusProps = {
  * @returns the line.
  */
 export function FieldStatus({ available = true, children }: FieldStatusProps) {
+  requireModule('admin');
   return <p className={fieldStatus({ available })}>{children}</p>;
 }
 
@@ -38,6 +40,7 @@ type ViewSwitchProps = {
  * @returns the row.
  */
 export function ViewSwitch({ children }: ViewSwitchProps) {
+  requireModule('admin');
   return <nav className={viewSwitch().root}>{children}</nav>;
 }
 
@@ -68,6 +71,7 @@ export function signInFormClass(align?: 'center' | 'start') {
  * @returns the bar.
  */
 export function PageBar({ children }: { children: ReactNode }) {
+  requireModule('admin');
   return <div className={pageBar()}>{children}</div>;
 }
 
@@ -78,5 +82,6 @@ export function PageBar({ children }: { children: ReactNode }) {
  * @returns the strip.
  */
 export function AdminBar({ children }: { children: ReactNode }) {
+  requireModule('admin');
   return <nav className={adminBar()}>{children}</nav>;
 }

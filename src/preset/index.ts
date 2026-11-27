@@ -12,7 +12,8 @@ import { conditions } from './conditions';
 import { globalCss } from './global-css';
 import { keyframes } from './keyframes';
 import { layerStyles } from './layer-styles';
-import { createRecipes } from './recipes';
+import { createRecipes, type ModuleName } from './recipes';
+import { ALL_MODULES, withNeeds } from './recipes/modules';
 import { spacingFor } from '../grid';
 import { textStylesFor } from './text-styles';
 import {
@@ -44,6 +45,11 @@ const breakpointsFor = (d: Pick<Design, 'breakpoints'>) => ({
 
 /** What a project may bring of its own, in place of the system's. */
 export type PresetOptions = {
+  /**
+   * The opt-in modules to include: `forms`, `admin`, `catalog` (see `MODULES`). A module a project leaves out adds no
+   * recipes and so no CSS; the ones a module needs come with it. All of them when left out.
+   */
+  modules?: readonly ModuleName[];
   /**
    * Recipes of the project's own, built from the design's type system. One named like a recipe of the system replaces
    * it; the others are added. This is the place for a look the tokens cannot express.
@@ -80,10 +86,11 @@ export function createPreset(
 ) {
   const type = createTypeSystem(design, theme.faces);
   const colorTokens = colorTokensFor(theme) as Record<string, Record<string, unknown>>;
-  const system = createRecipes(type, {
-    hues: Object.keys(colorTokens.categorical ?? {}),
-    tones: Object.keys(colorTokens.wash ?? {}),
-  });
+  const system = createRecipes(
+    type,
+    { hues: Object.keys(colorTokens.categorical ?? {}), tones: Object.keys(colorTokens.wash ?? {}) },
+    options.modules
+  );
   const own = options.recipes?.(type);
   const recipes = { ...system.recipes, ...own?.recipes };
   const slotRecipes = { ...system.slotRecipes, ...own?.slotRecipes };
@@ -99,7 +106,11 @@ export function createPreset(
           ...((options.globalCss ?? globalCss.extend).body as SystemStyleObject),
           ...type.textSize('body', 'md'),
         } as SystemStyleObject,
-        ':root': themeVariables(theme) as SystemStyleObject,
+        ':root': {
+          ...themeVariables(theme),
+          // Which opt-in modules this build includes, so a component of one it left out can say so in development.
+          '--ui-modules': [...withNeeds(options.modules ?? ALL_MODULES)].join(' '),
+        } as SystemStyleObject,
       },
     },
     theme: {
@@ -140,7 +151,7 @@ export function createPreset(
 export { type ExplicitScale, explicitScale, mix, ref } from './colors/scale';
 export * from './fragments';
 export * from './interaction';
-export { createRecipes } from './recipes';
+export { ALL_MODULES, createRecipes, MODULES, type ModuleName } from './recipes';
 export { input } from './recipes/input';
 export { createTypeSystem, responsive, STEPS, type StepName, type TypeSystem } from './type-scale';
 export { TONE_STEPS, type ToneStep } from './utilities';

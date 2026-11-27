@@ -20,6 +20,8 @@ type HeroProps = {
  * The editorial hero: art with a kicker, a headline, one paragraph and one link. The art is a decorative stand-in
  * until stories carry images. Slot recipe `hero`.
  *
+ * @deprecated Named for a role. Compose it from `Cover` or `SplitGrid`, a `Text` kicker, a `Title`, a `Text` and a `Link`.
+ *
  * @param props - the orientation and the four text slots.
  * @returns the hero.
  */

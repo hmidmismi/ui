@@ -85,7 +85,7 @@ export const section = (t: TypeSystem, tones: readonly string[]) => {
           header: {
             position: 'sticky',
             top: 'calc(var(--bh, token(sizes.bar)) + var(--ut, 0px) + var(--jh, 0px))',
-            zIndex: 'base',
+            zIndex: 'docked',
             background: 'canvas',
             paddingBlock: '2',
             transitionProperty: 'top',

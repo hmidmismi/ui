@@ -1,10 +1,10 @@
 'use client';
 import { RadioGroup } from '@ark-ui/react/radio-group';
 import type { ComponentProps } from 'react';
-import { createStyleContext } from '../../styled-system/jsx';
+import { createSlotRecipeContext } from '../../styled-system/jsx';
 import { radioGroup } from '../../styled-system/recipes';
 
-const { withProvider, withContext } = createStyleContext(radioGroup);
+const { withProvider, withContext } = createSlotRecipeContext(radioGroup);
 
 export type RootProps = ComponentProps<typeof Root>;
 export type ItemProps = ComponentProps<typeof Item>;

@@ -2,6 +2,7 @@ import { type ReactNode, useState } from 'react';
 import { Button } from './button';
 import { playerSlots } from './slots';
 import { fill, useUiText } from './ui-text';
+import { requireModule } from '../hooks/require-module';
 
 /** One track in the queue. */
 export type PlayerQueueItem = {
@@ -61,6 +62,7 @@ type MediaPlayerProps = {
  * @returns the player, or nothing when the queue is empty.
  */
 export function MediaPlayer(props: MediaPlayerProps) {
+  requireModule('catalog');
   const t = useUiText();
   const {
     queue,

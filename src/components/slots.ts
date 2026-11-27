@@ -3,6 +3,7 @@ import {
   link,
   player,
   siteFooter,
+  siteMasthead,
   siteNav,
   typeahead,
 } from '../../styled-system/recipes';
@@ -33,3 +34,6 @@ export const navSlots = ({ signedIn }: { signedIn: boolean } = { signedIn: false
 
 /** Slot classes for the label type-ahead. Slot recipe `typeahead`. */
 export const typeaheadSlots = () => typeahead();
+
+/** Slot classes for the masthead over the home page's first screen. Slot recipe `siteMasthead`. */
+export const mastheadSlots = () => siteMasthead();

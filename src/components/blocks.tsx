@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { codeBlock, disclosure, quote, timeline } from '../../styled-system/recipes';
-import { Caption } from './text';
+import { Text } from './typography';
 
 /** Props for {@link Quote}. */
 type QuoteProps = {
@@ -21,7 +21,7 @@ export function Quote({ source, children }: QuoteProps) {
     <blockquote className={quote()}>
       {children}
       <footer>
-        <Caption>{source}</Caption>
+        <Text variant="caption">{source}</Text>
       </footer>
     </blockquote>
   );

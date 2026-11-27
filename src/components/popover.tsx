@@ -2,10 +2,10 @@
 import { ark } from '@ark-ui/react/factory';
 import { Popover } from '@ark-ui/react/popover';
 import type { ComponentProps } from 'react';
-import { createStyleContext } from '../../styled-system/jsx';
+import { createSlotRecipeContext } from '../../styled-system/jsx';
 import { popover } from '../../styled-system/recipes';
 
-const { withRootProvider, withContext } = createStyleContext(popover);
+const { withRootProvider, withContext } = createSlotRecipeContext(popover);
 
 export type RootProps = ComponentProps<typeof Root>;
 export const Root = withRootProvider(Popover.Root, {

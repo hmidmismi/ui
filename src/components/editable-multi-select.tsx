@@ -3,6 +3,7 @@ import { useListCollection } from '@ark-ui/react/combobox';
 import { useFilter } from '@ark-ui/react/locale';
 import * as Combobox from './combobox';
 import { fill, useUiText } from './ui-text';
+import { requireModule } from '../hooks/require-module';
 
 export function EditableMultiSelect<T extends string>({
   label,
@@ -17,6 +18,7 @@ export function EditableMultiSelect<T extends string>({
   onChange: (values: T[]) => void;
   disabled?: boolean;
 }) {
+  requireModule('admin');
   const t = useUiText();
   const { contains } = useFilter({ sensitivity: 'base' });
   const { collection, filter } = useListCollection({
