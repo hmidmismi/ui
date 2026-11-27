@@ -17,6 +17,7 @@ export const link = (t: TypeSystem) =>
       tone: {
         accent: {},
         muted: { color: 'fg.muted', ...hoverAccentUnderline },
+        inherit: { color: 'inherit' },
       },
     },
   });

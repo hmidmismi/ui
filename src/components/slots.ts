@@ -16,6 +16,9 @@ import {
 /** Class for an inline link, accent colored. Recipe `link`. */
 export const linkClass = () => link();
 
+/** Class for an inline link in the color of the text around it, for a link on a toned block. Recipe `link`. */
+export const inheritLinkClass = () => link({ tone: 'inherit' });
+
 /** Class for a muted inline link. Recipe `link`. */
 export const mutedLinkClass = () => link({ tone: 'muted' });
 
