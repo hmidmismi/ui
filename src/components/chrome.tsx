@@ -121,7 +121,7 @@ type SiteHeaderProps = {
   account?: SiteHeaderAccount | null;
   /** Controls at the end of the bar, such as {@link ThemeToggle}. */
   actions?: ReactNode;
-  /** The id of the cover the page opens with. The header is then out of the page flow and appears once that cover has scrolled away. */
+  /** The id of the masthead the page opens with. The header is then out of the page flow and can show once that masthead has scrolled away. */
   after?: string;
   /** Slides the whole header away as the reader scrolls down and back as they scroll up, not just the utility row. Defaults to `false`. */
   headroom?: boolean;
@@ -321,6 +321,8 @@ type SiteMastheadProps = {
   tabs: NavLink[];
   /** Below `md`: the menu button's text, what the menu panel holds, and the one control at the end of the bar. */
   menu: { label: string; panel: ReactNode; control: ReactNode };
+  /** The masthead's id, so a {@link SiteHeader} with `after` can wait for the masthead itself to scroll away. */
+  id?: string;
 };
 
 /**
@@ -330,11 +332,11 @@ type SiteMastheadProps = {
  * @param props - the utility row, wordmark, tabs and the phone menu.
  * @returns the masthead.
  */
-export function SiteMasthead({ start, end, wordmark, tabs, menu }: SiteMastheadProps) {
+export function SiteMasthead({ start, end, wordmark, tabs, menu, id }: SiteMastheadProps) {
   const t = useUiText();
   const classes = mastheadSlots();
   return (
-    <header className={classes.root} data-no-print>
+    <header id={id} className={classes.root} data-no-print>
       <div className={classes.start}>{start}</div>
       <div className={classes.end}>{end}</div>
       <details className={classes.menu}>
