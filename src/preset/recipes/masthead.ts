@@ -6,7 +6,7 @@ import { responsive } from '../type-scale';
 /**
  * The masthead over the first screen of the home page: light text on the media behind it. It gives way in three states as
  * the room runs out. From `xl` the full wordmark is centered at the top with the utility links at its start and the
- * controls at its end, on the wordmark's midline, and the tabs are centered under it. From `lg` the full name would run
+ * controls at its end, on the wordmark's midline, and the tabs are centered under it. From `lg` (56rem of the masthead's own width) the full name would run
  * into the utility links, so the short mark takes its place and the rest stays. Below `lg` it is a menu button at the
  * start, the short mark in the middle and the controls at the end; the menu opens a panel with the tabs and the utility
  * links.

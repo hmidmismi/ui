@@ -14,7 +14,7 @@
    "checked": "&:is(:checked, [data-checked], [data-state=checked], [aria-checked=true], [data-state=indeterminate])",
    "on": "&:is([data-state=on])",
    "pinned": "&:is([data-pinned])",
-   "mastLg": "@container (min-width: 64rem)",
+   "mastLg": "@container (min-width: 56rem)",
    "mastXl": "@container (min-width: 80rem)"
   }
  },
