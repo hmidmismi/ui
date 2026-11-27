@@ -3,8 +3,8 @@ import { rowDrawer, row } from '../../styled-system/recipes';
 
 /** What every {@link Row} has. */
 type RowBase = {
-  /** The columns: `plain` (title and aside), `plated` or `numbered` (a lead at the start and a chevron), `thumb` (a lead at the start, no chevron), `card` (a large picture at the start, the title over each line of the meta on its own line, a stronger hover), `dated` (a lead on the text's baseline). Defaults to `plain`. */
-  layout?: 'plain' | 'plated' | 'numbered' | 'dated' | 'thumb' | 'card';
+  /** The columns: `plain` (title and aside), `plated` or `numbered` (a lead at the start and a chevron), `thumb` (a lead at the start, no chevron), `card` (a large picture at the start, the title over each line of the meta on its own line, a stronger hover), `stacked` (the same turned upright, the picture over the text, larger), `dated` (a lead on the text's baseline). Defaults to `plain`. */
+  layout?: 'plain' | 'plated' | 'numbered' | 'dated' | 'thumb' | 'card' | 'stacked';
   /** What leads the row: a picture, a number or a date. */
   lead?: ReactNode;
   /** The title. */

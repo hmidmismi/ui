@@ -108,6 +108,14 @@ export const row = (t: TypeSystem) => {
           aside: { display: 'none' },
           chevron: { display: 'none' },
         },
+        // The `card` row turned upright, for the one to feature: the picture on top, then the same title and lines, larger.
+        stacked: {
+          root: { gridTemplateColumns: 'minmax(0, 1fr)', alignItems: 'start', rowGap: '4', paddingBlock: '4' },
+          text: { display: 'grid', rowGap: '1' },
+          title: responsive(textLine('display', '2xl'), textLine('display', '4xl'), 'sm'),
+          aside: { display: 'none' },
+          chevron: { display: 'none' },
+        },
         numbered: {
           root: {
             gridTemplateColumns: {
@@ -149,18 +157,17 @@ export const row = (t: TypeSystem) => {
         },
       },
     },
-    compoundVariants: [
-      {
-        layout: 'card',
-        interactive: true,
-        css: {
-          root: {
-            _hover: { background: 'gray.surface.bg.active' },
-            '&:hover [data-part="title"]': { textDecoration: 'underline', textUnderlineOffset: '0.2em' },
-          },
+    // A row of pictures to look at answers the pointer with a stronger ground and an underlined title.
+    compoundVariants: (['card', 'stacked'] as const).map((layout) => ({
+      layout,
+      interactive: true,
+      css: {
+        root: {
+          _hover: { background: 'gray.surface.bg.active' },
+          '&:hover [data-part="title"]': { textDecoration: 'underline', textUnderlineOffset: '0.2em' },
         },
       },
-    ],
+    })),
     defaultVariants: { layout: 'plain' },
   });
 };
