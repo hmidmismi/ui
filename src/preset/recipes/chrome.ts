@@ -311,7 +311,12 @@ export const siteNav = (t: TypeSystem) => {
         true: {
           root: {
             transitionProperty: 'top, transform, visibility',
-            '[data-header="hidden"] &': { transform: 'translateY(-100%)', visibility: 'hidden' },
+            // Slid up until its bottom edge is at the top of the screen, which is where the sticky bars under it settle
+            // (`--bh` is 0 then), so the header and those bars move together through the transition.
+            '[data-header="hidden"] &': {
+              transform: 'translateY(calc(-100% + token(sizes.utility) - token(borderWidths.hairline)))',
+              visibility: 'hidden',
+            },
           },
         },
       },

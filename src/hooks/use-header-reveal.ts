@@ -46,7 +46,8 @@ export function useHeaderReveal(
         last = y;
       } else if (Math.abs(delta) >= THRESHOLD) {
         show(delta < 0);
-        hide(delta > 0);
+        // The header stays until the reader is past all of it, not only its utility row.
+        hide(delta > 0 && y > element.offsetHeight);
         last = y;
       }
     };
