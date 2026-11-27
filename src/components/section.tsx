@@ -33,6 +33,8 @@ type SectionProps = {
   lead?: boolean;
   /** Keeps the label pinned under the jump bar while the section scrolls past. Plain sections only. Defaults to `false`. */
   pinned?: boolean;
+  /** Sets the label in the display face at heading size, for a page of large sections such as the home page. Defaults to `false`, the small eyebrow. */
+  display?: boolean;
   /** The section content. */
   children: ReactNode;
 };
@@ -58,6 +60,7 @@ export function Section({
   compact = false,
   lead = false,
   pinned = false,
+  display = false,
   children,
 }: SectionProps) {
   const inGroup = useContext(GroupContext);
@@ -81,6 +84,7 @@ export function Section({
     compact,
     lead,
     pinned,
+    display,
   });
 
   return (

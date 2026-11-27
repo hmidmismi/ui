@@ -299,6 +299,13 @@ export const siteNav = (t: TypeSystem) => {
       },
     },
     variants: {
+      // Out of the page flow, for a page that opens with a cover: the header is not drawn until the cover has scrolled away.
+      floating: {
+        true: { root: { position: 'fixed', insetInline: '0', transitionProperty: 'top, transform, visibility' } },
+      },
+      away: {
+        true: { root: { visibility: 'hidden', transform: 'translateY(-100%)' } },
+      },
       signedIn: {
         true: {
           root: {

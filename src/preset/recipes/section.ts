@@ -80,6 +80,16 @@ export const section = (t: TypeSystem, tones: readonly string[]) => {
           header: { marginBlockEnd: 'rhythm.item' },
         },
       },
+      display: {
+        true: {
+          label: {
+            ...textLine('display', '3xl'),
+            fontWeight: 'normal',
+            textTransform: 'none',
+            letterSpacing: 'normal',
+          },
+        },
+      },
       pinned: {
         true: {
           header: {

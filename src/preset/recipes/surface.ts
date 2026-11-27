@@ -22,6 +22,7 @@ export const surface = (tones: readonly string[]) =>
       },
       pad: {
         none: {},
+        tight: { paddingBlock: '3' },
         normal: { paddingBlock: '16' },
         loose: { paddingBlock: { base: '16', md: '24' } },
       },

@@ -60,7 +60,11 @@ export function ItemList({
   inline = false,
   children,
 }: ListProps) {
-  return <Tag className={itemList({ gap, layout, size, marker, ruled: rules, closed, inline })}>{children}</Tag>;
+  return (
+    <Tag className={itemList({ gap, layout, size, marker, ruled: rules, closed, inline })}>
+      {children}
+    </Tag>
+  );
 }
 
 /** Props for {@link Measure}. */
@@ -280,6 +284,7 @@ export function Pair({ label, children }: PairProps) {
       <Text as="dt" size="sm" weight="semibold" tone="muted">
         {label}
       </Text>
+      dic
       <dd>{children}</dd>
     </div>
   );
@@ -292,7 +297,7 @@ type SurfaceProps = {
   /** A named wash from the theme behind the content, or `plain` for the page's own background. */
   tone?: string;
   /** The space above and below the content. Defaults to `normal`. */
-  pad?: 'none' | 'normal' | 'loose';
+  pad?: 'none' | 'tight' | 'normal' | 'loose';
   /** A minimum height: a third of the screen, or all of it. */
   min?: 'third' | 'screen';
   /** Centers the content in the block. */
@@ -309,7 +314,15 @@ type SurfaceProps = {
  * @param props - the element, tone, padding, minimum height, placement and content.
  * @returns the block.
  */
-export function Surface({ as: Tag = 'div', tone = 'plain', pad, min, place, label, children }: SurfaceProps) {
+export function Surface({
+  as: Tag = 'div',
+  tone = 'plain',
+  pad,
+  min,
+  place,
+  label,
+  children,
+}: SurfaceProps) {
   return (
     <Tag className={surface({ tone: declared(tone), pad, min, place })} aria-label={label}>
       {children}
