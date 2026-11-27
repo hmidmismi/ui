@@ -47,7 +47,7 @@ export const siteMasthead = (t: TypeSystem) => {
         display: { base: 'none', md: 'flex' },
         alignItems: 'center',
         justifyContent: 'flex-end',
-        gap: '6',
+        gap: '3',
         ...textSize('body', 'md'),
         '& button': { color: 'inherit' },
       },

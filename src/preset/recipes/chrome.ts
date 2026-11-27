@@ -399,7 +399,7 @@ export const siteBar = (t: TypeSystem) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-end',
-        gap: '4',
+        gap: '2',
         minWidth: '0',
         color: 'fg.muted',
         ...textSize('body', 'md'),
