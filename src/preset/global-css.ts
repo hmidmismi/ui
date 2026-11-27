@@ -30,6 +30,12 @@ export const globalCss = {
     'html[data-utility="shown"]': {
       '--ut': 'calc({sizes.utility} - {borderWidths.hairline})',
     },
+    // A headroom header sets this while it is slid away: the bars under it stick to the top of the screen. `--bh` is
+    // set inline by the header's own measurement, so it takes `!important` to override.
+    'html[data-header="hidden"]': {
+      '--bh': '0px !important',
+      '--ut': '0px',
+    },
     body: {
       display: 'flex',
       flexDirection: 'column',
