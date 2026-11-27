@@ -7,6 +7,9 @@
   "exports": {
     ".": "./src/index.ts",
     "./preset": "./src/preset/index.ts",
+    "./forms": "./src/modules/forms.ts",
+    "./admin": "./src/modules/admin.ts",
+    "./catalog": "./src/modules/catalog.ts",
     "./theme": "./src/theme/index.ts",
     "./design": "./src/design/index.ts",
     "./styles.css": "./styled-system/styles.css",

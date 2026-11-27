@@ -57,6 +57,7 @@ import { table } from './table';
 import { playableRow, scrollX, tableCell } from './table-parts';
 import { tabs } from './tabs';
 import { recordHeader } from './record';
+import { ALL_MODULES, type ModuleName, onlyModules } from './modules';
 import { hue, scrollList } from './tile';
 import { toast } from './toast';
 import { toggleGroup } from './toggle-group';
@@ -71,7 +72,7 @@ import { tooltip } from './tooltip';
 /** The names a project gave its colors: the label hues (`categorical`) and the section tones (`wash`). */
 export type ColorNames = { hues: readonly string[]; tones: readonly string[] };
 
-export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], tones: [] }) {
+function buildRecipes(t: TypeSystem, names: ColorNames) {
   const { label, numeral, text, title } = createRoles(t);
   return {
     recipes: {
@@ -171,3 +172,21 @@ export function createRecipes(t: TypeSystem, names: ColorNames = { hues: [], ton
     },
   };
 }
+
+/**
+ * Every recipe the project asked for: the core and the modules it lists (see `MODULES`), built for a type system.
+ *
+ * @param t - the type system of a design.
+ * @param names - the project's hue and tone names.
+ * @param modules - the opt-in modules to include. All of them when left out.
+ * @returns the recipes and slot recipes.
+ */
+export function createRecipes(
+  t: TypeSystem,
+  names: ColorNames = { hues: [], tones: [] },
+  modules: readonly ModuleName[] = ALL_MODULES
+) {
+  return onlyModules(buildRecipes(t, names), modules);
+}
+
+export { ALL_MODULES, MODULES, type ModuleName } from './modules';

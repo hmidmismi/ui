@@ -280,6 +280,18 @@ The audit so far, in the order to fold them (the text roles are done: `Eyebrow`,
 
 Each fold is one change: add the variant, move the consumers, delete the old name. New work must not add to this list.
 
+## Modules
+
+The core is always in: text, layout, surfaces, cards, rows, buttons, fields, chrome. Three kinds of component are opt-in, so a project that never uses one carries none of its code or CSS:
+
+| Module | Subpath | Holds | Needs |
+|---|---|---|---|
+| `forms` | `@hmidmismi/ui/forms` | `Select`, `Combobox`, `ComboboxSelect`, `Typeahead` | none |
+| `admin` | `@hmidmismi/ui/admin` | the editing bar, field status, sign-in form, the editable fields | `forms` |
+| `catalog` | `@hmidmismi/ui/catalog` | `Player`, the record header, browsing by letter and range, `PlayableRow` | `forms` |
+
+A project chooses them in the preset: `createPreset(design, theme, { modules: ['forms'] })`. A module it leaves out adds no recipes; the ones a module needs come with it. When `modules` is left out, every module is included. The root `@hmidmismi/ui` still exports everything, so existing imports work; a component imported from the root whose module the preset left out has no CSS. The module lists live in `src/preset/recipes/modules.ts`, and a test checks that every name in them is a recipe of the system. A new specialised component goes in a module, not in the core.
+
 ## Extraction
 
 Panda emits a recipe variant only when it sees a literal use or `staticCss` lists it. A missing variant in the browser almost always means a prop-driven variant without `staticCss: ['*']`.
