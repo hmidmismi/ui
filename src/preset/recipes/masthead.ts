@@ -4,8 +4,9 @@ import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
 
 /**
- * The masthead over the first screen of the home page: light text on the media behind it. From `md` it is a utility row
- * (links at the start, controls at the end), the wordmark centered under it, and the tabs centered under that. Below `md`
+ * The masthead over the first screen of the home page: light text on the media behind it. From `md` the wordmark is
+ * centered at the top with the utility links at its start and the controls at its end, on the wordmark's midline, and the
+ * tabs are centered under it. Below `md`
  * it is a menu button at the start, the wordmark in the middle and one control at the end; the menu opens a panel with the
  * tabs and the utility links.
  */
@@ -25,7 +26,7 @@ export const siteMasthead = (t: TypeSystem) => {
         gridTemplateColumns: { base: '1fr auto 1fr', md: '1fr auto 1fr' },
         gridTemplateAreas: {
           base: '"menu wordmark language"',
-          md: '"start . end" "wordmark wordmark wordmark" "nav nav nav"',
+          md: '"start wordmark end" "nav nav nav"',
         },
         alignItems: 'center',
         columnGap: '6',
