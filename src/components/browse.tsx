@@ -1,6 +1,5 @@
 import { type ReactNode, useEffect, useRef } from 'react';
 import {
-  browseNav,
   letterBar,
   rangeColumns,
   rangeNav,
@@ -9,32 +8,15 @@ import {
 import { useActiveSection } from '../hooks/use-active-section';
 import { useMeasuredHeight } from '../hooks/use-measured-height';
 import { useScrollEdges } from '../hooks/use-scroll-edges';
+import { LinkNav, linkNavClass } from './link-nav';
 import { Text } from './typography';
 import { requireModule } from '../hooks/require-module';
 
-/**
- * A row of links that choose a group of a browse list. Recipe `browseNav`.
- *
- * @param props - the links, whose class names come from {@link browseLinkClass}.
- * @returns the navigation.
- */
-export function BrowseNav({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <nav aria-label={label} className={browseNav().root}>
-      {children}
-    </nav>
-  );
-}
+/** @deprecated Named for its first use; it is {@link LinkNav}. */
+export const BrowseNav = LinkNav;
 
-/**
- * The class name for a link inside a {@link BrowseNav}.
- *
- * @param current - whether the link is for the group being shown.
- * @returns the class name.
- */
-export function browseLinkClass(current: boolean) {
-  return browseNav({ current }).link;
-}
+/** @deprecated Named for its first use; it is {@link linkNavClass}. */
+export const browseLinkClass = linkNavClass;
 
 /**
  * The grid that holds the columns of a browse list: one column on phones, two from 640px, three from 960px and five

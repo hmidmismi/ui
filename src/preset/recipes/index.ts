@@ -5,7 +5,8 @@ import { adminBar, fieldStatus, pageBar, signInForm, viewSwitch } from './admin'
 import { alert } from './alert';
 import { badge } from './badge';
 import { codeBlock, disclosure, quote, timeline } from './blocks';
-import { browseNav, letterBar, rangeColumns, rangeNav, rangeSections } from './browse';
+import { letterBar, rangeColumns, rangeNav, rangeSections } from './browse';
+import { linkNav } from './link-nav';
 import { button } from './button';
 import { card } from './card';
 import { cover, layers, pinned } from './cover';
@@ -150,7 +151,7 @@ function buildRecipes(t: TypeSystem, names: ColorNames) {
       typeahead: typeahead(t),
       hero: hero(t),
       viewSwitch,
-      browseNav: browseNav(t),
+      linkNav: linkNav(t),
       rangeColumns: rangeColumns(t),
       rangeNav: rangeNav(t),
       rangeSections: rangeSections(t),

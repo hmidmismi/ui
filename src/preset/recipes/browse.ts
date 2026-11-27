@@ -8,35 +8,9 @@ import {
   scrollRow,
   stickBelowHeader,
 } from '../fragments';
-import { currentMark, hoverAccent, hoverRow } from '../interaction';
+import { hoverRow } from '../interaction';
 import type { TypeSystem } from '../type-scale';
 import { responsive } from '../type-scale';
-
-/** A row of links that choose a group of a browse list: a letter, a decade or a view. The current one is marked. */
-export const browseNav = (t: TypeSystem) => {
-  const labelCapsLine = t.labelCapsLine;
-  return defineSlotRecipe({
-    className: 'browse-nav',
-    staticCss: ['*'],
-    slots: ['root', 'link'],
-    base: {
-      root: { display: 'flex', flexWrap: 'wrap', gap: '1', paddingBlock: '2', ...ruleBelow },
-      link: {
-        paddingBlock: '1',
-        paddingInline: '2',
-        color: 'fg.muted',
-        ...labelCapsLine,
-        ...hoverAccent,
-      },
-    },
-    variants: {
-      current: {
-        true: { link: currentMark },
-        false: {},
-      },
-    },
-  });
-};
 
 /**
  * The columns of a browse list. Each column is a range of names under its label, such as `Ad–At`, with the number of

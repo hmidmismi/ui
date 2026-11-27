@@ -333,3 +333,13 @@ The generated `styled-system/` is gitignored. A project builds its own styleshee
 
 - A slot recipe's CSS sits in a lower layer than a plain recipe's, so a slot recipe cannot override the color of a `Button` or `IconButton` placed inside it. Use the control that is itself a slot recipe (`ThemeToggle` without `inUtility`) or set the color through the component.
 - After a structural change, `pnpm codegen` cleans `styled-system/` first (`--clean`); stale files from an earlier generation break imports.
+
+## Deprecated
+
+Kept so existing consumers keep working; do not use in new code.
+
+| Name | Use instead |
+|---|---|
+| `BrowseNav`, `browseLinkClass` | `LinkNav`, `linkNavClass` (the recipe is `linkNav`) |
+| `Hero` | `Cover` or `SplitGrid` with `Text`, `Title` and `Link` |
+| `Span` | a primitive with a variant |
