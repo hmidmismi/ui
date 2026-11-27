@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { SiteMasthead } from '../../src/components/chrome';
+import { PageColumn } from '../../src/components/page';
 import { StyleBook } from '../../src/style-book/style-book';
 
 const link = (className: string, content: ReactNode) => (
@@ -21,7 +22,7 @@ const TABS = ['About YVML', 'Workshops', 'Residencies', 'People', 'Events', 'Sup
  */
 export const fixture = renderToStaticMarkup(
   <>
-    <div data-fixture="masthead" style={{ position: 'relative', height: 280, background: '#2b4a63' }}>
+    <div data-fixture="masthead" style={{ position: 'relative', height: '17.5rem', background: '#2b4a63' }}>
       <SiteMasthead
         id="masthead"
         start={
@@ -42,7 +43,9 @@ export const fixture = renderToStaticMarkup(
       />
     </div>
     <main data-fixture="book">
-      <StyleBook />
+      <PageColumn>
+        <StyleBook />
+      </PageColumn>
     </main>
   </>
 );

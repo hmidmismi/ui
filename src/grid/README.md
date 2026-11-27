@@ -2,6 +2,20 @@
 
 The one place that defines how things line up, vertically and horizontally. A project declares the numbers in its config (`design.grid`); everything else in the library imports from here and defines no grid number of its own.
 
+## Modes
+
+`design.grid.mode` sets how strictly text lines up on the baseline. It is fixed per build (the values are written into the stylesheet when Panda runs), so a project chooses one; `pnpm codegen` builds a stylesheet for each (`styled-system/styles.<mode>.css`) so they can be compared, and an app can build another with `GRID_MODE=baseline pnpm panda:build`.
+
+| Mode | Root size | Vertical grid | Corrections (`lineShift`, `lineMargins`, `lineCentered`, `linePadded`, `lineRelative`, `textTrim`) | Full-screen blocks, pictures |
+|---|---|---|---|---|
+| `free` (the default) | fluid | none | off: lines sit where the browser puts them, aligned by flex, `align-items: baseline` and shared line heights | `100dvh`, plain aspect ratios |
+| `scaled` | fluid, in steps of `root / baseline` px so the baseline is a whole pixel | scales with the root | on | rounded down or up to a whole baseline |
+| `baseline` | fixed (the reader's own size) | fixed | on | rounded to a whole baseline (pictures only) |
+
+The fluid root is `design.type.fluid` (`from`, `to`, `scale`): the reader's own size at `from` px wide, `scale` times it at `to`. Every size is in `rem`, so type, spacing and controls grow together and the reader's own size and zoom still apply; keep `scale` at 2.5 or under so text can zoom to 200% (WCAG 1.4.4). `baseline` mode keeps the reader's size, and its output is held to a saved copy (`src/preset/__golden__/baseline.json`) so a project that stays on it never changes.
+
+Tests: the default run covers each mode's output (`src/preset/modes.test.ts`); `pnpm test:visual` (opt-in) renders the style book and a masthead in each mode at eleven widths and checks for overflow and collisions, compares screenshots (`UPDATE_VISUAL=1` replaces them) and holds the strict modes to a budget of lines off the grid.
+
 ## What is here
 
 | File | Holds |

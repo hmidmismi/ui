@@ -98,20 +98,21 @@ export const row = (t: TypeSystem) => {
           root: {
             gridTemplateColumns: {
               base: 'token(sizes.cardPlateCompact) minmax(0, 1fr)',
-              sm: 'token(sizes.cardPlate) minmax(0, 1fr)',
+              sm: 'calc(token(sizes.plate) * 2) minmax(0, 1fr)',
+              lg: 'token(sizes.cardPlate) minmax(0, 1fr)',
             },
             alignItems: 'start',
             columnGap: { base: '4', sm: '6' },
             paddingBlock: '4',
           },
-          text: { alignSelf: 'start', display: 'grid', rowGap: '1' },
+          text: { alignSelf: 'start', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', rowGap: '1' },
           aside: { display: 'none' },
           chevron: { display: 'none' },
         },
         // The `card` row turned upright, for the one to feature: the picture on top, then the same title and lines, larger.
         stacked: {
           root: { gridTemplateColumns: 'minmax(0, 1fr)', alignItems: 'start', rowGap: '4', paddingBlock: '4' },
-          text: { display: 'grid', rowGap: '1' },
+          text: { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', rowGap: '1' },
           title: responsive(textLine('display', '2xl'), textLine('display', '4xl'), 'sm'),
           aside: { display: 'none' },
           chevron: { display: 'none' },

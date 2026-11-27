@@ -29,6 +29,7 @@ const SPACING: [string, string][] = [
 
 const bar = css({ height: '2', background: 'accent' });
 const probe = css({ height: '1', width: '0', visibility: 'hidden' });
+const picture = css({ aspectRatio: '1', background: 'gray.3' });
 const swatch = css({ height: '8', borderWidth: 'hairline', borderStyle: 'solid', borderColor: 'border' });
 
 /** Rounds to one decimal, for a readout. */
@@ -176,6 +177,44 @@ export function StyleBook() {
             <Row layout="plain" title="A row with several lines" meta={['Dates', 'Instructor', 'Material · price']} />
           </li>
         </ItemList>
+        <Grid>
+          <Cell span="6">
+            <ItemList gap="0" closed>
+              <li>
+                <Row
+                  layout="stacked"
+                  lead={<div className={picture} />}
+                  title="Grant Writing 101: Virtual Workshop"
+                  meta={['Jan 16, 2027', 'Quentin Ring', 'Professional development · $50']}
+                  link={(className, content) => (
+                    <a className={className} href="#">
+                      {content}
+                    </a>
+                  )}
+                />
+              </li>
+            </ItemList>
+          </Cell>
+          <Cell span="6">
+            <ItemList gap="0" closed>
+              {['Introduction to Leather-working', 'Drypoint, Plaster Casting, & Color Printmaking'].map((title) => (
+                <li key={title}>
+                  <Row
+                    layout="card"
+                    lead={<div className={picture} />}
+                    title={title}
+                    meta={['Jan 30 – 31, 2027', 'Danielle Giudici Wallis', 'Leather · $195']}
+                    link={(className, content) => (
+                      <a className={className} href="#">
+                        {content}
+                      </a>
+                    )}
+                  />
+                </li>
+              ))}
+            </ItemList>
+          </Cell>
+        </Grid>
       </Section>
 
       <Section id="controls" label="Controls">

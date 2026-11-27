@@ -2,6 +2,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Browser } from 'playwright-core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+// @ts-expect-error: a plain script, measured in the page
+import { measureText } from '../../src/grid/check/measure.mjs';
 import { hasChrome, hasStyles, launch, type Mode, open } from '../browser/page';
 import { fixture } from './fixture';
 
@@ -107,5 +109,31 @@ run('the layout in every grid mode', () => {
         });
       }
     });
+  }
+});
+
+/**
+ * The strict modes hold text to the baseline grid within a tolerance. The page here is the style book, which is mostly
+ * text, drawn with a fallback face; the counts are how many lines are further than a pixel and a half from a grid line,
+ * and a change must not add to them (the budgets are what it measured, plus two). The free mode has no grid to hold.
+ */
+const BUDGET: Record<'baseline' | 'scaled', Record<number, number>> = {
+  baseline: { 390: 20, 1440: 26 },
+  scaled: { 390: 20, 1440: 15 },
+};
+
+run('the baseline in the strict modes', () => {
+  for (const mode of ['baseline', 'scaled'] as const) {
+    for (const width of SHOTS) {
+      it(`keeps ${mode} text on the grid within budget at ${width}px`, async () => {
+        const page = await open(browser, fixture, '', '', mode, width);
+        const root = await rootSize(page);
+        // The viewport height is a multiple of the grid row, as `scaled` rounds a full-screen block to one.
+        const rows = await page.evaluate(measureText, { grid: (5 * root) / 16, tolerance: 1.5 });
+        await page.close();
+        const off = rows.filter((row: { bad: boolean }) => row.bad).length;
+        expect(off).toBeLessThanOrEqual(BUDGET[mode][width] ?? 0);
+      });
+    }
   }
 });

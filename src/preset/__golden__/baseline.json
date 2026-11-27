@@ -7194,7 +7194,8 @@
         "root": {
          "gridTemplateColumns": {
           "base": "token(sizes.cardPlateCompact) minmax(0, 1fr)",
-          "sm": "token(sizes.cardPlate) minmax(0, 1fr)"
+          "sm": "calc(token(sizes.plate) * 2) minmax(0, 1fr)",
+          "lg": "token(sizes.cardPlate) minmax(0, 1fr)"
          },
          "alignItems": "start",
          "columnGap": {
@@ -7206,6 +7207,7 @@
         "text": {
          "alignSelf": "start",
          "display": "grid",
+         "gridTemplateColumns": "minmax(0, 1fr)",
          "rowGap": "1"
         },
         "aside": {
@@ -7224,6 +7226,7 @@
         },
         "text": {
          "display": "grid",
+         "gridTemplateColumns": "minmax(0, 1fr)",
          "rowGap": "1"
         },
         "title": {
