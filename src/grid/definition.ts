@@ -9,6 +9,16 @@
  * is 5px. The project declares these numbers in its config; nothing else in the library defines a grid number.
  */
 export type Grid = {
+  /**
+   * How strictly text lines up on the baseline.
+   *
+   * - `baseline`: the root size is fixed and every line of text sits on a grid line, by shifts and trims worked out from the face's metrics.
+   * - `scaled`: the root size is fluid but moves in whole-pixel baselines (`root / baseline` px at a time), so the grid scales and the shifts stay exact.
+   * - `free`: the root size is fluid and nothing is shifted; blocks are as tall as their text and align by flex, `align-items: baseline` and shared line heights.
+   *
+   * Defaults to `free`.
+   */
+  mode?: GridMode;
   /** The vertical rhythm unit in px. Every line height is a multiple of it. */
   baseline: number;
   /** The primary spacing step in px. Two baselines, so a spacing step never breaks the rhythm. */
@@ -22,8 +32,11 @@ export type Grid = {
   snap?: boolean;
 };
 
-/** The default grid: a 5px baseline, a 10px unit, a 16px root, with trimmed text rounded to whole baselines. */
-export const defaultGrid = { baseline: 5, unit: 10, root: 16, snap: true } as const satisfies Grid;
+/** How strictly text lines up on the baseline: see {@link Grid.mode}. */
+export type GridMode = 'baseline' | 'scaled' | 'free';
+
+/** The default grid: a 5px baseline, a 10px unit, a 16px root, free of the baseline, with trimmed text rounded to whole baselines where a mode snaps. */
+export const defaultGrid = { baseline: 5, unit: 10, root: 16, snap: true, mode: 'free' } as const satisfies Grid;
 
 /**
  * Rounds to four decimal places, so generated rem values stay short.

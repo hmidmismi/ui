@@ -1,12 +1,13 @@
 import { defineRecipe, defineSlotRecipe } from '@pandacss/dev';
 import { siteInset } from '../fragments';
+import type { TypeSystem } from '../type-scale';
 
 /**
  * A block with a picture, video or canvas behind its content. `media` fills the block and the `content` sits over it.
  * `min` gives the block a minimum height (a third of the screen, or all of it), `place` centers the content in it, and
  * `scrim` darkens the top of the media so light text over it stays readable, and `tone` fills it with a named wash.
  */
-export const cover = (tones: readonly string[]) =>
+export const cover = (tones: readonly string[], t: TypeSystem) =>
   defineSlotRecipe({
   className: 'cover',
   staticCss: ['*'],
@@ -23,8 +24,8 @@ export const cover = (tones: readonly string[]) =>
   },
   variants: {
     min: {
-      third: { root: { minHeight: '33.333dvh' } },
-      screen: { root: { minHeight: '100dvh' } },
+      third: { root: { minHeight: t.viewportHeight('33.333') } },
+      screen: { root: { minHeight: t.viewportHeight('100') } },
     },
     place: { center: { content: { alignContent: 'center', justifyItems: 'center', textAlign: 'center' } } },
     tone: Object.fromEntries(

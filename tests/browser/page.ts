@@ -8,13 +8,16 @@ const CHROME =
 /** Whether a Chrome is available. The browser tests skip when it is not. */
 export const hasChrome = existsSync(CHROME);
 
-const stylesPath = resolve(import.meta.dirname, '../../styled-system/styles.css');
+/** The grid modes the stylesheet is built for (see `panda.config.ts`). */
+export type Mode = 'baseline' | 'scaled' | 'free';
+
+const stylesPath = (mode: Mode) => resolve(import.meta.dirname, `../../styled-system/styles.${mode}.css`);
 
 /** Whether the generated stylesheet exists (run `pnpm codegen` first). */
-export const hasStyles = existsSync(stylesPath);
+export const hasStyles = existsSync(stylesPath('baseline'));
 
-/** The generated stylesheet text. */
-export const styles = () => readFileSync(stylesPath, 'utf8');
+/** The generated stylesheet text for a grid mode: the strict `baseline` unless a test asks for another. */
+export const styles = (mode: Mode = 'baseline') => readFileSync(stylesPath(mode), 'utf8');
 
 export function launch(): Promise<Browser> {
   return chromium.launch({ executablePath: CHROME, headless: true });
@@ -27,17 +30,21 @@ export function launch(): Promise<Browser> {
  * @param body - the markup for `<body>`.
  * @param extraCss - CSS added after the stylesheet, such as a theme.
  * @param htmlClass - classes for `<html>`, such as `dark`.
+ * @param mode - the grid mode of the stylesheet. Defaults to `baseline`.
+ * @param width - the viewport width in px.
  * @returns the page.
  */
 export async function open(
   browser: Browser,
   body: string,
   extraCss = '',
-  htmlClass = ''
+  htmlClass = '',
+  mode: Mode = 'baseline',
+  width = 1000
 ): Promise<Page> {
-  const page = await browser.newPage({ viewport: { width: 1000, height: 800 } });
+  const page = await browser.newPage({ viewport: { width, height: 800 } });
   await page.setContent(
-    `<!doctype html><html class="${htmlClass}"><head><style>${styles()}</style><style>${extraCss}</style></head><body>${body}</body></html>`
+    `<!doctype html><html class="${htmlClass}"><head><style>${styles(mode)}</style><style>${extraCss}</style></head><body>${body}</body></html>`
   );
   return page;
 }

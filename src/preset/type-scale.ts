@@ -20,7 +20,7 @@ import {
   type HeadingStyle,
 } from '../design';
 import { neutral, type Role, type Theme, xHeightAdjust } from '../theme';
-import { createScale, round } from '../grid';
+import { createScale, type GridMode, round } from '../grid';
 
 /**
  * The type system, generated from a design so every size, line height and trim comes from one model.
@@ -77,6 +77,9 @@ export function createTypeSystem(
   faces: Theme['faces'] = neutral.faces
 ) {
   const scale = createScale(d);
+  /** How strictly text lines up on the baseline (`d.grid.mode`). Only `free` leaves the lines where the browser puts them. */
+  const mode: GridMode = d.grid.mode ?? 'free';
+  const strict = mode !== 'free';
 
   /** The nominal size of a step in px, before any per-face x-height adjustment. */
   const stepSize = (step: StepName) => d.type.base * d.type.ratio ** STEPS[step];
@@ -155,14 +158,14 @@ export function createTypeSystem(
    * that replaces the step's.
    */
   const lineShift = (role: Role, step: StepName, height?: number): Styles =>
-    baselineLineShift(lineAt(role, step, height), units) as Styles;
+    strict ? (baselineLineShift(lineAt(role, step, height), units) as Styles) : {};
 
   /**
    * Puts the first baseline of one line of text on a grid line when a flex or grid box of fixed height centers it, by
    * unequal padding. The box keeps its height; pass that height and any border or padding inside it.
    */
   const lineCentered = (role: Role, step: StepName, box: CenteredBox): Styles =>
-    baselineCenteredLine(lineAt(role, step), units, box) as Styles;
+    strict ? (baselineCenteredLine(lineAt(role, step), units, box) as Styles) : {};
 
   /**
    * Puts the first baseline of text on a grid line in an auto-height box by moving padding from one side to the other.
@@ -172,15 +175,15 @@ export function createTypeSystem(
     role: Role,
     step: StepName,
     padding: { block: string; border?: string }
-  ): Styles => baselinePaddedLine(lineAt(role, step), units, padding) as Styles;
+  ): Styles => (strict ? (baselinePaddedLine(lineAt(role, step), units, padding) as Styles) : {});
 
   /** The same shift by moving the element, for a block that can use neither pseudo-elements nor margins (a disclosure summary). */
   const lineRelative = (role: Role, step: StepName): Styles =>
-    baselineLineRelative(lineAt(role, step), units) as Styles;
+    strict ? (baselineLineRelative(lineAt(role, step), units) as Styles) : {};
 
   /** The same shift as margins, for flex or grid items and for text that clips with an ellipsis. */
   const lineMargins = (role: Role, step: StepName, height?: number): Styles =>
-    baselineLineMargins(lineAt(role, step, height), units) as Styles;
+    strict ? (baselineLineMargins(lineAt(role, step, height), units) as Styles) : {};
 
   /** Size and line height, with the first baseline on the grid. For a block whose text is its own. */
   const textLine = (role: Role, step: StepName): Styles =>
@@ -193,7 +196,7 @@ export function createTypeSystem(
    * trimmed element; padding is measured from the cap and baseline edges.
    */
   const textTrim = (role: Role, step: StepName): Styles =>
-    baselineTrim(lineAt(role, step), units, Boolean(d.grid.snap)) as Styles;
+    strict ? (baselineTrim(lineAt(role, step), units, Boolean(d.grid.snap)) as Styles) : {};
 
   /** Size, line height and trim together, for text that is always a block. */
   const textRole = (role: Role, step: StepName): Styles =>
@@ -230,7 +233,35 @@ export function createTypeSystem(
     lineHeight: { base: scale.rem(stepLineHeight('md')), sm: 'token(spacing.7)' },
   };
 
+  /**
+   * The root font size as CSS. `baseline` keeps the reader's own size. The other modes grow it with the viewport, from the
+   * reader's size at `fluid.from` to `fluid.scale` times it at `fluid.to`, with `em` bounds so the reader's own size and
+   * zoom still apply and a small viewport part so zoom stays effective. `scaled` moves it in steps of `root / baseline` px,
+   * where the baseline is a whole number of pixels, so the grid scales without losing its alignment.
+   */
+  const rootSize = (): string => {
+    if (mode === 'baseline') return '100%';
+    const { from, to, scale: grow } = d.type.fluid ?? { from: 360, to: 1440, scale: 1.2 };
+    const slope = Math.round(((grow - 1) * scale.ROOT_SIZE * 1e6) / (to - from)) / 1e6;
+    const fluid = `clamp(1em, calc(1em + (100vw - ${from}px) * ${slope}), ${grow}em)`;
+    return mode === 'scaled' ? `round(${fluid}, ${round(scale.ROOT_SIZE / scale.BASELINE)}px)` : fluid;
+  };
+
+  /** The height of a box `ratio` times as tall as it is wide (the frame's `cqw`): a whole number of baselines in the strict modes. */
+  const rowsHigh = (ratio: string): string =>
+    strict
+      ? `round(up, calc(100cqw * ${ratio}), token(spacing.1))`
+      : `calc(100cqw * ${ratio})`;
+
+  /** A height of `percent` of the viewport: in `scaled` rounded down to a whole baseline, so what sits under it stays on the grid. */
+  const viewportHeight = (percent: number | string): string =>
+    mode === 'scaled' ? `round(down, ${percent}dvh, token(spacing.1))` : `${percent}dvh`;
+
   return {
+    mode,
+    rootSize,
+    rowsHigh,
+    viewportHeight,
     stepSize,
     stepLineHeight,
     fontSizeTokens,

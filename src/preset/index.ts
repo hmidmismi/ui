@@ -101,6 +101,12 @@ export function createPreset(
     globalCss: {
       extend: {
         ...(options.globalCss ?? globalCss.extend),
+        // The root size: the reader's own in `baseline`, and growing with the viewport in the other grid modes. A project's own global styles set their own.
+        ...(options.globalCss
+          ? {}
+          : {
+              html: { ...(globalCss.extend.html as SystemStyleObject), fontSize: type.rootSize() },
+            }),
         // Text with no style of its own is the body step, so it is on the type scale and its baseline is measured like any other.
         body: {
           ...((options.globalCss ?? globalCss.extend).body as SystemStyleObject),

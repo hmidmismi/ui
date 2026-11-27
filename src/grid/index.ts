@@ -9,7 +9,7 @@
  * - `check/`: the script that measures a live page. See `README.md`.
  */
 export { type ControlSize, type ControlStyle, defaultControls } from './controls';
-export { createScale, defaultGrid, type Grid, round } from './definition';
+export { createScale, defaultGrid, type Grid, type GridMode, round } from './definition';
 export {
   type CenteredBox,
   centeredLine,

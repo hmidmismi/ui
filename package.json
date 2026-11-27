@@ -16,7 +16,7 @@
     "./text": "./src/text/index.ts"
   },
   "scripts": {
-    "codegen": "panda codegen --clean && panda cssgen",
+    "codegen": "panda codegen --clean && panda cssgen && GRID_MODE=baseline panda cssgen --outfile styled-system/styles.baseline.css && GRID_MODE=scaled panda cssgen --outfile styled-system/styles.scaled.css && GRID_MODE=free panda cssgen --outfile styled-system/styles.free.css",
     "postinstall": "pnpm codegen",
     "dev": "concurrently -k \"panda codegen --watch\" \"panda cssgen --watch\"",
     "test": "vitest run",

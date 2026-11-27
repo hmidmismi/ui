@@ -1,18 +1,18 @@
 import { defineRecipe, defineSlotRecipe } from '@pandacss/dev';
 import { column, ringed } from '../fragments';
 import { hoverAccentSurface } from '../interaction';
+import type { TypeSystem } from '../type-scale';
 
-/**
- * The height of a box that is `ratio` times as tall as it is wide, rounded up to a whole baseline. Measured against the
- * frame's width (`cqw`), so an image or a video keeps the grid however wide it is drawn.
- */
-const rowsHigh = (ratio: string) => `round(up, calc(100cqw * ${ratio}), token(spacing.1))`;
+// `rowsHigh` (from the type system) is the height of a box `ratio` times as tall as it is wide, measured against the
+// frame's width (`cqw`) so an image or a video keeps its shape however wide it is drawn; the strict grid modes round it up
+// to a whole baseline.
 
 /**
  * An image in one of the named shapes. The frame is the container its height is measured against; the image fills it. A
  * shape with a ratio is a whole number of baselines tall, cropped by less than one baseline. `score` keeps its own height.
  */
-export const picture = defineSlotRecipe({
+export const picture = ({ rowsHigh }: TypeSystem) =>
+  defineSlotRecipe({
   className: 'picture',
   staticCss: ['*'],
   slots: ['frame', 'image'],
@@ -61,7 +61,8 @@ export const figure = defineRecipe({
 });
 
 /** A tall frame for an embedded form: an `iframe` that fills it, a whole number of baselines high, scrolling inside when the form is longer. */
-export const embedFrame = defineSlotRecipe({
+export const embedFrame = ({ rowsHigh }: TypeSystem) =>
+  defineSlotRecipe({
   className: 'embed-frame',
   slots: ['frame', 'root'],
   base: {
@@ -79,7 +80,8 @@ export const embedFrame = defineSlotRecipe({
 });
 
 /** A 16:9 frame that fills with an `iframe` or a play `button`, a whole number of baselines tall. */
-export const videoFrame = defineSlotRecipe({
+export const videoFrame = ({ rowsHigh }: TypeSystem) =>
+  defineSlotRecipe({
   className: 'video-frame',
   slots: ['frame', 'root'],
   base: {

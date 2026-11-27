@@ -60,6 +60,13 @@ export type Design = {
       falloff: number;
       floor: number;
     };
+    /**
+     * How the root size grows with the viewport in the `scaled` and `free` grid modes: from 1 times the reader's own size at
+     * `from` px wide to `scale` times it at `to` px wide, and no further either way. Everything is sized in `rem`, so type,
+     * spacing and controls grow together, and the reader's own size and zoom still apply. Keep `scale` at 2.5 or under, so
+     * text can still be zoomed to 200% (WCAG 1.4.4). The `baseline` mode has a fixed root.
+     */
+    fluid?: { from: number; to: number; scale: number };
     /** How each heading level looks. Left out, the system's own (`defaultHeadings`). */
     headings?: Partial<Record<HeadingLevel, HeadingStyle>>;
   };

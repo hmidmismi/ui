@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { design } from '../design';
+import { design as defaultDesign } from '../design';
 import { neutral, xHeightAdjust } from '../theme';
 import { createRecipes } from './recipes';
 import { createScale, scaleValuesFor } from '../grid';
@@ -12,11 +12,14 @@ import {
   type StepName,
   stepLineHeight,
   stepSize,
-  textSize,
-  textTrim,
 } from './type-scale';
 
-const { recipes, slotRecipes } = createRecipes(createTypeSystem(design));
+/** The rhythm tests are about the strict grid, so they run in `baseline` mode, not the default. */
+const design = { ...defaultDesign, grid: { ...defaultDesign.grid, mode: 'baseline' as const } };
+
+const strictType = createTypeSystem(design);
+const { textSize, textTrim } = strictType;
+const { recipes, slotRecipes } = createRecipes(strictType);
 
 const names = Object.keys(STEPS) as StepName[];
 const { BASELINE, ROOT_SIZE } = createScale(design);

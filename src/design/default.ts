@@ -16,7 +16,12 @@ export { defaultControls };
 /** The default design: the default grid and a minor-third type scale from a 16px body. */
 export const design = {
   grid: defaultGrid,
-  type: { base: 16, ratio: 1.2, leading: { body: 1.5, falloff: 0.05, floor: 1.3 } },
+  type: {
+    base: 16,
+    ratio: 1.2,
+    leading: { body: 1.5, falloff: 0.05, floor: 1.3 },
+    fluid: { from: 360, to: 1440, scale: 1.2 },
+  },
   motion: {
     durations: {
       fastest: '50ms',

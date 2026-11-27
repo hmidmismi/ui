@@ -78,8 +78,8 @@ export const hero = (t: TypeSystem) => {
             display: 'grid',
             alignItems: 'end',
             minHeight: { base: 'heroTall', md: 'hero' },
-            // 21:9 of the frame's width, rounded up to a whole number of baselines.
-            height: { md: 'round(up, calc(100cqw * 9 / 21), token(spacing.1))' },
+            // 21:9 of the frame's width, rounded up to a whole number of baselines in the strict modes.
+            height: { md: t.rowsHigh('9 / 21') },
           },
           art: { position: 'absolute', inset: '0' },
           text: {
