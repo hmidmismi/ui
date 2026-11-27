@@ -10,6 +10,7 @@ import { useActiveSection } from '../hooks/use-active-section';
 import { useMeasuredHeight } from '../hooks/use-measured-height';
 import { useScrollEdges } from '../hooks/use-scroll-edges';
 import { Text } from './typography';
+import { requireModule } from '../hooks/require-module';
 
 /**
  * A row of links that choose a group of a browse list. Recipe `browseNav`.
@@ -43,6 +44,7 @@ export function browseLinkClass(current: boolean) {
  * @returns the grid.
  */
 export function RangeColumns({ children }: { children: ReactNode }) {
+  requireModule('catalog');
   return <div className={rangeColumns().root}>{children}</div>;
 }
 
@@ -125,6 +127,7 @@ type LetterBarProps = {
  * @returns the navigation.
  */
 export function LetterBar({ label, children }: LetterBarProps) {
+  requireModule('catalog');
   const classes = letterBar();
   const root = useRef<HTMLElement>(null);
   useMeasuredHeight(root, '--lh');
@@ -198,6 +201,7 @@ type RangeNavProps = {
  * @returns the navigation.
  */
 export function RangeNav({ label, children }: RangeNavProps) {
+  requireModule('catalog');
   const root = useRef<HTMLElement>(null);
   const row = useRef<HTMLDivElement>(null);
   useMeasuredHeight(root, '--rh');
@@ -266,6 +270,7 @@ type RangeSectionsProps = {
  * @returns the wrapper.
  */
 export function RangeSections({ ids, jump, children }: RangeSectionsProps) {
+  requireModule('catalog');
   const current = useActiveSection(ids, RANGE_OFFSETS);
   const key = ids.join('|');
   const last = useRef<string | undefined>(undefined);

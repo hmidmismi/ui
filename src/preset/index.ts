@@ -13,6 +13,7 @@ import { globalCss } from './global-css';
 import { keyframes } from './keyframes';
 import { layerStyles } from './layer-styles';
 import { createRecipes, type ModuleName } from './recipes';
+import { ALL_MODULES, withNeeds } from './recipes/modules';
 import { spacingFor } from '../grid';
 import { textStylesFor } from './text-styles';
 import {
@@ -105,7 +106,11 @@ export function createPreset(
           ...((options.globalCss ?? globalCss.extend).body as SystemStyleObject),
           ...type.textSize('body', 'md'),
         } as SystemStyleObject,
-        ':root': themeVariables(theme) as SystemStyleObject,
+        ':root': {
+          ...themeVariables(theme),
+          // Which opt-in modules this build includes, so a component of one it left out can say so in development.
+          '--ui-modules': [...withNeeds(options.modules ?? ALL_MODULES)].join(' '),
+        } as SystemStyleObject,
       },
     },
     theme: {

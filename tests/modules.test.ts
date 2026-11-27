@@ -34,3 +34,14 @@ describe('modules', () => {
     for (const name of of('admin')) expect(catalog).not.toContain(name);
   });
 });
+
+describe('preset marker', () => {
+  it('writes the modules a build includes to --ui-modules', async () => {
+    const { createPreset } = await import('../src/preset');
+    const root = (modules?: Parameters<typeof createPreset>[2]) =>
+      (createPreset(design, neutral, modules).globalCss as { extend: Record<string, Record<string, string>> }).extend[':root']?.['--ui-modules'];
+    expect(root({ modules: ['catalog'] })).toBe('catalog forms');
+    expect(root({ modules: [] })).toBe('');
+    expect(root()?.split(' ').sort()).toEqual([...ALL_MODULES].sort());
+  });
+});

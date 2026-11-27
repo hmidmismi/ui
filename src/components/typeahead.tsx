@@ -11,6 +11,7 @@ import {
 } from '../text/typeahead';
 import { Highlight } from './highlight';
 import { typeaheadSlots } from './slots';
+import { requireModule } from '../hooks/require-module';
 
 /** Props for {@link Typeahead}. */
 type TypeaheadProps = {
@@ -50,6 +51,7 @@ export function Typeahead({
   emptyText,
   meta,
 }: TypeaheadProps) {
+  requireModule('forms');
   const id = useId();
   const listId = `${id}-list`;
   const optionId = (index: number) => `${id}-option-${index}`;

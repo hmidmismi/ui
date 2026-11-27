@@ -290,7 +290,7 @@ The core is always in: text, layout, surfaces, cards, rows, buttons, fields, chr
 | `admin` | `@hmidmismi/ui/admin` | the editing bar, field status, sign-in form, the editable fields | `forms` |
 | `catalog` | `@hmidmismi/ui/catalog` | `Player`, the record header, browsing by letter and range, `PlayableRow` | `forms` |
 
-A project chooses them in the preset: `createPreset(design, theme, { modules: ['forms'] })`. A module it leaves out adds no recipes; the ones a module needs come with it. When `modules` is left out, every module is included. The root `@hmidmismi/ui` still exports everything, so existing imports work; a component imported from the root whose module the preset left out has no CSS. The module lists live in `src/preset/recipes/modules.ts`, and a test checks that every name in them is a recipe of the system. A new specialised component goes in a module, not in the core.
+A project chooses them in the preset: `createPreset(design, theme, { modules: ['forms'] })`. A module it leaves out adds no recipes; the ones a module needs come with it. When `modules` is left out, every module is included. The root `@hmidmismi/ui` still exports everything, so existing imports work; a component imported from the root whose module the preset left out has no CSS, and in development it logs one console error naming the module (the preset writes the included modules to `--ui-modules` on `:root`; `requireModule` reads it). The module lists live in `src/preset/recipes/modules.ts`, and a test checks that every name in them is a recipe of the system. A new specialised component goes in a module, not in the core.
 
 ## Extraction
 
