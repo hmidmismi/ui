@@ -1,6 +1,7 @@
 // The root exports everything, so existing imports keep working. A project that does not use the opt-in modules
 // (`forms`, `admin`, `catalog`) can import them from their subpaths and leave them out of `createPreset`'s `modules`.
 export * from './components';
+export { GridOverlay } from './style-book/grid-overlay';
 export { StyleBook } from './style-book/style-book';
 export { useActiveSection } from './hooks/use-active-section';
 export { UiProvider } from './components/ui-provider';
