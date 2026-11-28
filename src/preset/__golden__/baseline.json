@@ -7040,6 +7040,7 @@
      ],
      "slots": [
       "root",
+      "lead",
       "text",
       "title",
       "meta",
@@ -7056,6 +7057,22 @@
        "boxShadow": "inset 0 token(borderWidths.hairline) 0 0 token(colors.border)",
        "color": "fg.default",
        "textAlign": "start"
+      },
+      "lead": {
+       "display": "block",
+       "alignSelf": "baseline",
+       "fontSize": "1rem",
+       "lineHeight": "1.5625rem",
+       "&::before": {
+        "content": "\"\"",
+        "display": "table",
+        "marginBottom": "0.105rem"
+       },
+       "&::after": {
+        "content": "\"\"",
+        "display": "table",
+        "marginTop": "-0.105rem"
+       }
       },
       "text": {
        "alignSelf": "baseline",
@@ -7846,7 +7863,10 @@
        "alignItems": "center",
        "gap": "6",
        "fontSize": "1rem",
-       "lineHeight": "1.5625rem"
+       "lineHeight": "1.5625rem",
+       "height": "token(lineHeights.7xl)",
+       "paddingBlockStart": "max(0px, calc(2 * calc(round(nearest, calc(0px + (token(lineHeights.7xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem), 0.3125rem) - calc(0px + (token(lineHeights.7xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem))))",
+       "paddingBlockEnd": "max(0px, calc(-2 * calc(round(nearest, calc(0px + (token(lineHeights.7xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem), 0.3125rem) - calc(0px + (token(lineHeights.7xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem))))"
       },
       "end": {
        "gridArea": "end",
@@ -7856,6 +7876,18 @@
        "gap": "3",
        "fontSize": "1rem",
        "lineHeight": "1.5625rem",
+       "height": {
+        "base": "token(lineHeights.2xl)",
+        "_mastLg": "token(lineHeights.7xl)"
+       },
+       "paddingBlockStart": {
+        "base": "max(0px, calc(2 * calc(round(nearest, calc(0px + (token(lineHeights.2xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem), 0.3125rem) - calc(0px + (token(lineHeights.2xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem))))",
+        "_mastLg": "max(0px, calc(2 * calc(round(nearest, calc(0px + (token(lineHeights.7xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem), 0.3125rem) - calc(0px + (token(lineHeights.7xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem))))"
+       },
+       "paddingBlockEnd": {
+        "base": "max(0px, calc(-2 * calc(round(nearest, calc(0px + (token(lineHeights.2xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem), 0.3125rem) - calc(0px + (token(lineHeights.2xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem))))",
+        "_mastLg": "max(0px, calc(-2 * calc(round(nearest, calc(0px + (token(lineHeights.7xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem), 0.3125rem) - calc(0px + (token(lineHeights.7xl) - 0px - 0px - 1.5625rem) / 2 + 1.145rem))))"
+       },
        "& button": {
         "color": "inherit"
        }
@@ -7899,11 +7931,13 @@
       "tab": {
        "display": "inline-flex",
        "alignItems": "center",
-       "minHeight": "control.md",
+       "height": "control.md",
        "color": "inherit",
        "whiteSpace": "nowrap",
        "fontSize": "1.2rem",
        "lineHeight": "1.875rem",
+       "paddingBlockStart": "max(0px, calc(2 * calc(round(nearest, calc(0px + (token(sizes.control.md) - 0px - 0px - 1.875rem) / 2 + 1.374rem), 0.3125rem) - calc(0px + (token(sizes.control.md) - 0px - 0px - 1.875rem) / 2 + 1.374rem))))",
+       "paddingBlockEnd": "max(0px, calc(-2 * calc(round(nearest, calc(0px + (token(sizes.control.md) - 0px - 0px - 1.875rem) / 2 + 1.374rem), 0.3125rem) - calc(0px + (token(sizes.control.md) - 0px - 0px - 1.875rem) / 2 + 1.374rem))))",
        "_hover": {
         "textDecoration": "underline"
        }

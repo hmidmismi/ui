@@ -15,7 +15,9 @@ import { neutral } from './src/theme';
  * compare them. Only the stylesheet differs; the generated recipe functions are the same.
  */
 const mode = (process.env.GRID_MODE ?? defaultDesign.grid.mode) as GridMode;
-const design = { ...defaultDesign, grid: { ...defaultDesign.grid, mode } };
+/** The type scale ratio of this build. `pnpm codegen` builds a `scaled` stylesheet for several, for the visual report. */
+const ratio = process.env.TYPE_RATIO ? Number(process.env.TYPE_RATIO) : defaultDesign.type.ratio;
+const design = { ...defaultDesign, grid: { ...defaultDesign.grid, mode }, type: { ...defaultDesign.type, ratio } };
 
 export default defineConfig({
   preflight: true,

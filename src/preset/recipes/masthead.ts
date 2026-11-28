@@ -13,6 +13,11 @@ import { responsive } from '../type-scale';
  */
 export const siteMasthead = (t: TypeSystem) => {
   const { textSize } = t;
+  /** A row as tall as the wordmark's line at a step, its text centered on that midline and resting on a grid line. */
+  const centeredOn = (step: 'xl' | '2xl' | '7xl') => ({
+    height: `token(lineHeights.${step})`,
+    ...t.lineCentered('body', 'md', { height: `token(lineHeights.${step})`, items: true }),
+  });
   return defineSlotRecipe({
     className: 'site-masthead',
     staticCss: ['*'],
@@ -47,6 +52,8 @@ export const siteMasthead = (t: TypeSystem) => {
         alignItems: 'center',
         gap: '6',
         ...textSize('body', 'md'),
+        // As tall as the wordmark's line, so its links are centered on the wordmark's midline with their text on a grid line.
+        ...centeredOn('7xl'),
       },
       end: {
         gridArea: 'end',
@@ -55,6 +62,7 @@ export const siteMasthead = (t: TypeSystem) => {
         justifyContent: 'flex-end',
         gap: '3',
         ...textSize('body', 'md'),
+        ...responsive(centeredOn('2xl'), centeredOn('7xl'), '_mastLg'),
         '& button': { color: 'inherit' },
       },
       wordmark: {
@@ -76,10 +84,11 @@ export const siteMasthead = (t: TypeSystem) => {
       tab: {
         display: 'inline-flex',
         alignItems: 'center',
-        minHeight: 'control.md',
+        height: 'control.md',
         color: 'inherit',
         whiteSpace: 'nowrap',
         ...textSize('body', 'lg'),
+        ...t.lineCentered('body', 'lg', { height: 'token(sizes.control.md)', items: true }),
         _hover: { textDecoration: 'underline' },
       },
       menu: { gridArea: 'menu', justifySelf: 'start', display: { base: 'block', _mastLg: 'none' } },

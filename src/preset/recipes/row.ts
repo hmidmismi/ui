@@ -14,7 +14,7 @@ export const row = (t: TypeSystem) => {
   return defineSlotRecipe({
     className: 'row',
     staticCss: ['*'],
-    slots: ['root', 'text', 'title', 'meta', 'aside', 'chevron'],
+    slots: ['root', 'lead', 'text', 'title', 'meta', 'aside', 'chevron'],
     base: {
       root: {
         display: 'grid',
@@ -28,6 +28,9 @@ export const row = (t: TypeSystem) => {
       },
       // The title and meta start at the top of the row, a whole row from the lead's top, instead of being centered by a
       // half row that may not be a whole number of baselines.
+      // A lead of text (a date, a number) is set like the meta line, with its first baseline on the grid, so it shares a
+      // baseline with the title as whole baselines. A picture as the lead is not wrapped.
+      lead: { display: 'block', alignSelf: 'baseline', ...textLine('body', 'md') },
       text: { alignSelf: 'baseline', minWidth: '0' },
       title: {
         display: 'block',

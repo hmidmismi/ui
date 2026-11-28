@@ -3,10 +3,12 @@ import { css } from '../../styled-system/css';
 import { Badge } from '../components/badge';
 import { Button } from '../components/button';
 import { Input } from '../components/input';
+import { Picture } from '../components/media';
 import { Cell, Grid, ItemList, Stack, Wrap } from '../components/layout';
 import { Row } from '../components/lists';
 import { Section } from '../components/section';
 import { Label, Text, type TextSize, Title } from '../components/typography';
+import { describeStep } from './readout';
 
 /** The type steps, smallest to largest. */
 const STEPS: TextSize[] = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl'];
@@ -29,7 +31,9 @@ const SPACING: [string, string][] = [
 
 const bar = css({ height: '2', background: 'accent' });
 const probe = css({ height: '1', width: '0', visibility: 'hidden' });
-const picture = css({ aspectRatio: '1', background: 'gray.3' });
+/** A blank one-pixel image: the picture shows its recipe's gray ground, sized to the grid like any picture. */
+const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+const placeholder = <Picture shape="thumb" src={BLANK} alt="" width={1} height={1} />;
 const swatch = css({ height: '8', borderWidth: 'hairline', borderStyle: 'solid', borderColor: 'border' });
 
 /** Rounds to one decimal, for a readout. */
@@ -56,34 +60,34 @@ function useMetrics() {
   return { metrics, probeRef };
 }
 
-/** One step of the type scale: a sample in the display face, and the size and line height it is drawn at. */
-function Step({ step, children }: { step: TextSize; children: ReactNode }) {
+/** One sample of type with a caption: what it is, then what it is drawn at, read live from the page. */
+function Step({ label, baseline, children }: { label: string; baseline: number; children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const [drawn, setDrawn] = useState('');
   useEffect(() => {
     const read = () => {
       const element = ref.current?.firstElementChild;
-      if (!element) return;
-      const style = getComputedStyle(element);
-      setDrawn(`${tenth(Number.parseFloat(style.fontSize))}px on ${tenth(Number.parseFloat(style.lineHeight))}px`);
+      if (element) setDrawn(describeStep(element, baseline));
     };
     read();
     window.addEventListener('resize', read);
     return () => window.removeEventListener('resize', read);
-  }, []);
+  }, [baseline]);
   return (
-    <Stack gap="1">
+    <Stack gap="1" data-step>
       <Text variant="caption">
-        {step} · {drawn}
+        {label} · <span data-readout>{drawn}</span>
       </Text>
-      <div ref={ref}>{children}</div>
+      <div ref={ref} data-sample>
+        {children}
+      </div>
     </Stack>
   );
 }
 
-const SAMPLE = 'Workshops and residencies in the high desert';
+const SAMPLE = 'The quick brown fox jumps over the lazy dog';
 const PARAGRAPH =
-  'Yucca Valley Material Lab champions a decentralized, inclusive, and affordable model for art education grounded in direct material exploration.';
+  'Typography is the craft of arranging type to make written language legible, readable and appealing when displayed. The arrangement involves the typeface, size, line length and spacing.';
 
 // The style book is a developer's page, not product wording: its sample text is written here, not in the text map.
 
@@ -110,17 +114,16 @@ export function StyleBook() {
       <Section id="type-scale" label="Type scale">
         <Stack gap="6">
           {STEPS.map((step) => (
-            <Step key={step} step={step}>
+            <Step key={step} label={step} baseline={metrics.baseline}>
               <Text face="display" size={step}>
                 {SAMPLE}
               </Text>
             </Step>
           ))}
           {(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const).map((level) => (
-            <Stack key={level} gap="1">
-              <Text variant="caption">{level}</Text>
-              <Title level={level}>Aikido is a martial way</Title>
-            </Stack>
+            <Step key={level} label={level} baseline={metrics.baseline}>
+              <Title level={level}>The quick brown fox</Title>
+            </Step>
           ))}
         </Stack>
       </Section>
@@ -162,19 +165,19 @@ export function StyleBook() {
       <Section id="rows" label="Rows">
         <ItemList gap="0" closed>
           <li>
-            <Row title="A plain row" meta="Its meta line sits under the title" aside="Aside" />
+            <Row title="A plain row" meta="A meta line under the title" aside="Aside" />
           </li>
           <li>
             <Row
               layout="dated"
               lead="Mar 5"
               title="A dated row"
-              meta={['Instructor', 'Material · $495']}
+              meta={['First line', 'Second line · $495']}
               aside="Open"
             />
           </li>
           <li>
-            <Row layout="plain" title="A row with several lines" meta={['Dates', 'Instructor', 'Material · price']} />
+            <Row layout="plain" title="A row with several lines" meta={['First line', 'Second line', 'Third line · detail']} />
           </li>
         </ItemList>
         <Grid>
@@ -183,9 +186,9 @@ export function StyleBook() {
               <li>
                 <Row
                   layout="stacked"
-                  lead={<div className={picture} />}
-                  title="Grant Writing 101: Virtual Workshop"
-                  meta={['Jan 16, 2027', 'Quentin Ring', 'Professional development · $50']}
+                  lead={placeholder}
+                  title="A stacked row with a longer title that wraps"
+                  meta={['First line', 'Second line', 'Third line · detail']}
                   link={(className, content) => (
                     <a className={className} href="#">
                       {content}
@@ -197,13 +200,13 @@ export function StyleBook() {
           </Cell>
           <Cell span="6">
             <ItemList gap="0" closed>
-              {['Introduction to Leather-working', 'Drypoint, Plaster Casting, & Color Printmaking'].map((title) => (
+              {['A card row', 'A card row with a longer title that wraps onto a second line'].map((title) => (
                 <li key={title}>
                   <Row
                     layout="card"
-                    lead={<div className={picture} />}
+                    lead={placeholder}
                     title={title}
-                    meta={['Jan 30 – 31, 2027', 'Danielle Giudici Wallis', 'Leather · $195']}
+                    meta={['First line', 'Second line', 'Third line · detail']}
                     link={(className, content) => (
                       <a className={className} href="#">
                         {content}

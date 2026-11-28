@@ -19,8 +19,13 @@ export const hasStyles = existsSync(stylesPath('baseline'));
 /** The generated stylesheet text for a grid mode: the strict `baseline` unless a test asks for another. */
 export const styles = (mode: Mode = 'baseline') => readFileSync(stylesPath(mode), 'utf8');
 
-export function launch(): Promise<Browser> {
-  return chromium.launch({ executablePath: CHROME, headless: true });
+/** The `scaled` stylesheet built with another type scale ratio (see `pnpm codegen`). */
+export const ratioStyles = (ratio: number) =>
+  readFileSync(resolve(import.meta.dirname, `../../styled-system/styles.scaled-${ratio}.css`), 'utf8');
+
+/** Starts Chrome. `args` are extra Chrome flags, such as `--blink-settings=defaultFontSize=20` for a reader whose default size is 20px. */
+export function launch(args: string[] = []): Promise<Browser> {
+  return chromium.launch({ executablePath: CHROME, headless: true, args });
 }
 
 /**

@@ -8,7 +8,7 @@ The one place that defines how things line up, vertically and horizontally. A pr
 
 | Mode | Root size | Vertical grid | Corrections (`lineShift`, `lineMargins`, `lineCentered`, `linePadded`, `lineRelative`, `textTrim`) | Full-screen blocks, pictures |
 |---|---|---|---|---|
-| `free` (the default) | fluid | none | off: lines sit where the browser puts them, aligned by flex, `align-items: baseline` and shared line heights | `100dvh`, plain aspect ratios |
+| `free` | fluid | none | off: lines sit where the browser puts them, aligned by flex, `align-items: baseline` and shared line heights | `100dvh`, plain aspect ratios |
 | `scaled` | fluid, in steps of `root / baseline` px so the baseline is a whole pixel | scales with the root | on | rounded down or up to a whole baseline |
 | `baseline` | fixed (the reader's own size) | fixed | on | rounded to a whole baseline (pictures only) |
 

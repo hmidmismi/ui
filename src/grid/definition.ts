@@ -13,10 +13,10 @@ export type Grid = {
    * How strictly text lines up on the baseline.
    *
    * - `baseline`: the root size is fixed and every line of text sits on a grid line, by shifts and trims worked out from the face's metrics.
-   * - `scaled`: the root size is fluid but moves in whole-pixel baselines (`root / baseline` px at a time), so the grid scales and the shifts stay exact.
+   * - `scaled`: the root size is fluid but moves in whole-pixel baselines (`root / baseline` px at a time), so the grid scales and the shifts stay exact. Browsers round a font's ascent to whole pixels, so a fractional baseline cannot hold text on the grid.
    * - `free`: the root size is fluid and nothing is shifted; blocks are as tall as their text and align by flex, `align-items: baseline` and shared line heights.
    *
-   * Defaults to `free`.
+   * Defaults to `scaled`.
    */
   mode?: GridMode;
   /** The vertical rhythm unit in px. Every line height is a multiple of it. */
@@ -36,7 +36,7 @@ export type Grid = {
 export type GridMode = 'baseline' | 'scaled' | 'free';
 
 /** The default grid: a 5px baseline, a 10px unit, a 16px root, free of the baseline, with trimmed text rounded to whole baselines where a mode snaps. */
-export const defaultGrid = { baseline: 5, unit: 10, root: 16, snap: true, mode: 'free' } as const satisfies Grid;
+export const defaultGrid = { baseline: 5, unit: 10, root: 16, snap: true, mode: 'scaled' } as const satisfies Grid;
 
 /**
  * Rounds to four decimal places, so generated rem values stay short.

@@ -46,7 +46,7 @@ export function Row(props: RowProps) {
   const asideColumn = aside !== undefined || layout === 'plated' || layout === 'numbered';
   const content = (
     <>
-      {lead}
+      {typeof lead === 'string' || typeof lead === 'number' ? <span className={classes.lead}>{lead}</span> : lead}
       <span className={classes.text}>
         <span className={classes.title} data-part="title">
           {title}

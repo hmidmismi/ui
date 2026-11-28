@@ -16,7 +16,7 @@
     "./text": "./src/text/index.ts"
   },
   "scripts": {
-    "codegen": "panda codegen --clean && panda cssgen && GRID_MODE=baseline panda cssgen --outfile styled-system/styles.baseline.css && GRID_MODE=scaled panda cssgen --outfile styled-system/styles.scaled.css && GRID_MODE=free panda cssgen --outfile styled-system/styles.free.css",
+    "codegen": "panda codegen --clean && panda cssgen && GRID_MODE=baseline panda cssgen --outfile styled-system/styles.baseline.css && GRID_MODE=scaled panda cssgen --outfile styled-system/styles.scaled.css && GRID_MODE=free panda cssgen --outfile styled-system/styles.free.css && GRID_MODE=scaled TYPE_RATIO=1.125 panda cssgen --outfile styled-system/styles.scaled-1.125.css && GRID_MODE=scaled TYPE_RATIO=1.25 panda cssgen --outfile styled-system/styles.scaled-1.25.css && GRID_MODE=scaled TYPE_RATIO=1.333 panda cssgen --outfile styled-system/styles.scaled-1.333.css && GRID_MODE=scaled TYPE_RATIO=1.5 panda cssgen --outfile styled-system/styles.scaled-1.5.css",
     "postinstall": "pnpm codegen",
     "dev": "concurrently -k \"panda codegen --watch\" \"panda cssgen --watch\"",
     "test": "vitest run",
@@ -24,7 +24,7 @@
     "clean": "rm -rf styled-system .turbo node_modules",
     "playground": "vite --config playground/vite.config.ts",
     "playground:build": "vite build --config playground/vite.config.ts",
-    "test:visual": "pnpm codegen && vitest run --config vitest.visual.config.ts",
+    "test:visual": "pnpm codegen && vitest run --config vitest.visual.config.ts --reporter=default --reporter=json --outputFile.json=.vitest/visual.json; node tests/visual/report.mjs",
     "test:browser": "pnpm codegen && vitest run --config vitest.browser.config.ts",
     "check:baseline": "node src/grid/check/check-baseline.mjs",
     "check:spacing": "node src/grid/check/check-spacing.mjs",

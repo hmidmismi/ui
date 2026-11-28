@@ -10,7 +10,7 @@ const link = (className: string, content: ReactNode) => (
   </a>
 );
 
-const TABS = ['About YVML', 'Workshops', 'Residencies', 'People', 'Events', 'Support Us'].map((label) => ({
+const TABS = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth'].map((label) => ({
   key: label,
   label,
   link,
@@ -27,8 +27,8 @@ export const fixture = renderToStaticMarkup(
         id="masthead"
         start={
           <>
-            <span>70°F Mostly cloudy</span>
-            <a href="#">Shop</a>
+            <span>Utility one</span>
+            <a href="#">Utility two</a>
           </>
         }
         end={
@@ -37,7 +37,7 @@ export const fixture = renderToStaticMarkup(
             <button type="button" style={{ width: 44 }}>Night</button>
           </>
         }
-        wordmark={{ text: 'Yucca Valley Material Lab', short: 'YVML', link }}
+        wordmark={{ text: 'Site Name Here', short: 'SNH', link }}
         tabs={TABS}
         menu={{ label: 'Menu', panel: <a href="#">Panel</a> }}
       />

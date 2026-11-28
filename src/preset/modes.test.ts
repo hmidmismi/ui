@@ -14,8 +14,8 @@ const faces = ['display', 'body', 'mono'] as const;
 
 describe('the default', () => {
   it('is the free mode', () => {
-    expect(defaultDesign.grid.mode).toBe('free');
-    expect(createTypeSystem(defaultDesign).mode).toBe('free');
+    expect(defaultDesign.grid.mode).toBe('scaled');
+    expect(createTypeSystem(defaultDesign).mode).toBe('scaled');
   });
 });
 
@@ -88,7 +88,8 @@ describe('the scaled mode', () => {
 
   it('moves the root in steps that keep the baseline a whole number of pixels', () => {
     // 16px root / 5px baseline: the root moves 3.2px at a time, so the baseline moves 1px at a time.
-    expect(t.rootSize()).toBe('round(clamp(1em, calc(1em + (100vw - 360px) * 0.001852), 1.125em), 3.2px)');
+    // `max(1em, …)`: the rounding never takes the root under the reader's own size.
+    expect(t.rootSize()).toBe('max(1em, round(clamp(1em, calc(1em + (100vw - 360px) * 0.001852), 1.125em), 3.2px))');
   });
 
   it('rounds the viewport height to a baseline, so what sits under a full-screen block stays on the grid', () => {

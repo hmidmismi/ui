@@ -87,10 +87,10 @@ describe('spacing scale', () => {
     }
   });
 
-  it('puts even whole tokens on the 10px scale and odd whole tokens on the 5px half step', () => {
+  it('puts even whole tokens on the unit and odd whole tokens on the baseline half step', () => {
     for (const name of Object.keys(scaleValues).filter((key) => Number.isInteger(Number(key)))) {
       const size = Number(name) * BASELINE;
-      expect(size % (name === '0' || Number(name) % 2 === 0 ? 10 : 5), name).toBe(0);
+      expect(size % (name === '0' || Number(name) % 2 === 0 ? design.grid.unit : BASELINE), name).toBe(0);
     }
   });
 });

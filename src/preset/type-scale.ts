@@ -78,7 +78,7 @@ export function createTypeSystem(
 ) {
   const scale = createScale(d);
   /** How strictly text lines up on the baseline (`d.grid.mode`). Only `free` leaves the lines where the browser puts them. */
-  const mode: GridMode = d.grid.mode ?? 'free';
+  const mode: GridMode = d.grid.mode ?? 'scaled';
   const strict = mode !== 'free';
 
   /** The nominal size of a step in px, before any per-face x-height adjustment. */
@@ -244,7 +244,8 @@ export function createTypeSystem(
     const { from, to, scale: grow } = d.type.fluid ?? { from: 360, to: 1440, scale: 1.2 };
     const slope = Math.round(((grow - 1) * scale.ROOT_SIZE * 1e6) / (to - from)) / 1e6;
     const fluid = `clamp(1em, calc(1em + (100vw - ${from}px) * ${slope}), ${grow}em)`;
-    return mode === 'scaled' ? `round(${fluid}, ${round(scale.ROOT_SIZE / scale.BASELINE)}px)` : fluid;
+    // The rounding may not take the root under the reader's own size (a 20px default would round down to 19.2px).
+    return mode === 'scaled' ? `max(1em, round(${fluid}, ${round(scale.ROOT_SIZE / scale.BASELINE)}px))` : fluid;
   };
 
   /** The height of a box `ratio` times as tall as it is wide (the frame's `cqw`): a whole number of baselines in the strict modes. */
